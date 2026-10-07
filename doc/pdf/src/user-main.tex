@@ -1,0 +1,95 @@
+%\documentclass[a4paper]{report}
+\documentclass[openany]{book}
+\newcommand{\rootpath}{../../..}
+\input{../../common/packages} % Import packages
+\input{../../common/macros}   % Import macros
+%%%
+\newcommand\guide{User's Guide}
+\newcommand\authors{Lilas Bugeau, Pascal Finaud-Guyot, Vincent Guinot, Antoine Rousseau}
+\addtolength{\footskip}{20pt}
+\pagestyle{fancy}
+
+%%% 
+\begin{document}
+
+% Configure "fancy" style (applied to all pages)
+\fancyhf{}
+\fancyhead[LE]{\small\truncate{6cm}{\leftmark}}
+\fancyhead[LO]{\small\truncate{6cm}{\rightmark}}
+\fancyfoot[C]{\thepage}  % <-- numéro de page visible en bas
+
+% Redefine plain (chapter start) to comply with "fancy"
+%\fancypagestyle{plain}{%
+%  \fancyhf{}
+%  \fancyhead[LE]{\small\truncate{6cm}{\leftmark}}
+%  \fancyhead[LO]{\small\truncate{6cm}{\rightmark}}
+%  \fancyfoot[C]{\thepage}
+%}
+% Force plain (used at chapter beginning) to be equal to fancy
+ \makeatletter
+ \let\ps@plain\ps@fancy
+ \makeatother
+
+\input{../../common/firstpages.tex}
+%%%
+
+%%%
+\chapter{Working environment \label{ch:workEnv}}
+\input{./user/Simulation_Sequence}
+\input{./user/Simulation_Structure}
+%%% 
+\chapter{Using \swConverter \label{ch:swConverter}}
+\input{./user/swConverter_Invoke}
+\input{./user/inputFile/swConverter_Input}
+\input{./user/swConverter_trouble}
+%%%
+\chapter{Using \swConverterReverse \label{ch:swConverterReverse}}
+\input{./user/swConverterReverse_Invoke}
+%%%
+\chapter{Using \swNSPreProcess \label{ch:swNSPreProcess}}
+\input{./user/swNSPreProcess_Invoke}
+\input{./user/inputFile/swNSPreProcess_Input}
+%%%
+\chapter{Using \swZone \label{ch:swZone}}
+\input{./user/swZone_Invoke}
+\input{./user/inputFile/swZone_input}
+%%%
+\chapter{Using \swPorosityMapper \label{ch:swPorosityMapper}}
+\input{./user/swPorosityMapper_Invoke}
+\input{./user/inputFile/swPorosityMapper_input}
+\input{./user/inputFile/swPorosityMapper_buildings}
+% 
+\chapter{Using \swSolver \label{ch:swSolver}}
+\input{./user/swSolver_Invoke}
+\input{./user/swSolver_minimal}
+\input{./user/swSolver_timeMonitoring}
+\input{./user/inputFile/swSolver_input}
+\input{./user/inputFile/swSolver_maps}
+\input{./user/inputFile/swSolver_time_series}
+\input{./user/inputFile/swSolver_other_formats}
+%\input{./user/outputFile/swSolver_ResultHydro_slf}
+\input{./user/outputFile/swSolver_outputs}
+
+\chapter{Using \swOutputConverter \label{ch:swOutputConverter}}
+\input{./user/swOutputConverter_Invoke}
+\input{./user/outputFile/swOutputConverter_ResultHydro_nc}
+
+\chapter{Using \swPostProcess \label{ch:swPostProcess}}
+\input{./user/swPostProcess_invoke}
+\input{./user/inputFile/swPostProcess_input}
+\input{./user/outputFile/swPostProcess_DateOfMax}
+\input{./user/outputFile/swPostProcess_Max}
+
+\chapter{Tutorials \label{ch:tuto}}
+\input{./user/tuto/topocorr}
+\input{./user/tuto/hotstart}
+%\input{./user/tuto/smsnodestrings}
+%\input{./user/tuto/qsection}
+%\input{./user/tuto/extraction_time}
+\input{./user/tuto/results_in_SMS}
+\input{./user/tuto/results_in_QGIS}
+
+\chapter{Shortcuts \label{ch:shortcuts}}
+\input{./developer/sw2d_command}
+
+\end{document}

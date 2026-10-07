@@ -1,0 +1,59 @@
+\hypertarget{StricklerFileFormat}{}
+\subsection{friction\_strickler\_map.txt}
+\index{Friction!Strickler}
+\subsubsection{Purpose}
+If Strickler's law is selected for the friction model, the Strickler coefficient must be provided on a cell-by-cell basis. The Strickler may be anisotropic. Therefore, it is a tensor. It is specified in the form $(K_1 , K_2, \alpha_K)$, where $K_1$ and $K_2$ are the friction coefficients in the two principal directions of the horizontal plane, and $\alpha_K$ is the angle of the first principal direction with the $x-$axis.
+%
+\subsubsection{Input file format}
+%
+File format for a uniform Strickler tensor.  \texttt{\textbf{Bold}} : keyword, must appear as such in the file. \texttt{<Tab>}: tabulation character. \\
+    \begin{tabular}{p{6cm} | p{9cm}}
+    \hline
+    Field(s) & Comment(s) \\
+    \hline  \hline
+    \texttt{\textbf{Unif} <Tab> \textbf{1}} & Flag is 1 because $K$ is uniform \\ \hline
+    \texttt{\textbf{==== Default Param}} & Section separator line, leave unchanged \\  \hline
+    \texttt{\textbf{Strickler\_1 Strickler\_2 alpha}} & Comment line, leave unchanged \\  \hline
+    \texttt{Strickler\_1 <Tab> Strickler\_2 <Tab> alpha} & The uniform values for $K_1$, $K_2$ and $\alpha_K$ ($\alpha_K$ in degrees) \\ \hline
+    \texttt{\textbf{==== Distrib}} & Section separator line, leave unchanged \\  \hline
+    \end{tabular}
+%
+\vspace{10mm} \\
+%
+File format for a spatially distributed Strickler tensor.  \texttt{\textbf{Bold}} : keyword, must appear as such in the file. \texttt{<Tab>}: tabulation character. \\
+    \begin{tabular}{p{6cm} | p{9cm}}
+    \hline
+    Field(s) & Comment(s) \\
+    \hline  \hline
+    \texttt{\textbf{Unif} <Tab> \textbf{0}} & Flag is 0 because $K$ is spatially variable \\ \hline
+    \texttt{\textbf{==== Default Param}} & Section separator line, leave unchanged \\  \hline
+    \texttt{\textbf{Strickler\_1 Strickler\_2 alpha}} & Comment line, leave unchanged \\  \hline
+    \texttt{Strickler\_1 Strickler\_2 alpha}     & This value will be ignored because \texttt{Flag} = 1 \\ \hline
+    \texttt{\textbf{==== Distrib}} & Section separator line, leave unchanged \\  \hline
+    \texttt{Strickler\_1[i] <Tab> Strickler\_2[i] <Tab> alpha[i]}      & Values for $K_1$, $K_2$ and $\alpha_K$ ($\alpha_K$ in degrees), provided on a cell-by-cell basis. Index i is the index of the mesh in the cell.  \\ \hline
+    \end{tabular}
+%
+\subsubsection{Sample files}
+%
+\paragraph*{Example\#1: Uniform Strickler tensor}
+The Strickler tensor is uniform for all cells. It is respectively 40 and 50 in the 1st and 2nd principal directions. The 1st principal direction makes a 45 degree angle with the $x-$axis.
+\begin{verbatim}
+Unif	1
+==== Default Param
+Strickler_1	Strickler_2	alpha
+40.	50.	45.
+==== Distrib
+\end{verbatim}
+%
+\paragraph*{Example\#2: Distributed Strickler tensor}
+There are 3 cells in the model. The Strickler is respectively 40 and 50 in the 1st and 2nd principal directions. Its angle with the $x-$axis is respectively 0, 10 and 30 degrees in Cells 1, 2 and 3.
+\begin{verbatim}
+Unif	0
+==== Default Param
+Strickler_1	Strickler_2	alpha
+40.	50.	45.
+==== Distrib
+40.	50.	0.
+40.	50.	10.
+50.	50.	30.
+\end{verbatim}

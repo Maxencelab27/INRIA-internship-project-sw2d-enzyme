@@ -1,0 +1,29 @@
+
+\section{BCs in the form of time series}
+The time series are stored in tables. For each BC code, there is one pair of (time , value) vectors. Thses vectors are filled with the time series provided in "hydro\_boundary\_time\_series.txt" at the init() stage. During the time loop, at a given simulation time $t$, 
+%
+%
+\begin{enumerate}
+%
+\item for each BC code, compute the numerical values for all the BC types from the (time, values) vector pairs.
+This is done with
+\begin{verbatim}
+for swBoundaryConditionTimeSeries* bc : bc_timeseries_list
+{
+    computeValBC(bc_time_series_list)
+}
+\end{verbatim}
+%
+\item for each boundary interface (\texttt{edge\_bnd[i]}, where i is the index), one must
+\begin{enumerate}
+\item get the BC type ("h", "z", "q", "fr", etc.). This is done by calling \texttt{edge\_bnd\_bc\_pointer[i]->getBCType}
+\item get the numerical value. This is done by calling \texttt{edge\_bnd\_bc\_pointer[i]->getBCVal()}. The method carries out the interpolation from the (time, value) vector pairs
+\item interpolate the numerical value for the BC from the (time, value) pair at time $t$.
+\end{enumerate}
+\end{enumerate}
+
+
+%%%
+\section{BCs in the form rating curves}
+
+More to come in the next release. Stay tuned!

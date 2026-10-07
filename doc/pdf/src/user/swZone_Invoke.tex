@@ -1,0 +1,15 @@
+\section{Invoking \swZone}
+NOTE: it is expected that the binary file \swZone is in your path, so that it may be invoked from anywhere in your directories. If not, you will have to make sure that you enter the complete relative path to the \swZone file. Do not hesitate to use SW2D shortcuts (see Chapter \ref{ch:shortcuts}).
+
+The \swZone executable is used to generate spatially distributed parameter files. Files \texttt{geometry.sw2d} and \texttt{input.zone} must be created before running this executable. It is run as follows.
+
+\begin{enumerate}
+	\item Navigate to the parent folder of the \swdd project folder.
+	\item Make sure that the \texttt{input.zone} file is present in the \texttt{primary\_files} folder
+	\item Open a shell/prompt (command line window).
+	\item Type
+	\begin{verbatim}
+	sw2dZone.exe <path_to_project_folder>
+	\end{verbatim}
+	\item One or many text files for the spatially distributed parameters are generated in the \texttt{[model\_name]/input} folder. The name of these files are defined by the user in \texttt{input.zone}.
+	\end{enumerate}

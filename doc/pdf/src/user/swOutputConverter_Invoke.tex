@@ -1,0 +1,24 @@
+\section{Invoking \swOutputConverter}
+
+NB: The \swOutputConverter was coded in Python. It can be compiled into an executable file (using pyinstaller, for example), but by default, only the Python script is available. This chapter explains how to use this utility in both cases. \\
+Note that you must have Python installed to run the Python script. \\
+
+The \swOutputConverter is used to convert an output file \file{ResultHydro.bin} into other file formats.\\
+
+\begin{enumerate}
+	\item Localize your project folder. Make sure that the \file{ResultHydro.bin} file is present in the \file{output} folder.
+	\item Open a shell/prompt (command line window).
+	\item \begin{itemize}
+		\item If you have \swOutputConverter in the form of an executable file, type
+		\begin{small}\begin{verbatim}
+		sw2dOutputConverter <path_to_project_folder> <destination_format>
+		\end{verbatim}\end{small}
+		\item If you are using the python script, type
+		\begin{small}\begin{verbatim}
+		python <path_to_python_apps>/sw2dOutputConverter.py <path_to_project_folder> <destination_format>
+		\end{verbatim}\end{small}
+	\end{itemize}
+	This results in the creation of result file(s) in the desired format in the \file{output} folder. Possible formats are : \texttt{text}, \texttt{netCDF}.
+\end{enumerate}
+
+If specified format is \texttt{text}, the created files are the ones described in Section \ref{result_hydro_txt}. Else the format is specified in the following subsection.

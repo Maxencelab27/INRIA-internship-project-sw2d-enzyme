@@ -1,0 +1,56 @@
+\begin{enumerate}
+
+    % \item Additional packages
+    %     \begin{itemize}
+    %     \item \swdd considers the following packages are installed (default packages in Fedora): libqt5x11extras5-dev, qtbase5-dev, qtdeclarative5-dev, uuid-dev. If not, please install them:
+    %     \begin{lstlisting}[language=bash]
+    % #!/bin/bash
+    % sudo apt install libqt5x11extras5-dev qtbase5-dev 
+    %         qtdeclarative5-dev uuid-dev
+    %     \end{lstlisting}
+    %     \item Under Ubuntu there are some additional packages that should be installed:
+    %     \begin{lstlisting}[language=bash]
+    % #!/bin/bash
+    % sudo apt install libx11-dev libxt-dev libxext-dev libglu1-mesa-dev
+    %     build-essential mesa-common-dev uuid-dev
+    %     \end{lstlisting}
+    %     \end{itemize}
+    % \item Install Conda from the official website repo.continuum.io:
+    % \begin{itemize}
+    %     \item Download \href{https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh}{\textcolor{blue}{Conda install script}}
+    %     \item Run the install script and remove it:\\
+    %     \begin{lstlisting}[language=bash]
+    % #!/bin/bash
+    % bash Miniconda3-latest-Linux-x86_64.sh
+    % rm Miniconda3-latest-Linux-x86_64.sh
+    %     \end{lstlisting}
+    %     \item Now you should be able to run \textit{conda} in your terminal
+    % \end{itemize}
+    % \begin{remark}Warning: make sure you do not install under the root account or you may not have access to the program from your personal account. 
+    % \end{remark}
+    % \item{[Optional]} If you already previously installed \swdd and wish to make a clean install, you should remove previous conda environment:
+    % \begin{lstlisting}[language=bash]
+    %     #!/bin/bash
+    %     conda deactivate
+    %     conda env remove -n sw2d
+    %     conda clean --all
+    % \end{lstlisting}
+    \item Download the sources from the \href{https://gitlab.com/sw2d-workgroup/sw2d}{\textcolor{blue}official \swdd Gitlab repository}:
+    \begin{lstlisting}[language=bash]
+        git clone https://gitlab.com/sw2d-workgroup/sw2d.git
+    \end{lstlisting}
+    
+    \item Create a directory with name \texttt{build} under the root directory, navigate to it and type the compilation instructions:\\
+    \begin{lstlisting}[language=bash]
+        mkdir build
+        cd build
+        cmake .. -DCMAKE_BUILD_TYPE=Debug
+        make -j
+        \end{lstlisting}
+    \begin{remark}
+    You may want to use 'Release' or 'ReleaseWithDebugInfo' instead of 'Debug' depending on the type of optimization you like.
+    \end{remark}
+    
+
+\end{enumerate}
+

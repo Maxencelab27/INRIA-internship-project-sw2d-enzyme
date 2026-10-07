@@ -1,0 +1,24 @@
+\section{output/ResultHydro.slf}\label{sec:selafin_output}
+
+\subsection{Purpose}
+When the \param{output\_slf} option is activated in the input file \texttt{input.solv}, the file \texttt{ResultHydro.slf} stores in a different format the same results as the \texttt{ResultHydro\_pDDDDdHHhMMmSSsXXX.txt} files, with the same variables and the same time step.\\
+
+The selafin format allows all the time steps to be contained in one file and the results to be displayed in a temporal view in QGIS.\\
+
+As selafin format cannot handle mixed meshes, to activate the \param{output\_slf} option, all the cells in the mesh must have the same number of edges. Otherwise, the code will return an error.
+
+\subsection{Use}
+
+To view the results in selafin format, follow the steps below:
+\begin{itemize}
+    \item Open the \texttt{ResultHydro.slf} file in QGIS
+    \item Import only the mesh layer
+    \item Activate the time controller panel
+    \item Set the start and end times: the start time is the current date at 00:00 and the end time is the start date + simulation time. The time step must also be adapted to the simulation time step.
+    \item Start the time display with the pause button or drag the cursor to navigate through the time steps.
+\end{itemize}
+
+% \subsection{Example}
+% \begin{verbatim}
+    
+% \end{verbatim}

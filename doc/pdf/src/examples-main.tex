@@ -1,0 +1,49 @@
+\documentclass[openany]{book}
+\newcommand{\rootpath}{../../..}
+\newcommand{\examplepath}{\rootpath/test/examples}
+\input{\rootpath/doc/common/packages} % Import packages
+\input{\rootpath/doc/common/macros}   % Import macros
+\usepackage{enumitem}
+
+\newcommand\guide{Examples Guide}
+\newcommand\authors{Pascal Finaud-Guyot, Vincent Guinot, Antoine Rousseau}
+\addtolength{\footskip}{20pt}
+\pagestyle{fancy}
+
+%%% 
+\begin{document}
+% Configure "fancy" style (applied to all pages)
+\fancyhf{}
+\fancyhead[LE]{\small\truncate{15cm}{\leftmark}}
+\fancyhead[LO]{\small\truncate{15cm}{\rightmark}}
+\fancyfoot[C]{\thepage}  
+
+% Redefine plain (chapter start) to comply with "fancy"
+%\fancypagestyle{plain}{%
+%  \fancyhf{}
+%  \fancyhead[LE]{\small\truncate{6cm}{\leftmark}}
+%  \fancyhead[LO]{\small\truncate{6cm}{\rightmark}}
+%  \fancyfoot[C]{\thepage}
+%}
+% Force plain (used at chapter beginning) to be equal to fancy
+ \makeatletter
+ \let\ps@plain\ps@fancy
+ \makeatother
+ 
+\input{\rootpath/doc/common/firstpages}
+
+
+\paragraph*{Disclaimer}
+\swdd is a modeling software that only process text files. For the purpose of this document, the data provided and the computed results are 
+represented using external softwares. The different profiles are plotted using either Python scripts (not provided) or 
+Excel and the maps are build using the SMS software\footnote{\url{https://www.aquaveo.com/software/sms-surface-water-modeling-system-introduction}}.
+
+\input{\rootpath/test/examples/swes_gardon/doc/swes_gardon.tex}
+\input{\rootpath/test/examples/liswes_gardon/doc/liswes_gardon.tex}
+\input{\rootpath/test/examples/sp_toce/doc/sp_toce.tex}
+\input{\rootpath/test/examples/dip_toce/doc/dip_toce.tex}
+
+%\input{../sp/Toce}
+%\input{../dip/UrbanDambreak}
+%\input{../ddp/Severn}
+\end{document}

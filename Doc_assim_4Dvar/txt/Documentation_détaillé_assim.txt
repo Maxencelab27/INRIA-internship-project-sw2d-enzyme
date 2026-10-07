@@ -1,0 +1,1268 @@
+\documentclass[11pt,a4paper]{article}
+
+% ======================================================================
+%  PRÉAMBULE
+% ======================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[margin=2.3cm]{geometry}
+
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage[table]{xcolor}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\usepackage{listings}
+\usepackage[strings]{underscore} % [strings] : « _ » utilisable dans les chemins de fichiers
+
+\DeclareUnicodeCharacter{00A0}{~}  % espaces insécables collées depuis le web
+
+% --- Configuration TikZ ---
+\usepackage{tikz}
+\usetikzlibrary{
+    positioning,
+    arrows.meta,
+    shapes.geometric,
+    calc,
+    fit,
+    backgrounds,
+    shapes.multipart
+}
+
+% ======================================================================
+%  CODE EN LIGNE
+% ----------------------------------------------------------------------
+%  IMPORTANT : \code NE DOIT PAS être basé sur \lstinline.
+%  \lstinline est un environnement verbatim : il modifie les catcodes à la
+%  volée et ne survit donc pas aux arguments qui sont stockés, mesurés ou
+%  retypographiés (étiquettes \item[...] d'enumitem, clés title= de
+%  tcolorbox, cellules de tableau, titres, légendes...). C'est ce qui
+%  provoquait les étiquettes imprimées les unes par-dessus les autres.
+%  On utilise donc une macro \texttt, robuste partout.
+%  \NoAutoSpacing empêche babel-french d'insérer une espace fine avant
+%  « : » et « ; » (sinon « std::string » devient « std :: string »).
+% ======================================================================
+\providecommand{\NoAutoSpacing}{}
+\newcommand{\code}[1]{{\normalfont\ttfamily\NoAutoSpacing #1}}
+\newcommand{\file}[1]{{\normalfont\ttfamily\NoAutoSpacing #1}}
+
+% ----------------------------------------------------------------------
+%  EN-TÊTES DE BLOC
+%  Remplacent les \item[...] des environnements « description » qui
+%  contenaient des \lstlisting : un listing imbriqué dans une liste est
+%  contraint à une colonne étroite et indentée (rendu « ratatiné »).
+%  Ici, les listings sont au niveau du paragraphe : pleine largeur.
+% ----------------------------------------------------------------------
+\newcommand{\blocfn}[2]{%
+  \par\addvspace{1.3em}%
+  \noindent\textbf{\code{#1}}\hspace{0.4em}\emph{(\file{#2})}%
+  \par\nobreak\addvspace{0.45em}\noindent\ignorespaces}
+
+\newcommand{\bloctitre}[1]{%
+  \par\addvspace{1.3em}%
+  \noindent\textbf{#1}%
+  \par\nobreak\addvspace{0.45em}\noindent\ignorespaces}
+
+% ----------------------------------------------------------------------
+%  ESPACEMENT DES LISTES
+% ----------------------------------------------------------------------
+\setlist[itemize]{topsep=0.7em, itemsep=0.45em, parsep=0.25em, leftmargin=1.6em}
+\setlist[enumerate]{topsep=0.7em, itemsep=0.45em, parsep=0.25em, leftmargin=1.9em}
+\setlist[description]{style=nextline, leftmargin=0pt, labelindent=0pt,
+                      topsep=0.9em, itemsep=1.0em, parsep=0.40em}
+
+\setlength{\emergencystretch}{2.5em} % évite les débordements dus aux longs identifiants
+
+% ----------------------------------------------------------------------
+%  BLOCS DE CODE (listings)
+% ----------------------------------------------------------------------
+\definecolor{codegreen}{rgb}{0.0,0.5,0.15}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codeblue}{rgb}{0.10,0.25,0.65}
+\definecolor{codebg}{rgb}{0.975,0.975,0.975}
+
+% Accents éventuels dans les listings (les blocs sont écrits en ASCII,
+% ceci évite toute erreur en cas d'ajout ultérieur).
+\lstdefinestyle{accents}{
+  literate=%
+    {é}{{\'e}}1 {è}{{\`e}}1 {ê}{{\^e}}1 {ë}{{\"e}}1
+    {à}{{\`a}}1 {â}{{\^a}}1 {ù}{{\`u}}1 {û}{{\^u}}1
+    {î}{{\^\i}}1 {ï}{{\"\i}}1 {ô}{{\^o}}1 {ç}{{\c c}}1
+    {É}{{\'E}}1 {È}{{\`E}}1 {À}{{\`A}}1 {œ}{{\oe}}1 {°}{{\textdegree}}1
+}
+
+\lstdefinestyle{cpp}{
+  style=accents,
+  language=C++,
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\footnotesize,
+  commentstyle=\color{codegreen}\itshape,
+  keywordstyle=\color{codeblue}\bfseries,
+  stringstyle=\color{orange},
+  numberstyle=\tiny\color{codegray},
+  numbers=left,
+  numbersep=8pt,
+  breaklines=true,
+  breakatwhitespace=true,
+  postbreak=\mbox{\textcolor{codegray}{$\hookrightarrow$}\space},
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  captionpos=b,
+  tabsize=2,
+  frame=single,
+  framesep=6pt,
+  framexleftmargin=0pt,
+  xleftmargin=1.6em,
+  xrightmargin=0pt,
+  aboveskip=1.4\medskipamount,
+  belowskip=1.4\medskipamount,
+  lineskip=1.2pt,
+  rulecolor=\color{gray!40}
+}
+
+\lstdefinestyle{sh}{
+  style=accents,
+  language=bash,
+  backgroundcolor=\color{codebg},
+  basicstyle=\ttfamily\small,
+  commentstyle=\color{codegreen}\itshape,
+  keywordstyle=\color{codeblue}\bfseries,
+  numbers=none,
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  showstringspaces=false,
+  frame=single,
+  framesep=6pt,
+  xleftmargin=0pt,
+  aboveskip=1.4\medskipamount,
+  belowskip=1.4\medskipamount,
+  lineskip=1.5pt,
+  rulecolor=\color{gray!40}
+}
+
+\lstset{style=cpp}
+
+% --- Configuration des liens ---
+\usepackage[colorlinks=true,linkcolor=blue!55!black,urlcolor=blue!55!black,citecolor=blue!55!black]{hyperref}
+
+% --- Définitions mathématiques ---
+\newtheorem{definition}{Définition}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\phivec}{\boldsymbol{\phi}}
+\newcommand{\thetavec}{\boldsymbol{\theta}}
+\newcommand{\dd}{\mathrm{d}}
+
+% --- Couleurs du schéma d'architecture ---
+\definecolor{cNative}{rgb}{0.86,0.92,1.0}
+\definecolor{cAssim}{rgb}{0.90,1.0,0.88}
+\definecolor{cEnzyme}{rgb}{1.0,0.92,0.82}
+\definecolor{cMem}{rgb}{0.95,0.90,1.0}
+
+
+\begin{document}
+
+% ======================================================================
+%  PAGE DE TITRE
+% ======================================================================
+\begin{titlepage}
+\centering
+\vspace*{1.2cm}
+{\large\scshape Document technique d'implémentation}\\[0.3cm]
+\rule{\textwidth}{0.4pt}\\[0.5cm]
+{\Huge\bfseries Implémentation de l'assimilation de données variationnelle\\[4pt]
+dans SW2D avec \textsc{Enzyme}\par}
+\vspace{0.5cm}
+\rule{\textwidth}{0.4pt}\\[0.8cm]
+{\Large \textbf{Contexte :} reconstruction de porosité par méthode adjointe\par}
+\vspace{0.3cm}
+{\large Modèle à porosité simple (SP) --- exécutable \file{sw2d_enzyme}\par}
+\vfill
+{\large \today\par}
+\end{titlepage}
+
+
+% ======================================================================
+%  INTRODUCTION
+% ======================================================================
+\section{Introduction}
+
+L'objectif de l'assimilation de données est de construire de façon automatique la carte
+de porosité $\phi$ du modèle SW-SP (une valeur de porosité par maille). La méthode
+utilisée est une méthode variationnelle dite \emph{4D-Var}. Elle repose sur une fonction
+coût qui mesure « à quel point la simulation colle aux observations ». Cette fonction
+prend en entrée la carte de porosité (sous forme de pointeur brut vers un tableau
+C\texttt{++}) et retourne un réel positif. L'assimilation de données consiste alors à
+trouver la carte de porosité qui minimise cette fonction $J$.
+
+Dans le cadre de cette étude, les « observations » sont les résultats d'une simulation de
+référence, prise comme la vérité à approcher. Pour minimiser $J$, on a besoin de connaître
+son gradient par rapport à la porosité, $\nabla_{\phi} J$. Ce gradient est fourni par
+\textsc{Enzyme}, qui construit automatiquement le code adjoint.
+
+\begin{tcolorbox}[colback=gray!5,colframe=gray!45,width=0.86\textwidth,halign=left]
+\small Ce document répertorie \textbf{les modifications apportées} au modèle
+\textbf{SW-SP} (\emph{single porosity}) du code de simulation C\texttt{++} SW2D :\\[0.4em]
+(i) adaptation des fonctions physiques (fonctions \code{_E}) pour les rendre lisibles et
+différentiables par \textsc{Enzyme} ;\\[0.3em]
+(ii) implémentation de la chaîne d'assimilation variationnelle de données : fonction coût,
+gestion des variables et de leurs adjoints, appels à \code{__enzyme_autodiff} ;\\[0.3em]
+(iii) adaptation de la compilation au \textit{plugin} LLVM \textsc{Enzyme}.\\[0.5em]
+Il comprend deux parties --- la \emph{documentation technique} de la chaîne et de son
+architecture mémoire, puis la \emph{méthodologie} suivie pour obtenir les résultats ---
+suivies d'annexes de code. Toutes les descriptions sont tirées du code source.
+\end{tcolorbox}
+
+\newpage
+\tableofcontents
+\newpage
+
+
+% ======================================================================
+%  PARTIE 1 : UTILISATION
+% ======================================================================
+\section{Utilisation du code}
+\label{sec:utilisation}
+
+Cette partie ne comporte que des explications pratiques sur la façon d'utiliser les
+fonctionnalités d'assimilation de données variationnelle ajoutées au code. Pour plus de
+précisions sur l'implémentation, se référer à la section~\ref{sec:developpement}.
+
+\begin{tcolorbox}[title=Objectif du code, colback=gray!5, colframe=black, fonttitle=\bfseries]
+Le code implémenté au cours de ce stage repose sur un code de simulation existant (SW2D)
+qui résout les équations de Saint-Venant et présente la particularité de contenir un
+modèle à porosité~\cite{guinot2006porosity,sanders2008porosity} pour représenter les zones
+urbaines. Ce logiciel est notamment utilisé dans le cadre de la prévision des inondations
+urbaines. Le travail d'implémentation réalisé consiste à ajouter la différentiation du
+code (via l'outil de différentiation automatique \textsc{Enzyme}), ce qui a nécessité
+l'ajout et la modification de fonctions par rapport au code initial, ainsi que la
+modification des options de compilation pour le rendre compatible avec \textsc{Enzyme}.
+Pour implémenter la chaîne d'assimilation de données, des fonctions spécifiques ont
+également été ajoutées. Le présent document recense l'ensemble de ces modifications, leur
+rôle et la façon d'utiliser les nouvelles fonctionnalités.
+\end{tcolorbox}
+
+\subsection{Implémentation de la chaîne d'assimilation}
+
+\subsubsection{Principe}
+
+Le stage porte sur l'assimilation de données par méthodes variationnelles. Les
+fonctionnalités ajoutées au code sont donc relatives à la méthode \textit{4D-Var}.
+Le principe est le suivant : une fonction coût quantifie l'erreur entre les résultats de
+la simulation et des données de référence (observations ou expérience jumelle). Cette
+fonction est écrite comme une fonction des paramètres de la simulation que l'on cherche à
+estimer (ici, la carte de porosité). \textsc{Enzyme} calcule le gradient de la fonction
+coût par rapport à ces paramètres. Ce gradient est ensuite transmis à un algorithme de
+minimisation (descente de gradient) qui minimise la fonction coût et retourne les
+paramètres optimaux, c'est-à-dire ceux qui permettent d'approcher au mieux la réalité lors
+des simulations.
+
+\subsubsection{Gestion des modifications dans SW2D}
+
+Afin de conserver une référence fiable de SW2D, l'implémentation de la méthode
+d'assimilation de données et le branchement du \textit{plugin} LLVM \textsc{Enzyme} ont
+été réalisés dans des fichiers séparés du code initial, sous la forme d'une bibliothèque
+C\texttt{++} indépendante disposant de son propre point d'entrée, le fichier
+\file{main_enzyme.cpp}. Le code source du solveur SW2D n'est ainsi pas modifié : ses
+fonctionnalités natives, ainsi que son fichier \file{main.cpp}, restent strictement
+identiques à la version d'origine.
+
+Lors de la compilation, deux ensembles d'exécutables sont générés :
+
+\begin{itemize}
+  \item \textbf{Solveur de référence :} les exécutables standards de SW2D sont compilés
+        sans modification dans le répertoire \file{sw2d_enzyme/build/bin}.
+  \item \textbf{Version avec assimilation de données :} les fonctionnalités développées au
+        cours du stage sont compilées dans le répertoire
+        \file{sw2d_enzyme/build_enzyme/bin} et regroupées dans l'exécutable
+        \code{sw2d_enzyme}.
+\end{itemize}
+
+Le code implémenté, ainsi que les fonctions physiques adaptées pour \textsc{Enzyme}, sont
+donc contenus dans de nouveaux fichiers ; les fichiers et exécutables initiaux de SW2D ne
+sont pas modifiés.
+
+
+% ---------------------------------------------------------------------
+%  Organigramme du code d'assimilation de données
+% ---------------------------------------------------------------------
+\subsubsection{Chaîne d'assimilation de données implémentée}
+
+Le fonctionnement des différentes fonctions peut se résumer par le graphe suivant.
+
+\begin{figure}[htbp]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+    node distance=5mm and 12mm,
+    font=\scriptsize,
+    % --- DÉFINITION DES STYLES ---
+    ovale_gris/.style={ellipse, draw=gray!80, fill=gray!15, align=center, minimum height=8mm, minimum width=22mm, inner sep=3pt},
+    ovale_vert/.style={ellipse, draw=green!80, fill=green!15, align=center, minimum height=8mm, minimum width=22mm, inner sep=3pt},
+    rect_orange/.style={rectangle, rounded corners, draw=orange!80, fill=orange!20, align=center, minimum height=8mm, minimum width=24mm, inner sep=3pt},
+    rect_bleu/.style={rectangle, rounded corners, draw=blue!80, fill=blue!15, align=center, minimum height=8mm, minimum width=30mm, inner sep=3pt},
+    rect_gris/.style={rectangle, rounded corners, draw=gray!80, fill=gray!15, align=center, minimum height=8mm, minimum width=30mm, inner sep=3pt},
+    rect_violet/.style={rectangle, rounded corners, draw=purple!80, fill=purple!15, align=center, minimum height=10mm, minimum width=32mm, inner sep=4pt},
+    rect_rouge/.style={rectangle, rounded corners, draw=red!80, fill=red!15, align=center, minimum height=10mm, minimum width=30mm, inner sep=4pt},
+    func/.style={rectangle, rounded corners, draw=purple!70, fill=purple!10, align=center, font=\tiny\ttfamily, minimum height=6mm, minimum width=22mm, inner sep=2pt},
+    ar/.style={-{Latex[length=2mm]}, thick, draw=darkgray},
+    ar_init/.style={-{Latex[length=1.5mm]}, thin, draw=purple!60, dashed},
+    annotation/.style={text width=3.8cm, font=\tiny\itshape, gray, align=right}
+]
+    % --- 1. ARCHITECTURE DES COLONNES DU HAUT ---
+    \node[ovale_gris] (cg_gauche) {Carte de porosité de référence :\\\texttt{phi\_ref\_map.txt}};
+    \node[rect_orange, below=of cg_gauche] (ro_gauche) {Génération des références\\\texttt{generate\_references\_E()}};
+
+    \node[ovale_gris, right=4.5cm of cg_gauche] (cg_droit) {Carte de porosité estimée à l'itération $k$ ($\phi_k$) :\\$\phi_0 = \phi_b$};
+
+    % reset_to_start() — appelée à chaque itération k avant la simulation
+    \node[func, below=4mm of cg_droit] (reset) {reset\_to\_start()};
+    \node[rect_orange, below=4mm of reset] (ro_droit) {Simulation directe $X(\phi_k)$\\\texttt{run\_forward\_E()}};
+
+    % save_initial_state() — appelée UNE FOIS lors de l'initialisation
+    \node[func, right=1.0cm of cg_droit] (save_init) {save\_initial\_state()\\\normalfont\tiny\itshape Initialisation ($1\times$)};
+
+    \path (ro_gauche) -- (ro_droit) node[midway] (milieu_ro) {};
+    \node[rect_bleu, below=6mm of milieu_ro] (bleu) {Mise à jour de la fonction coût $J$\\\texttt{compute\_cost\_frame\_ptr()}};
+
+    % --- 2. ALIGNEMENT VERTICAL INFÉRIEUR ---
+    \node[rect_gris, below=8mm of bleu] (gris1) {Exécution du modèle adjoint\\Gradient $\nabla_\phi J$ (sans redifférentiation)\\\texttt{get\_spatial\_gradient\_checkpointed()}};
+    \node[rect_gris, below=of gris1] (gris2) {Minimisation \& descente de gradient\\Mise à jour de la porosité ($\phi_{k+1}$)\\\texttt{run\_minimization()}};
+
+    % --- 3. BLOC ENZYME HORS-BOUCLE (À LA COMPILATION) ---
+    \node[rect_violet, left=10mm of gris1] (enzyme_compile) {\textbf{Différentiation unique (Enzyme/LLVM)}\\du noyau \texttt{ckpt\_segment\_E}\\à la compilation (hors boucle)};
+
+    \node[rect_rouge, below=of gris2] (rouge) {\textbf{Arrêt ?}\\Critères atteints ?};
+
+    \node[annotation, left=of rouge] (notes_arret) {$\bullet$ Itération max ?\\$\bullet$ Gradient nul ?\\$\bullet$ Fonction coût nulle ?};
+    \draw[darkgray, dashed] (notes_arret) -- (rouge);
+
+    \node[ovale_vert, below=of rouge] (vert) {Carte de porosité optimisée $\phi^\star$};
+
+    % --- TRACÉ DES FLÈCHES ---
+    \draw[ar] (cg_gauche) -- (ro_gauche);
+    \draw[ar] (cg_droit) -- (reset);
+    \draw[ar] (reset) -- (ro_droit);
+    \draw[ar_init] (cg_droit.east) -- (save_init.west);
+    \draw[ar] (ro_gauche.south) -- ++(0,-0.3) |- (bleu.west);
+    \draw[ar] (ro_droit.south) -- ++(0,-0.3) |- (bleu.east);
+    \draw[ar] (bleu) -- coordinate (mid_bleu_gris) (gris1);
+    \draw[ar, purple!80, dashed] (enzyme_compile.east) -| ([xshift=-4mm]mid_bleu_gris) -- (mid_bleu_gris)
+        node[above, pos=0.2, font=\tiny\bfseries, text=purple!90!black] {Fournit l'adjoint compilé};
+    \draw[ar] (gris1) -- (gris2);
+    \draw[ar] (gris2) -- (rouge);
+    \draw[ar] (rouge) -- node[right, font=\tiny] {Oui} (vert);
+    \draw[ar] (rouge.east) -- ++(4.2,0)
+        node[at start, above right, font=\tiny] {Non ($k \rightarrow k+1$)}
+        |- ([yshift=0.5cm]cg_droit.north) -| (cg_droit.north);
+\end{tikzpicture}%
+}
+\caption{Pipeline d'assimilation de données.}
+\label{fig:pipeline-ad}
+\end{figure}
+
+
+% ---------------------------------------------------------------------
+\subsection{Compilation du code}
+\label{sec:compilation}
+
+La compilation se fait en deux temps : d'abord le solveur de référence (compilateur
+usuel), puis la version différenciée, qui doit impérativement être compilée avec
+\file{clang}/\file{clang++} et le \textit{plugin} LLVM \textsc{Enzyme}.
+
+\medskip
+\noindent\textbf{Prérequis.} LLVM/Clang (même version majeure que celle utilisée pour
+compiler \textsc{Enzyme}), CMake $\ge$ 3.16, Eigen $\ge$ 3.4, et la bibliothèque partagée
+\file{ClangEnzyme-<version>.so} issue de la compilation d'\textsc{Enzyme}.
+
+\medskip
+\noindent\textbf{(1) Récupération du dépôt et solveur de référence.}
+\begin{lstlisting}[style=sh]
+git clone <url_du_depot> sw2d_enzyme
+cd sw2d_enzyme
+
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build -j"$(nproc)"
+# -> executables standards dans build/bin
+\end{lstlisting}
+
+\noindent\textbf{(2) Version avec assimilation de données (\textsc{Enzyme}).}
+\begin{lstlisting}[style=sh]
+# Chemin vers le plugin Enzyme : A ADAPTER a votre installation
+export ENZYME_PLUGIN=/chemin/vers/ClangEnzyme-18.so
+
+cmake -S . -B build_enzyme \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_C_COMPILER=clang \
+      -DCMAKE_CXX_COMPILER=clang++ \
+      -DENZYME_PLUGIN="${ENZYME_PLUGIN}"
+
+cmake --build build_enzyme -j"$(nproc)"
+# -> executable build_enzyme/bin/sw2d_enzyme
+\end{lstlisting}
+
+\noindent\textbf{(3) Options de compilation imposées par \textsc{Enzyme}.} Le chargement du
+\textit{plugin} et la désactivation des transformations qui perturbent la différentiation
+(vectorisation, déroulage de boucles) se font par les indicateurs suivants :
+\begin{lstlisting}[style=sh]
+-O2 -fno-vectorize -fno-slp-vectorize -fno-unroll-loops \
+-Xclang -load -Xclang ${ENZYME_PLUGIN}
+\end{lstlisting}
+
+
+% ---------------------------------------------------------------------
+\subsection{Utilisation en pratique}
+
+\subsubsection{Dossier de configuration}
+
+Pour lancer l'assimilation de données, il faut partir d'un dossier de configuration de la
+version classique de SW2D (voir~\cite{SW2DUsersGuide}), auquel on ajoute les fichiers
+suivants.
+
+\begin{tcolorbox}[title=Fichiers nécessaires dans \texttt{./input}, colback=gray!5, colframe=black, fonttitle=\bfseries]
+\textbf{Fichiers indispensables}
+\begin{itemize}
+    \item \file{SP_cells_porosity_ebauche_map.txt}
+    \begin{itemize}
+        \item carte de porosité initiale (ébauche) ;
+        \item même format que \file{SP_cells_porosity_map.txt}.
+    \end{itemize}
+    \item \file{SP_cells_porosity_map.txt}
+    \begin{itemize}
+        \item carte de porosité de référence ;
+        \item utilisée par le modèle classique (résultats dans \file{./output}).
+    \end{itemize}
+    \item \file{input.solv}
+    \begin{itemize}
+        \item doit être complété avec les paramètres spécifiques à l'assimilation de
+              données ;
+        \item voir la section~\ref{sec:input-assimilation}.
+    \end{itemize}
+\end{itemize}
+
+\medskip
+\textbf{Fichiers optionnels}
+\begin{itemize}
+    \item \file{SP_cells_weight_map.txt}
+    \begin{itemize}
+        \item carte de pondération de la fonction coût, cellule par cellule.
+    \end{itemize}
+\end{itemize}
+\end{tcolorbox}
+
+\medskip
+Une fois ces fichiers rassemblés dans le dossier \file{config_folder/input}, et avant de
+lancer l'assimilation de données, il faut générer les références dans le dossier
+\file{config_folder/reference}. C'est le rôle du mode \code{gen-ref-e} de l'exécutable
+\file{sw2d_enzyme/build_enzyme/bin/sw2d_enzyme} (voir la
+section~\ref{subsec:modes-sw2d-enzyme}).
+
+\subsubsection{Différents modes de l'exécutable \texttt{sw2d\_enzyme}}
+\label{subsec:modes-sw2d-enzyme}
+
+L'exécutable \code{sw2d_enzyme} propose plusieurs modes de fonctionnement, correspondant
+chacun à une étape de l'assimilation de données. Comme pour \code{sw2d_solver}, le premier
+argument est le chemin relatif, depuis le dossier courant, vers le dossier de
+configuration ; le second est un mot-clé qui définit le mode souhaité.
+
+\begin{itemize}
+  \item \code{gen-ref-e} : génère les références à partir de la carte de porosité de
+        vérité et les place dans le dossier \file{./reference}.
+  \item \code{taylor} : calcule le gradient de la fonction coût et le valide par un test
+        de Taylor (nécessite d'avoir lancé \code{gen-ref-e} au préalable, afin de pouvoir
+        évaluer la fonction coût).
+  \item \code{minimize} : lance la minimisation de la fonction coût à partir des
+        références.
+\end{itemize}
+
+\subsubsection{Gestion des entrées : le fichier \texttt{input.solv}}
+\label{sec:input-assimilation}
+
+Pour lancer l'exécutable \code{sw2d_enzyme}, il faut ajouter un certain nombre de
+paramètres dans \file{input.solv}.
+
+\begin{itemize}
+  \item \textbf{Gestion de la fonction coût}
+  \begin{itemize}
+    \item \code{h_weight} et \code{q_weight} : poids respectifs de l'erreur sur la hauteur
+          d'eau et sur le débit ;
+    \item \code{alpha_l1} : poids du terme d'ébauche dans la fonction coût,
+          $\lVert \phi - \phi_b \rVert_1$ ;
+    \item \code{porosity_ref_map} : chemin relatif vers la carte de porosité de vérité ;
+    \item \code{porosity_ebauche_map} : point de départ de la minimisation.
+  \end{itemize}
+  \item \textbf{Algorithme de minimisation}
+  \begin{itemize}
+    \item \code{max_it} : nombre maximal d'itérations ;
+    \item \code{minimize_algo} : \code{bfgs}, \code{lbfgs}, \code{lbfgsb} ou \code{adam} ;
+    \item \textbf{options L-BFGS-B} (utilisées uniquement si
+          \code{minimize_algo=lbfgsb}) :
+    \begin{itemize}
+      \item \code{phi_lower_bound} : borne inférieure sur $\phi$ (défaut : $0$) ;
+      \item \code{phi_upper_bound} : borne supérieure sur $\phi$ (défaut : $1$) ;
+      \item \code{lbfgsb_m} : taille de la mémoire L-BFGS-B (défaut : $6$) ;
+      \item \code{lbfgsb_max_linesearch} : nombre maximal d'essais de recherche linéaire
+            (défaut : $20$) ;
+      \item \code{lbfgsb_epsilon} : tolérance de convergence (défaut : $10^{-5}$).
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+
+Un document détaillé sur la gestion des entrées est également disponible dans le dossier
+\file{doc_AD} du projet SW2D\_Enzyme.
+
+
+% ======================================================================
+%  PARTIE 2 : DÉTAILS TECHNIQUES DE DÉVELOPPEMENT
+% ======================================================================
+\newpage
+\section{Détails sur l'implémentation}
+\label{sec:developpement}
+
+Cette partie explique l'implémentation de l'assimilation de données (fonction coût, appels
+à \textsc{Enzyme}, gestion de la mémoire, etc.), les modifications apportées au code pour
+le rendre compréhensible et différentiable par \textsc{Enzyme}, et enfin les options de
+compilation nécessaires à \textsc{Enzyme}.
+
+\subsection{Implémentation de l'assimilation de données}
+
+Pour implémenter l'assimilation de données, certaines fonctions ont dû être ajoutées au
+code : des fonctions de \emph{gestion mémoire} pour suivre les variables physiques au cours
+de l'assimilation, et des fonctions de \emph{calcul mathématique} (fonction coût, calcul
+des poids, etc.).
+
+\subsubsection{Gestion de la mémoire et de l'état physique}
+
+La minimisation de la fonction coût nécessite de relancer plusieurs fois la simulation ; il
+faut donc une fonction qui enregistre l'état initial et une autre qui remet
+les variables à cet état. 
+De plus, \textsc{Enzyme} ne peut pas différencier une simulation
+comportant des \emph{allocations dynamiques} dans la boucle en temps : il doit la rejouer à
+rebours (mode adjoint), et une allocation survenue pendant l'exécution n'a pas d'équivalent
+lors de la passe arrière. Il faut donc préalouer toute la mémoire nécessaire au
+début de l'assimilation. Enfin, l'assimilation introduit deux nouvelles entrées du
+problème : la carte de porosité d'ébauche et les observations de référence, qu'il faut
+charger depuis le disque. Les fonctions suivantes ont été implémentées à cet effet.
+
+\blocfn{init_primal_memory()}{porosity_AD.cpp}
+Préalloue \emph{une fois pour toutes}, au début de l'assimilation, tous les tampons de
+travail à leur taille définitive --- un vecteur par maille (\code{cell_nb}) ou par arête
+(\code{edge_int_nb}) : tampons de reconstruction MUSCL (\code{z_cell}, \code{dz_dx},
+\code{dz_dy}, pentes), tampon de la condition CFL (\code{swept_data}) et états de Riemann
+par arête (\code{h/z/q/r_riemann_int}, \code{lambda_*_int}). Ainsi, \textbf{aucune
+allocation ne survient dans la boucle en temps différenciée}.
+
+\begin{lstlisting}
+void swSp::init_primal_memory() {
+    z_cell.assign(cell_nb, 0.0);  dz_dx.assign(cell_nb, 0.0);  dz_dy.assign(cell_nb, 0.0);
+    swept_data.assign(cell_nb, 0.0);                    // buffer CFL
+    h_riemann_int.assign(edge_int_nb, {0.0, 0.0});      // etats de Riemann par arete
+    z_riemann_int.assign(edge_int_nb, {0.0, 0.0});
+    q_riemann_int.assign(edge_int_nb, {0.0, 0.0});
+    lambda_plus_int.assign(edge_int_nb, {0.0, 0.0});    /* ... (idem lambda_minus, etc.) */
+}
+\end{lstlisting}
+
+\blocfn{save_initial_state()}{sp_AD.cpp}
+Copie l'état physique de départ ($h$, $q_x$, $q_y$ à $t=0$) dans les tableaux
+\code{h_init}, \code{qx_init} et \code{qy_init}. Cette fonction est appelée une
+seule fois, après l'initialisation du modèle et avant la boucle d'optimisation.
+
+\begin{lstlisting}
+void swSp::save_initial_state() {
+    h_init  = water_depth;         // etat de reference (t = 0)
+    qx_init = unit_discharge_x;
+    qy_init = unit_discharge_y;
+    std::fill(swept_data.begin(), swept_data.end(), 0.0);
+}
+\end{lstlisting}
+
+\blocfn{reset_to_start()}{sp_AD.cpp}
+Restaure l'état de départ (\code{water_depth} $\leftarrow$ \code{h_init}, etc.) et remet à
+zéro toutes les variables de travail (pentes, flux \code{F*}, termes sources
+\code{s2*}, \code{swept_data}, conditions aux limites), puis réinitialise le temps
+($t=t_0$, $\dd t = \mathtt{dt_max}$) et le pointeur de porosité. Elle est appelée
+\textbf{au début de chaque évaluation} (chaque itération de l'optimiseur et chaque calcul
+de coût ou de gradient), afin que toute simulation reparte \emph{exactement} du même état ;
+sinon, les évaluations partiraient d'états résiduels et le gradient serait incohérent.
+
+\begin{lstlisting}
+void swSp::reset_to_start() {
+    water_depth = h_init;  unit_discharge_x = qx_init;  unit_discharge_y = qy_init;
+    std::fill(z_cell.begin(), z_cell.end(), 0.0);       // + dz_dx/dy, pentes z/q/r_slope
+    std::fill(F1_int.begin(), F1_int.end(), 0.0);       // + F2/F3_int, F*_bnd, s2L/R
+    std::fill(swept_data.begin(), swept_data.end(), 0.0);
+    bc_val_interpolated.assign(edge_bnd_nb, 0.0);
+    phi_ptr = phi.data();
+    t = t_0;  dt = dt_max;
+}
+\end{lstlisting}
+
+\blocfn{load_phi_csv(path, phi_out)}{porosity_minimize.cpp}
+Lit une carte de porosité depuis un fichier et la range dans \code{phi_out} (un réel par
+maille). Deux formats sont acceptés : le format CSV \code{cell_id,phi} et le format natif
+de SW2D-SP (\code{Unif} / \code{Distrib}). Elle est appelée au démarrage de chaque
+itération de la descente de gradient, ainsi qu'au début de la génération des références,
+pour lire la carte de départ (ébauche $\varphi \equiv 1$, vérité pour une expérience
+jumelle, ou redémarrage d'une optimisation).
+
+\blocfn{load_all_observations()}{porosity_AD.cpp}
+Lit les cartes résultats qui servent de références (fichiers \file{ResultHydro_*} du dossier \file{reference/}, format des résultats SW2D).  
+comprises dans la fenêtre d'assimilation et les range dans \code{observations_map} (clé :
+le temps ; valeur : un vecteur de $3\times\mathtt{cell_nb}$ réels contenant
+$[\,h \mid q_x \mid q_y\,]$). Ces cartes servent ensuite de cible à la fonction coût, à
+chaque instant d'observation.
+
+
+\subsubsection{Calculs physiques}
+
+L'assimilation de données repose sur trois calculs :
+(i) l'évaluation de la fonction coût $J$
+(ii) le calcul du gradient $\nabla_\varphi J$ par différentiation automatique
+(\textsc{Enzyme})
+(iii) l'appel à une bibliothèque de minimisation pour déterminer le pas suivant sur
+$\varphi$
+On décrit ici les fonctions correspondantes.
+
+\paragraph{Fonction coût.} \code{compute_cost_frame_ptr(const double* obs)}
+(\file{porosity_AD.cpp}) évalue, à un instant d'observation, l'écart quadratique pondéré
+entre l'état simulé courant ($h$, $q_x$, $q_y$) et l'observation \code{obs} (le bloc
+$[\,h \mid q_x \mid q_y\,]$ rangé par \code{load_all_observations}) :
+\[
+  J = \sum_i w^h_i\,(h_i - h^{obs}_i)^2
+      + w^q_i\big[(q_{x,i}-q^{obs}_{x,i})^2 + (q_{y,i}-q^{obs}_{y,i})^2\big],
+\]
+somme effectuée sur les mailles et sur les instants d'observation de la fenêtre. Les poids
+$w^h$ et $w^q$ sont lus depuis \file{input.solv} : ce sont soit des réels, soit des cartes
+attribuant un poids à chaque cellule du maillage.
+
+\paragraph{Gradient adjoint par \textsc{Enzyme}.} Calculer $\nabla_\varphi J$ par
+différences finies coûterait un calcul direct \emph{par} maille (plusieurs milliers) ;
+l'adjoint le fournit en \emph{une seule} passe arrière. \textsc{Enzyme} fabrique cet
+adjoint automatiquement à la compilation. Deux obstacles pratiques subsistent : la passe
+arrière (i)~interdit toute allocation dynamique --- d'où \code{init_primal_memory} --- et
+(ii)~doit mémoriser toute la trajectoire, ce qui saturerait la mémoire vive pour une fenetre d'assimilation importante.
+La solution est le \textbf{\textit{checkpointing}} \cite{enzyme.mit.edu}: le temps est découpé en \emph{segments} contenant \code{checkpoint_stride} pas ; seule l'état au début de chaque segment (intervale entre les \textit{checkpointing} , et l'on différencie \textbf{un segment à la fois}. Deux fonctions portent ce
+mécanisme.
+
+\blocfn{ckpt_segment_E(...)}{porosity_checkpoint.cpp}
+Déclarée \code{static}, c'est \textbf{la fonction que différencie \textsc{Enzyme}}. Elle
+recharge le \textit{checkpoint}, recalcule les facteurs géométriques $1/\varphi$
+(\code{computeEdgeFactors_E} --- \emph{dans} la fonction dérivée, sinon \textsc{Enzyme},
+les voyant figés en cache, produirait un gradient nul), enchaîne les \code{n_steps} pas
+\code{_E} en réutilisant les $\dd t$ et les conditions aux limites \emph{préenregistrés},
+et accumule le coût du segment.
+
+\blocfn{get_spatial_gradient_checkpointed(phi, dJ_dPhi, stride)}{porosity_checkpoint.cpp}
+C'est le \textbf{pilote}. Il effectue d'abord un passage à blanc qui enregistre la
+trajectoire ($\dd t$, conditions aux limites, déclencheurs d'observation,
+\textit{checkpoints}), crée un \emph{solveur ombre} \code{adj} dont le \code{phi_ptr}
+pointe vers le tableau de sortie \code{dJ_dPhi}, puis parcourt les segments du dernier vers
+le premier en appelant \textsc{Enzyme} sur \code{ckpt_segment_E}, ce qui \emph{accumule} la
+contribution de chaque segment dans \code{dJ_dPhi}.
+
+\begin{lstlisting}
+// porosity_checkpoint.cpp : un appel Enzyme par segment (solveur ombre = adjoint)
+__enzyme_autodiff(
+    (void*)swSp::ckpt_segment_E,
+    enzyme_dup,   this,     adj,             // solveur : valeur + ombre
+    enzyme_dup,   phi_map,  dJ_dPhi,         // phi + accumulateur du gradient (SORTIE)
+    enzyme_dup,   seg.h_ckpt.data(),  d_h_in.data(),   // etat du segment + ombre (idem qx, qy)
+    enzyme_const, seg.dt_seq.data(),         // pas de temps figes         -> CONSTANTE
+    enzyme_const, seg.bc_flat.data(),        // conditions aux limites     -> CONSTANTE
+    enzyme_const, seg.obs_trig.data(),       // declencheurs d'observation -> CONSTANTE
+    enzyme_const, seg.n_steps, this->edge_bnd_nb, seg.t_start /* ... */);
+\end{lstlisting}
+
+\noindent Deux mots-clés structurent l'appel : \code{enzyme_dup} signifie « dérive ceci »
+(on fournit la valeur \emph{et} son ombre) ; \code{enzyme_const} signifie « ne dérive pas
+ceci ». Figer les données préenregistrées ($\dd t$, conditions aux limites, instants
+d'observation) rend $J(\varphi)$ \emph{lisse} le long d'une trajectoire fixée --- condition
+pour que la dérivée existe et que le test de Taylor soit concluant. La cohérence entre coût
+et gradient est assurée par \code{replay_trajectory_cost}, qui recalcule \emph{le coût seul}
+sur la \emph{même} trajectoire figée. Le \emph{pourquoi} de ce gel (et pourquoi le gradient
+reste exact) est détaillé au paragraphe~\ref{sec:passage-a-blanc}.
+
+\paragraph{Minimisation.}
+\code{run_minimization(phi_start, max_it, stride, alpha_reg)}
+(\file{porosity_minimize.cpp}) est la boucle d'optimisation. À chaque itération, elle
+appelle \code{reset_to_start}, évalue $J$ et $\nabla_\varphi J$ (le c\oe ur
+\textit{checkpointé} décrit ci-dessus), ajoute la régularisation, journalise la descente
+dans \file{descent_log.csv}, puis demande le pas suivant à l'algorithme choisi par la clé
+\code{minimize_algo}. L'optimiseur ne travaille pas directement sur $\varphi$, mais sur une
+variable brute non bornée $m$ ; le changement de variable $\varphi = \mathtt{phi_correct}(m)$
+(clé \code{phi_transform} : \code{none}/\code{clamp}/\code{tanh}/\code{normalize}) est
+appliqué \emph{dans} la bande, de sorte qu'\textsc{Enzyme} fournit directement
+$\partial J/\partial m$. Deux algorithmes sont détaillés ici (la valeur \code{bfgs},
+choisie par défaut, renvoie quant à elle vers la bibliothèque PSQN).
+
+
+\bloctitre{\code{minimize_algo=lbfgsb} --- L-BFGS-B (bibliothèque LBFGSpp)}
+Méthode quasi-Newton à mémoire limitée \emph{avec} contraintes de boîte
+$\varphi \in [\code{phi_lower_bound}, \code{phi_upper_bound}]$ (défaut : $[0,1]$),
+recommandée avec \code{phi_transform=none} pour que la boîte porte bien sur $\varphi$.
+Clés lues : \code{lbfgsb_m} (taille de l'historique, défaut : $6$), \code{lbfgsb_epsilon}
+(tolérance d'arrêt, défaut : $10^{-5}$) et \code{lbfgsb_max_linesearch} (défaut : $20$).
+\medskip
+
+
+\medskip
+\noindent\textbf{En résumé :} \code{compute_cost_frame_ptr} définit \emph{quoi} minimiser ;
+le couple \code{get_spatial_gradient_checkpointed} / \code{ckpt_segment_E} en fournit le
+gradient exact et peu coûteux via \textsc{Enzyme} (\textit{checkpointé} pour tenir en
+mémoire) ; et \code{run_minimization} orchestre la descente en déléguant le pas à Adam ou à
+L-BFGS-B, selon \code{minimize_algo}.
+
+\medskip
+\noindent Enfin, le \code{main} (\file{main\_enzyme.cpp} de l'exécutable \code{sw2d_enzyme} pilote l'ensemble de la
+chaîne d'assimilation (figure~\ref{fig:pipeline-ad}) ; il reprend la structure du fichier
+\file{main.cpp}, à laquelle certaines fonctionnalités ont été ajoutées.
+
+
+\subsubsection{Algorithmes de minimisation}
+
+Trois algorithmes sont disponibles, sélectionnés par la clé \code{minimize_algo} :
+\code{lbfgsb} (L-BFGS-B, recommandé), \code{bfgs} (BFGS dense) et \code{adam}. Ils
+s'appuient sur deux bibliothèques externes, toutes deux \textbf{\textit{header-only}} ---
+donc utilisables telles quelles, \emph{sans recompilation} :
+
+\begin{itemize}
+  \item \textbf{LBFGSpp} --- L-BFGS-B avec contraintes de boîte :
+        \url{https://github.com/yixuan/LBFGSpp} ;
+  \item \textbf{psqn} --- BFGS dense (quasi-Newton) :
+        \url{https://github.com/boennecd/psqn}.
+\end{itemize}
+
+
+La bibliothèque \code{optim} viens de (\url{https://github.com/kthohr/optim}) 
+
+\medskip
+
+\subsubsection{Le run directe : pourquoi \texorpdfstring{$\dd t$}{dt} et les conditions aux limites sont figés}
+\label{sec:passage-a-blanc}
+
+Avant de différencier quoi que ce soit, \code{build_checkpoint_records} exécute le calcul
+direct complet \textbf{hors boucle de différenciation} (sans aucune dérivée) et le découpe en \emph{segments}.
+Pour chaque segment, en plus du \emph{checkpoint} de l'état de départ, il enregistre trois
+tableaux de \code{double} : les pas de temps \code{dt_seq}, les conditions aux limites déjà
+interpolées \code{bc_flat}, et les instants d'observation \code{obs_trig}. La fonction
+différenciée \code{ckpt_segment_E} ne fait alors que \emph{relire} ces tableaux, sans jamais
+les recalculer. 
+Cela répond à deux problèmes de nature différente.
+
+\paragraph{(A) Les conditions aux limites ne dépendent pas de $\varphi$.} Une condition aux
+limites est un forçage externe (hydrogramme amont, niveau imposé) : sa valeur à l'instant
+$t$ est fixée par la donnée d'entrée, quelle que soit la porosité, donc
+$\partial\,\code{bc_val}/\partial\varphi = 0$. La différencier ne produirait que des zéros.
+Le véritable problème est \emph{la façon} dont elle est calculée dans le code natif : on
+sélectionne le flux de bord par des comparaisons de \code{std::string}
+(\code{bc_type=="q"/"fr"/"h"/"z"}), et on interpole une série
+temporelle par une recherche d'intervalle (boucle \code{while} et branchements sur $t$).
+C'est exactement le type de code qu'\textsc{Enzyme} différencie mal, et le retirer de la boucle temporelle différencié par Enzyme à permis de passer d'un gradient \code{-nan} à un gradient réel. En le calculant une seule fois au passage à blanc et en l'enregistant dans un tableaux enzyme ne voit plus
+que des nombres : on obtient le même gradient (nul de ce côté), sans traîner de recherche ni
+de chaînes de caractères dans la partie différenciée. Même logique pour \code{obs_trig}, qui
+se réduit à un test entier : « ce pas est-il un instant d'observation ? ».
+
+\paragraph{(B) Le pas de temps, lui, dépend de $\varphi$ mais on choisit de le figer et cela ne pause pas de problème car il n'infulance pas la fonction coût et donc le figer ne change pas le grandient.}
+La condition CFL fixe $\dd t$ par un minimum sur tout le maillage,
+$\dd t = \min_i\big(\mathtt{cfl_max}\cdot A_i/\text{swept}_i\big)$, où $\text{swept}_i$ dépend
+des vitesses d'onde $\lambda_{\max} = |u| + \sqrt{gh}$, donc de $\varphi$.
+Cepandant le calcule du CFL polue le dradient en ajoutant une discontinuitée, en effet le nombre de pas nécessaires pour  atteindre $t_{\max}$ est un entier ; s'il change lorsque $\varphi$ varie, $J(\varphi)$  fait un saut et rend la fonction coût non dérivable.
+  
+Ainssi, on fige la grille (\code{dt_seq}) et on différencie le schéma à
+grille temporelle figée. Ce n'est pas une approximation cachée, pour deux raisons : (i)~l'optimiseur
+minimise \code{replay_trajectory_cost}, qui relit \emph{le même} \code{dt_seq} que la fonction différenciée donc, le gradient portent bien sur la fonction ; (ii)~le test de Taylor le confirme ($r \to 1$), puisque ses différences finies
+reposent elles aussi sur le \code{dt_seq} figé.
+
+\paragraph{\textit{Checkpoints} : borner la mémoire.} L'utilisation mémoire pour la différenciation grossit avec le nombre de pas différenciés d'un coup, et elle retient la trajecoire mais aussi les variables intémédiaires utilisé dans les calcules physiques (flux
+d'arêtes, états de Riemann, tous les intermédiaires) ; sur un cas de grande taille,
+différencier toute la trajectoire d'un bloc sature la mémoire vive. D'où le découpage en
+segments : on ne mémorise qu'un \textit{checkpoint} tous les \code{stride} pas et on
+différencie \textbf{un segment à la fois} (la bande ne contient jamais qu'un segment), au
+prix d'un recalcul du direct pour chaques segment.
+
+
+\subsubsection{Analyse des fonctions clés ajoutées dans le point d'entrée \texttt{main\_enzyme}}
+
+Les fonctions spécifiques à l'assimilation de données sont décrites ci-dessous selon leur
+rôle.
+
+\paragraph{1. Préparation de la mémoire et gestion des états physiques.}
+\begin{itemize}
+  \item \code{sp_model->init_primal_memory()} : préalloue les tampons de mémoire statique
+        nécessaires aux variables d'état et à leurs ombres (\textit{shadow memory}). Cette
+        étape garantit qu'aucune allocation dynamique ne survient dans la boucle temporelle
+        différenciée par \textsc{Enzyme}.
+  \item \code{sp_model->save_initial_state()} : sauvegarde les variables d'état
+        ($h$, $q_x$, $q_y$ à $t=0$) dans leurs tableaux dédiés.
+  \item \code{sp_model->reset_to_start()} : réinitialise les grandeurs physiques à l'état
+        sauvegardé ($t = 0$). Cette fonction permet de relancer la simulation lors des
+        itérations successives de l'optimiseur ou lors du calcul du gradient par
+        \textit{checkpointing}.
+\end{itemize}
+
+\paragraph{2. Injection du paramètre de contrôle (carte de porosité).}
+\begin{itemize}
+  \item \code{sp_model->load_phi_csv(path, ptr)} : charge le champ spatial de porosité
+        $\phi$ depuis un fichier CSV (ébauche, référence ou état initial d'optimisation).
+  \item \code{sp_model->computeEdgeFactors()} : recalcule les facteurs géométriques d'arêtes
+        dépendant de la porosité ($w/(A\phi)$) dès que la carte $\phi$ est modifiée, afin de
+        garantir la cohérence physique des flux du solveur direct.
+\end{itemize}
+\noindent L'appel à ces deux fonctions a été déplacé de \code{init()} vers
+\file{main_enzyme.cpp}, afin de pouvoir recharger la valeur de $\phi$ entre les itérations.
+Le calcul des coefficients aux arêtes (via \code{computeEdgeFactors_E}) est également placé
+\emph{dans} la boucle temporelle, pour que la dépendance en $\phi$ soit prise en compte par
+\textsc{Enzyme}.
+
+\paragraph{3. Chargement des observations et évaluation de la fonction coût.}
+\begin{itemize}
+  \item \code{sp_model->load_all_observations()} et
+        \code{sp_model->load_gauge_observations()} : chargent les données observées (cartes
+        spatiales complètes ou séries temporelles aux jauges) dans la structure
+        \code{observations_map}.
+  \item \code{sp_model->compute_cost_frame()} et
+        \code{sp_model->compute_cost_gauges_ptr()} : évaluent l'écart quadratique instantané
+        entre l'état simulé et les observations disponibles à un instant donné.
+\end{itemize}
+
+\paragraph{4. Exécution du modèle direct (\texttt{\_E}) et génération de références.}
+\begin{itemize}
+  \item \code{sp_model->run_forward_E(phi, stride)} : exécute le modèle direct au moyen
+        d'une boucle temporelle n'appelant que des fonctions \code{_E}, ce qui garantit une trajectoire différentiable par \textsc{Enzyme}.
+  \item \code{sp_model->generate_references_E(phi, stride)} : génère les résultats de
+        référence (expérience jumelle, ou \textit{twin experiment}) avec le même modèle que
+        celui qui est différencié (fonctions \code{_E}).
+  \item \code{sp_model->begin_reference_generation()} et
+        \code{sp_model->finalize_reference_generation()} : gèrent l'exportation des
+        observations à la fréquence \code{dt_map_ad}.
+\end{itemize}
+
+\paragraph{5. Différentiation adjointe et minimisation inverse.}
+\begin{itemize}
+  \item \code{sp_model->get_spatial_gradient_checkpointed(phi, dJ_dPhi, stride)} : pilote le
+        calcul du gradient adjoint $\nabla_{\phi} J = \partial J / \partial \phi$ via
+        \textsc{Enzyme}. Cette fonction découpe l'intégration temporelle en blocs
+        (\textit{checkpointing} défini par \code{stride}) afin de limiter l'empreinte
+        mémoire de la méthode adjointe.
+  \item \code{sp_model->run_minimization(phi, max_it, stride, alpha_reg)} : met en \oe uvre
+        l'algorithme d'optimisation quasi-Newton (BFGS-B / PSQN) pour reconstruire la carte de
+        porosité $\phi$. Elle enchaîne les calculs de gradient adjoint et les pas de
+        l'optimiseur.
+\end{itemize}
+
+
+% ======================================================================
+%  PARTIE 3 : MÉTHODOLOGIE
+% ======================================================================
+\section{Méthodologie pour obtenir les résultats}
+
+\subsection{Étude : quelle configuration d'entrées reconstruit le mieux le barrage ?}
+\label{sec:etude-config-toce}
+
+On cherche les paramètres d'entrée qui reconstruisent au mieux un barrage (bloc de
+porosité) par assimilation, \emph{tout en garantissant une descente saine de $J$}. Le cas
+étudié est le Toce urbain : le bloc « ville » vaut $\phi = 0{,}18$ sur $180$ mailles (un quasi-mur, qui dévie fortement l'écoulement), le reste du domaine vaut $\phi = 1$, et l'ébauche est  $\phi = 1$ partout (écoulement libre ).
+
+L'objectif optimisé est la \emph{reconstruction},
+mesurée \emph{a posteriori} par
+$\mathrm{sse}_{\varphi_{ref}} = \sum_i (\varphi_i - \varphi^{ref}_i)^2$ (écart à la vérité).
+
+
+\paragraph{Protocole.} À partir d'une configuration de base (fenêtre $[10,30]$~s, $48$
+pavés, \code{checkpoint_stride}$=30$, $h$ et $q$ pondérés à $1$, l'algorithme de minimisation L-BFGS-B, $30$ itérations),
+on fait varier \textbf{un levier à la fois} --- $16$ testes au total :
+\begin{itemize}[nosep]
+  \item[(A)] \textbf{début} de fenêtre \code{t_state_assimilation} $\in \{10,14,18,22\}$ ;
+  \item[(B)] \textbf{fin} de fenêtre \code{t_max} $\in \{18,22,26,30\}$ (durée) ;
+  \item[(C)] \textbf{nombre de pavés} \code{n_assimilation_windows} $\in \{1,8,24,48\}$ ;
+  \item[(D)] \textbf{segments} \code{checkpoint_stride} $\in \{10,30,60,120\}$ ;
+  \item[(E)] \textbf{poids} du coût : $h$ seul, $h = q = 1$, $q$ augmenté aux zones de forte différence avec la référence à l'ébauche ( carte d'innovation généré via utils/python/make\_cost\_weight\_map.py )
+\end{itemize}
+Pour chaque exécution, on relève la descente de reconstruction
+($\mathrm{sse}_{\varphi_{ref}}$), la descente de coût ($J$). 
+
+\begin{table}[htbp]\centering\footnotesize
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{@{}llrrcc@{}}
+\toprule
+\textbf{Exécution} & \textbf{Levier} & \textbf{Reconstr.} & \textbf{Descente $J$} & \textbf{Adjoint} & \textbf{Verdict} \\
+\midrule
+B\_end26     & fenêtre $[10,26]$        & \textbf{26,5 \%} & 75,6 \% & stable   & \cellcolor{green!15}\textbf{meilleur} \\
+B\_end22     & fenêtre $[10,22]$        & 25,2 \% & 72,0 \% & stable   & \cellcolor{green!10}bon \\
+B\_end18     & fenêtre $[10,18]$        & 24,8 \% & 69,0 \% & stable   & \cellcolor{green!10}bon \\
+D\_stride10  & 10 pas/segment           & 24,3 \% & 81,5 \% & stable   & \cellcolor{green!10}bon \\
+D\_stride60  & 60 pas/segment           & 22,6 \% & 79,2 \% & stable   & bon \\
+A\_start22   & fenêtre $[22,30]$        & 22,3 \% & 86,6 \% & stable   & bon (court, tardif) \\
+A\_start18   & fenêtre $[18,30]$        & 21,3 \% & 82,7 \% & stable   & bon \\
+B0\_base     & base $[10,30]$, 48 pavés & 20,2 \% & 75,8 \% & stable   & référence \\
+E\_q3        & $q$ renforcé ($\times 3$)& 12,7 \% & 11,7 \% & stable   & médiocre \\
+C\_win24     & 24 pavés                 & 7,6 \%  & 29,3 \% & limite   & faible \\
+E\_innov     & cartes d'innovation      & 7,0 \%  & 76,3 \% & stable   & faible \\
+E\_honly     & $h$ seul ($q=0$)         & 2,5 \%  & 10,9 \% & stable   & \cellcolor{red!8}mauvais \\
+A\_start14   & fenêtre $[14,30]$        & 1,1 \%  & 2,0 \%  & stable   & \cellcolor{red!8}calé tôt (anomalie) \\
+C\_win1      & 1 pavé (pas de pavage)   & 0,0 \%  & 28,7 \% & \textbf{explose} & \cellcolor{red!12}échec \\
+C\_win8      & 8 pavés                  & 0,0 \%  & (97 \%) & \textbf{explose} & \cellcolor{red!12}échec \\
+D\_stride120 & 120 pas/segment          & 0,0 \%  & 3,6 \%  & instable & \cellcolor{red!12}échec \\
+\bottomrule
+\end{tabular}
+\caption{Les 16 exécutions, classées par descente de reconstruction
+($\mathrm{sse}_{\varphi_{ref}}$, valeur initiale $=121$). Une « descente $J$ » entre
+parenthèses signale un coût qui chute alors que l'adjoint a explosé (chute non fiable).}
+\label{tab:campagne-toce}
+\end{table}
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.92\textwidth]{figures/fig_campagne_toce/1_reconstruction_par_run.png}
+\caption{Reconstruction par exécution ; la couleur indique le levier. Le meilleur résultat
+honnête plafonne à environ $26\,\%$.}
+\label{fig:toce-bars}
+\end{figure}
+
+\subsubsection{Ce qui a fonctionné}
+\begin{itemize}
+  \item \textbf{Le pavage de l'adjoint, condition \emph{sine qua non}} (levier C,
+  figure~\ref{fig:toce-sweeps}). Avec trop peu de pavés, l'adjoint de Saint-Venant
+  \textbf{explose} en remontant le temps : $1$ ou $8$ pavés conduisent à un gradient tronqué,
+  donc à \textbf{0~\% de reconstruction}. Il faut $48$ pavés pour un adjoint stable ; $24$ ne
+  suffisent qu'à moitié ($7{,}6\,\%$). C'est le levier qui \emph{autorise} tous les autres.
+  \item \textbf{Une fenêtre courte, centrée sur l'onde} (levier B). Contre-intuitivement, la
+  fenêtre pleine $[10,30]$ n'est \emph{pas} optimale : la raccourcir par la fin améliore la
+  reconstruction ($[10,26] \to 26{,}5\,\%$ contre $[10,30] \to 20{,}2\,\%$). La fenetre temporelle
+  $[26,30]$ n'apporte plus de signal de barrage, mais fragilise l'adjoint.
+  \item \textbf{Des segments suffisamment fins} (levier D). \code{checkpoint_stride}$=10$
+  donne le meilleur gradient ($24{,}3\,\%$) ; $30$ et $60$ fonctionnent également.
+  \item \textbf{Les deux observables, équilibrés} (levier E). Prendre $h$ \emph{et} $q$ à
+  poids égal ($h = q = 1$) est le meilleur choix de coût.
+\end{itemize}
+
+\subsubsection{Ce qui n'a pas fonctionné}
+\begin{itemize}
+  \item \textbf{Sous-paver} : $1$ ou $8$ pavés provoquent une explosion de l'adjoint, donc un
+  gradient inutilisable (lignes rouges du tableau~\ref{tab:campagne-toce}, croix rouges de la
+  figure~\ref{fig:toce-sweeps}C).
+  \item \textbf{Des segments trop longs} : \code{checkpoint_stride}$=120$ casse la descente
+  ($0\,\%$).
+  \item \textbf{Retirer $q$} : avec $h$ seul, la reconstruction chute à $2{,}5\,\%$ --- le
+  débit porte l'essentiel de l'information sur la déviation induite par le barrage.
+  \item \textbf{Surpondérer ou localiser le coût} : $q$ renforcé ($12{,}7\,\%$) et les cartes
+  d'innovation ($7{,}0\,\%$) font \emph{moins} bien que le poids uniforme. Focaliser le coût
+  n'aide pas ici.
+  \item \textbf{L'anomalie A\_start14} ($1{,}1\,\%$) : L-BFGS-B se cale dès la
+  $12^{\text{e}}$ itération (la fenêtre de troncature figée est tombée sur un pavé
+  défavorable). Ce n'est pas une tendance --- démarrer plus tard encore (A\_start18 et
+  A\_start22) redonne environ $22\,\%$.
+\end{itemize}
+
+\subsubsection{Le verrou de fond : l'espace nul d'observabilité}
+
+Aucune configuration ne dépasse environ $26\,\%$ de reconstruction, alors même que
+$J$ chute de $70$ à $86\,\%$. \textbf{Faire baisser le coût ne reconstruit pas le barrage.}
+La figure~\ref{fig:toce-decouple} montre ce découplage, et la figure~\ref{fig:toce-spatial}
+en donne la cause spatiale : l'optimiseur ne baisse $\varphi$ que sur les \emph{bords} et les
+\emph{axes d'écoulement} du bloc (là où les observations sont sensibles) ;
+l'\textbf{intérieur du bloc reste à $\varphi = 1$}. La carte d'erreur
+$|\varphi_{opt} - \varphi_{ref}|$ concentre tout le résidu \emph{exactement sur l'intérieur
+du barrage} : hydrauliquement masqué, celui-ci n'a aucun effet observable, donc aucun
+gradient --- c'est l'\emph{espace nul} d'observabilité. Le fort contraste
+$\varphi = 0{,}18$ (quasi-mur) aggrave le phénomène : l'onde contourne le bloc au lieu de le
+sonder.
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\textwidth]{figures/fig_campagne_toce/3_balayages_facteurs.png}
+\caption{Effet de chaque levier. Les croix rouges signalent une explosion de l'adjoint.}
+\label{fig:toce-sweeps}
+\end{figure}
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=0.72\textwidth]{figures/fig_campagne_toce/2_decouplage_J_vs_reconstruction.png}
+\caption{Découplage entre $J$ et la reconstruction : certaines exécutions font chuter $J$ de
+$80\,\%$ sans rien reconstruire (ou en explosant).}
+\label{fig:toce-decouple}
+\end{figure}
+
+\begin{figure}[htbp]\centering
+\includegraphics[width=\textwidth]{figures/fig_campagne_toce/5_cartes_phi_spatiales.png}
+\caption{Reconstruction spatiale. En haut à gauche, la vérité (bloc à $0{,}18$). Les cartes
+optimisées ne baissent $\varphi$ que sur les bords et les axes d'écoulement. La carte
+d'erreur (en bas à droite) montre le résidu concentré sur l'\emph{intérieur} du bloc ---
+l'espace nul.}
+\label{fig:toce-spatial}
+\end{figure}
+
+\subsubsection{Configuration recommandée}
+\begin{tcolorbox}[title=\textbf{Meilleur compromis}]
+\small Fenêtre \textbf{courte et centrée sur l'onde} ($[10,26]$~s), \textbf{pavage fin}
+($48$ pavés, condition de stabilité), \textbf{segments courts}
+(\code{checkpoint_stride} $\le 30$), coût portant sur $h$ \textbf{et} $q$ à \textbf{poids
+égal}, sans régularisation ni ancrage. Reconstruction d'environ $26\,\%$ --- le maximum
+atteignable honnêtement sur ce cas à fort contraste, l'intérieur du bloc restant
+fondamentalement non observable.
+\end{tcolorbox}
+
+
+% ---------------------------------------------------------------------
+\subsection{Notes de reprise du code : structures de données et invariants}
+\label{sec:pipeline-fonctions}
+
+Cette sous-section s'adresse à un \textbf{développeur qui reprend le code}. Elle décrit les
+fonctions \emph{ajoutées} pour construire la chaîne d'assimilation
+(figure~\ref{fig:pipeline-ad}) et explique le rôle de chacune.
+
+\subsubsection{Vue d'ensemble : une fois \emph{vs} à chaque itération}
+
+Le \file{main} de l'exécutable \file{sw2d_enzyme} reprend la structure de \file{main.cpp} et
+y ajoute la chaîne d'assimilation. On distingue deux temps.
+
+\begin{itemize}
+  \item \textbf{Une seule fois} (initialisation) : préparer la mémoire
+        (\code{init_primal_memory}), sauvegarder l'état de départ
+        (\code{save_initial_state}) et charger les observations
+        (\code{load_all_observations}).
+  \item \textbf{À chaque itération $k$} de l'optimiseur : remettre l'état à $t=0$
+        (\code{reset_to_start}), injecter la carte courante $\varphi_k$
+        (\code{load_phi_csv} puis \code{computeEdgeFactors}), calculer le coût
+        $J(\varphi_k)$ et son gradient $\nabla_\varphi J$ (le c\oe ur adjoint
+        \textit{checkpointé}), puis mettre à jour $\varphi_{k+1}$ (l'optimiseur). On
+        s'arrête lorsqu'un critère est atteint.
+\end{itemize}
+
+\subsubsection{Les structures de données ajoutées}
+
+Un repreneur doit d'abord savoir \emph{où vivent les données}. Les principales structures
+ajoutées à la classe sont les suivantes.
+\begin{itemize}
+  \item \code{observations_map} : les observations, rangées par temps (une « carte »
+        $h$, $q_x$, $q_y$ par instant observé). Remplie une seule fois, au chargement.
+  \item \code{current_obs_times}, \code{current_obs_frames}, \code{current_n_obs} : des
+        \emph{pointeurs stables} vers ces observations, transmis à \textsc{Enzyme} comme des
+        constantes.
+  \item \code{segs_record_} : la \emph{trajectoire préenregistrée} (cf.\ le
+        \textit{checkpointing}) --- pour chaque segment : les pas de temps, les valeurs des
+        conditions aux limites, les instants d'observation et un \emph{checkpoint} de l'état.
+  \item \code{h_init}, \code{qx_init}, \code{qy_init} : l'état de départ ($t=0$) sauvegardé,
+        pour pouvoir tout réinitialiser à chaque itération.
+  \item les tableaux \emph{ombres} (\textit{shadow}) préalloués par
+        \code{init_primal_memory}.
+\end{itemize}
+
+\subsubsection{Résumé des points de blocage rencontrés avec \textsc{Enzyme}}
+
+Voici les principaux points de vigilance et la manière de les traiter.
+\begin{enumerate}
+  \item \textbf{Aucune allocation dans la zone différenciée.} Tout tampon (et son ombre) doit
+        être préalloué par \code{init_primal_memory}.
+  \item \textbf{Les données préenregistrées restent \code{enzyme_const}.} Pas de temps,
+        conditions aux limites et déclencheurs d'observation sont figés, donc non dérivés.
+  \item \textbf{La chaîne $\varphi \to$ coût doit être \emph{dans} \code{ckpt_segment_E}.}
+        Toute grandeur dérivée de $\varphi$ (comme les facteurs $1/\varphi$) doit y être
+        \emph{recalculée}, et non lue depuis un cache extérieur --- sinon \textsc{Enzyme} la
+        considère comme constante et le gradient est nul.
+  \item \textbf{Appeler \code{reset_to_start} avant chaque évaluation.} Sinon, les
+        évaluations ne partent pas du même état et le gradient devient incohérent.
+  \item \textbf{Valider par le test de Taylor.} Après toute modification, vérifier que le
+        gradient d'\textsc{Enzyme} coïncide avec des différences finies (rapport $\to 1$).
+\end{enumerate}
+
+\subsubsection{Comment étendre le code}
+\begin{itemize}
+  \item \textbf{Nouveau type d'observation} (par exemple une nouvelle mesure) : ajouter un
+        chargeur \code{load_..._observations} et un \code{compute_cost_..._ptr}, en copiant
+        le patron du chemin « jauges » (séparé et additif).
+  \item \textbf{Nouveau terme de coût ou de régularisation} : l'ajouter dans
+        \code{run_minimization} (hors bande) s'il ne dépend que de $\varphi$, ou dans
+        \code{ckpt_segment_E} (compatible \textsc{Enzyme}) s'il dépend de l'état simulé.
+  \item \textbf{Nouveau paramètre de contrôle} (autre que $\varphi$) : reproduire le schéma
+        existant --- un chargeur, le passage en \code{enzyme_dup} avec son ombre, et la
+        garantie que toutes ses grandeurs dérivées sont recalculées \emph{dans} la fonction
+        différenciée.
+  \item \textbf{Portage sur un autre modèle} (ddp, dip, swes, etc.) : repérer les grandeurs
+        précalculées à l'initialisation qui dépendent du paramètre, écrire leurs versions
+        \code{_E} (cf.\ les quatre points de blocage ci-dessus), et réutiliser tel quel le
+        pilote \textit{checkpointé}.
+\end{itemize}
+
+
+% ---------------------------------------------------------------------
+\subsection{Assimilation quasi-statique à fenêtre croissante (QSVA)}
+\label{sec:qsva}
+
+\paragraph{Le problème : les minima locaux de la fenêtre longue.} Dans un système fortement
+non linéaire (\emph{a fortiori} chaotique), la fonction coût d'une assimilation
+variationnelle sur une \emph{longue} fenêtre est très peu convexe : elle se replie en
+« vallées » étroites le long de la variété instable du système, créant une multitude de
+\emph{minima locaux} où un optimiseur à base de gradient se piège. Le résultat de la
+minimisation dépend alors du point de départ, et le \emph{minimum absolu} (celui qui contient
+l'état vrai) n'est pas atteint. C'est l'obstacle identifié et étudié par Pires, Vautard et
+Talagrand~\cite{pires1996qsva}.
+
+\paragraph{Le remède : la continuation quasi-statique.} QSVA suit le minimum absolu par
+\emph{continuation} sur la longueur de la fenêtre. On part d'une fenêtre \textbf{très
+courte} (coût presque convexe, un seul minimum), on minimise, puis on \textbf{allonge} la
+fenêtre par petits incréments $\delta\tau$, en \textbf{redémarrant chaque minimisation depuis
+la solution précédente} (« ajustement quasi-statique », c'est-à-dire un \textit{warm-start}).
+Tant que $\delta\tau$ reste assez petit, le minimum se déplace continûment et l'on demeure
+dans le bassin du minimum absolu, au lieu de tomber dans un minimum secondaire.
+
+\paragraph{Distinction avec le pavage (méthodes complémentaires).} QSVA et le pavage de
+l'adjoint (\S\ref{sec:passage-a-blanc}) répondent à \emph{deux problèmes différents} et
+agissent à \emph{deux niveaux différents}.
+
+\begin{center}\small
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{@{}p{0.28\linewidth}p{0.33\linewidth}p{0.31\linewidth}@{}}
+\toprule
+ & \textbf{QSVA (Pires \emph{et al.}, 1996)} & \textbf{Pavage} \\
+\midrule
+Problème visé & minima locaux (non-convexité) & explosion de l'adjoint (gradient) \\
+Mécanisme     & \textbf{allonger} la fenêtre + \textit{warm-start} & \textbf{découper} la fenêtre + réinitialiser l'adjoint \\
+Fenêtre       & croissante : $\delta\tau, 2\delta\tau, \dots$ & fixe, pavée \\
+Niveau        & boucle \textbf{externe} (continuation) & modification \textbf{interne} du gradient \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+
+\paragraph{Algorithme (section 4.1 de l'article, adapté au contrôle $\phi$).} Le début de
+fenêtre $t_0 = \code{t_state_assimilation}$ est \textbf{fixe} (le $-\tau$ de l'article) ;
+seule la \emph{fin} croît, de $t_0 + \delta\tau$ jusqu'à $t_{\max}$.
+
+\begin{lstlisting}
+// swSp::run_qsva  (porosity_minimize.cpp)
+t0 = t_state_assimilation;             // debut de fenetre FIXE (= -tau)
+pour t_end = t0+dtau, t0+2*dtau, ..., t_max :
+    t_max_courant = t_end;             // fenetre [t0, t_end]
+    reset_to_start();
+    load_all_observations();           // recharge les obs sur [t0, t_end]
+    // minimisation sur la fenetre courante, WARM-START depuis phi precedent :
+    run_minimization(phi, max_it, stride, alpha_reg);   // phi <- optimum de cette fenetre
+retourner phi;                         // solution de la fenetre pleine [t0, t_max]
+\end{lstlisting}
+
+\paragraph{Paramètres de \file{input.solv} et sorties.}
+Les clef suivantes permettent de gerer l'utilisation de la méthode 
+\begin{itemize}[nosep]
+  \item \code{qsva_enabled} (booléen, défaut : \code{false}) : active la boucle
+        quasi-statique ;
+  \item \code{qsva_delta_tau} (réel, en secondes) : incrément $\delta\tau$ d'allongement de
+        la fenêtre ;
+  \item le journal de descente de \emph{chaque} étape est archivé dans
+        \file{descent_qsva/} (\file{step_XX_tend_YY.csv}), car \code{run_minimization} écrase
+        \file{descent/} à chaque appel.
+\end{itemize}
+\noindent Point d'entrée : en mode \code{minimize}, si \code{qsva_enabled=1}, le fichier
+\file{main_enzyme.cpp} appelle \code{run_qsva} au lieu de \code{run_minimization}.
+
+\paragraph{Modifications apportées au code.} L'implémentation de QSVA est légére, il s'agit d'une boucle \textbf{externe} qui réutilise le code d'assimilation existant. Cinq fichiers sont concernés.
+
+\begin{center}\small
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{@{}p{0.29\linewidth}p{0.63\linewidth}@{}}
+\toprule
+\textbf{Fichier} & \textbf{Modification} \\
+\midrule
+\file{swSolverParam.h}        & membres \code{qsva_enabled} (booléen, défaut : \code{false}) et \code{qsva_delta_tau} (réel) ; accesseurs \code{getQsvaEnabled()} et \code{getQsvaDeltaTau()}. \\
+\file{swSolverParam.cpp}      & lecture des deux clés dans l'analyseur de \file{input.solv} et définition des accesseurs. \\
+\file{swSp.h}                 & déclaration de la méthode \code{run_qsva(phi, max_it, stride, alpha_reg, delta_tau)}. \\
+\file{porosity_minimize.cpp}  & \textbf{implémentation} de \code{run_qsva} : la boucle de continuation (fenêtre croissante, \textit{warm-start} et archivage dans \file{descent_qsva/}). \\
+\file{main_enzyme.cpp}        & aiguillage du mode \code{minimize} : \code{if (getQsvaEnabled()) run_qsva(...) else run_minimization(...)}. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent La méthode \code{run_qsva} \textbf{réutilise sans les modifier} :
+\begin{itemize}[nosep]
+  \item \code{run_minimization}, une minimisation complète \emph{par fenêtre}
+        (\textit{warm-start} via le même tableau $\phi$) ;
+  \item \code{load_all_observations}, rechargement des observations sur
+        $[t_0, t_{\text{end}}]$ à chaque fenêtre (le début
+        $t_0 = \code{t_state_assimilation}$ étant fixe) ;
+  \item \code{reset_to_start}, remise de l'état à $t_0$ avant chaque fenêtre ;
+  \item le membre \code{t_max}, fixé à la fin de la fenêtre courante avant chaque appel,
+        puis restauré à la sortie.
+\end{itemize}
+
+
+\paragraph{Utilisation.} On active QSVA en ajoutant deux clés à l'\file{input.solv} d'un cas
+de minimisation standard, le reste de la configuration étant inchangé :
+\begin{lstlisting}[style=sh]
+# --- activation QSVA (fenetre croissante) ---
+qsva_enabled     1        # 0 = minimisation directe (defaut), 1 = QSVA
+qsva_delta_tau   4        # increment de fenetre (s) : [t0,t0+4], [t0,t0+8], ...
+
+# --- fenetre cible + reste inchange ---
+t_state_assimilation   10 # debut de fenetre FIXE (t0)
+t_max                  26 # fin de fenetre cible
+minimize_algo          lbfgsb
+n_assimilation_windows 48
+max_it                 25 # iterations PAR fenetre quasi-statique
+\end{lstlisting}
+
+\noindent puis on lance le mode habituel :
+\begin{lstlisting}[style=sh]
+sw2d_enzyme <dossier_cas> minimize
+\end{lstlisting}
+
+\noindent QSVA enchaîne alors les fenêtres $[t_0, t_0+\delta\tau], \dots, [t_0, t_{\max}]$ . La carte finale est écrite dans \file{optimized_porosity.txt} (comme en
+mode classique) ; le journal de \emph{chaque} fenêtre est conservé dans
+\file{descent_qsva/step_XX_tend_YY.csv}. \emph{Conseil} : prendre $\delta\tau$ assez petit
+ ($2$ à $4$~s sur le Toce), au prix d'un temps de calcul proportionnel au nombre de fenêtres.
+
+\paragraph{Validation sur le cas du Toce.} QSVA a été comparée à la minimisation directe sur
+une configuration \emph{robuste identique} (L-BFGS-B, fenêtre cible $[10,26]$, $48$ pavés,
+ébauche $\varphi \equiv 1$). L'utilisation de l'agorithme \textbf{QSVA } reconstruit mieux la carte de porosité
+
+\begin{center}\small
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+\textbf{Méthode} & \textbf{Reconstruction} ($\mathrm{sse}_{\varphi_{ref}}$) & \textbf{Coût $J$ final} & \textbf{Temps} \\
+\midrule
+Directe (fenêtre pleine) & $-26{,}5\,\%$ & \textbf{0,73} (plus bas) & $289$~s \\
+\rowcolor{green!10} QSVA (fenêtre croissante) & $\mathbf{-31{,}9\,\%}$ & $0{,}91$ & $705$~s \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+
+
+% ======================================================================
+%  BIBLIOGRAPHIE
+% ======================================================================
+\newpage
+\begin{thebibliography}{9}
+
+\bibitem{guinot2006porosity}
+V.~Guinot et S.~Soares-Frazão,
+\emph{Two-dimensional shallow water equations with porosity for urban flood modelling},
+Journal of Hydraulic Research, 2006.
+
+\bibitem{sanders2008porosity}
+B.~F. Sanders, J.~E. Schubert et H.~A. Gallegos,
+\emph{Integral formulation of shallow-water equations with anisotropic porosity for urban
+flood modeling},
+Journal of Hydrology, 2008.
+
+\bibitem{pires1996qsva}
+C.~Pires, R.~Vautard et O.~Talagrand,
+\emph{On extending the limits of variational assimilation in nonlinear chaotic systems},
+Tellus~A, vol.~48, 1996.
+
+\bibitem{SW2DUsersGuide}
+\emph{SW2D User's Guide}, documentation du code SW2D.
+
+
+\bibitem{enzyme.mit.edu}
+https://enzyme.mit.edu/
+\emph{guide utilisateur enzyme}
+\end{thebibliography}
+
+\end{document}

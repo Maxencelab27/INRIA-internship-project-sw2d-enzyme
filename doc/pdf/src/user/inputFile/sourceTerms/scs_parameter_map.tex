@@ -1,0 +1,62 @@
+\subsection{scs\_parameter\_map.txt}
+\index{Source term!Infiltration}
+\subsubsection{Purpose}
+This file is required when \textbf{model\_runoff} is set to \textbf{scs}. In this case, the runoff rate $R$ is computed from the SCS formula
+\begin{equation}
+R = \frac{\max^2(P - I_a, 0}{\max(P - I_a, 0) + S}
+\end{equation} where $I_a, S$ are recpectively the initial accumulation and soil storage capacity. The spatial distribution for these two parameters must be provided.
+%
+\subsubsection{Format description}
+File format for a uniform $(I_a, S)$.  
+\texttt{\textbf{Bold}} : keyword, must appear as such in the file. \texttt{<Tab>}: tabulation character. \\
+    \begin{tabular}{p{6cm} | p{9cm}}
+    \hline
+    Field(s) & Comment(s) \\
+    \hline  \hline
+    \texttt{\textbf{Unif} <Tab> \textbf{1}} & Flag is 1 because $(I_a, S)$ is uniform \\ 
+    \hline
+    \texttt{\textbf{==== Default Param}} & Section separator line, leave unchanged \\
+    \hline
+    \texttt{\textbf{Ia <Tab> S}} & Comment line, leave unchanged \\  
+    \hline
+    \texttt{k} & The uniform values for $I_a$ and $S$ (positive, in m) \\ 
+    \hline
+    \texttt{\textbf{==== Distrib}} & Section separator line, leave unchanged \\  
+    \hline
+    \end{tabular}
+%
+\vspace{10mm} \\
+%
+File format for a spatially distributed $R_c$.  
+\texttt{\textbf{Bold}} : keyword, must appear as such in the file. \texttt{<Tab>}: tabulation character. \\
+    \begin{tabular}{p{6cm} | p{9cm}}
+    \hline
+    Field(s) & Comment(s) \\
+    \hline  \hline
+    \texttt{\textbf{Unif} <Tab> \textbf{0}} & Flag is 0 because $(I_a, S)$ is spatially variable \\ 
+    \hline
+    \texttt{\textbf{==== Default Param}} & Section separator line, leave unchanged \\ 
+    \hline
+    \texttt{\textbf{Ia <Tab> S}} & Comment line, leave unchanged \\ 
+    \hline
+    \texttt{k}     & This value will be ignored because \texttt{Flag} = 1 \\ 
+    \hline
+    \texttt{\textbf{==== Distrib}} & Section separator line, leave unchanged \\  
+    \hline
+    \texttt{Ia[i] <Tab> S[i]}      & Values for $I_a$ and $S$ (in m, positive), provided on a cell-by-cell basis. Index i is the index of the cell in the mesh.  \\ 
+    \hline
+    \end{tabular}
+
+\paragraph*{Sample file}
+For a spatially ditributed model.
+
+\begin{verbatim}
+Unif	0
+==== Default Param
+I_a		S  
+0.02	0.1
+==== Distrib
+0.03	0.07
+0.01	0.05
+0.009	0.07
+\end{verbatim}

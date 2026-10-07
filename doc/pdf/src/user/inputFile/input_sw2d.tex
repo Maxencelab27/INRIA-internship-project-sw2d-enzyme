@@ -1,0 +1,232 @@
+\section{File \texttt{input.solv}}
+\subsection{Purpose}
+This file is the main file controlling the simulation. It defines the models that have to be used and the key parameters.
+
+\subsection{Format description}
+This text file contains a parameter per line. The order of the parameters do not matter. Empty lines or lines starting with hash '\#' or equal '=' signs are ignored.\\
+The spelling of the parameters is not case sensitive.\\
+If the same parameter is defined several times in the \file{input.solv}, \swdd will consider the last provided value.
+
+Known parameters are listed hereafter:
+
+
+\begin{description}
+\item[compute\_hydro] \defaultvalue{compute}\index{transport!transport_hydro} define the hydrodynamic used for transport model. Allowed values:
+\begin{description}
+    \item[compute] compute hydrodynamic solving the shallow water equations
+    \item[read] read hydrodynamic parameters from a file
+\end{description}
+
+\item[contact\_ext\_margin] \defaultvalue{0.01}\index{transport!contact_ext_margin} set the buffer size for dealing debris contact
+
+\item[contact\_restitution] \defaultvalue{1}\index{transport!contact\_restitution} elastic coefficient for the debris contact
+
+\item[cfl\_max] \defaultvalue{1}\index{Courant/CFL number}defines the maximum Courant value to compute the timestep. Any positive value is allowed but the algorithm will automatically prevent large values, known to lead to instability issues (typically \param{cfl\_max} $> 1$ for an explicit scheme).
+
+\item[divergence\_corr] \defaultvalue{none}\index{Divergence correction}parameter to activate the divergence correction. Allowed values:
+\begin{description}
+    \item[none] no divergence correction
+    \item[limit\_flux] prevents cell drying issues by reducing the divergence of numerical fluxes across the interfaces. Divergence reduction is an iterative process. %The parameter \param{n\_it\_div\_max} have to be define\pfg{really or default value??? For sure, n\_it\_div\_max cannot be negative. Is there a coeff for the flux reduction?}
+    \item[limit\_timestep] prevents divergence by reducing the computational time-step
+\end{description}
+See also \param{n\_it\_div\_max}.
+\item[dt\_map] \defaultvalue{10}specifies the interval of time to store the hydrodynamics results map (stored in the \textbf{output} folder).
+
+\item[dt\_max] \defaultvalue{10}specifies the maximal computational timestep
+
+\item[dt\_time\_series] \index{Probes}\defaultvalue{100}specifies the time window to store the time series results (e.g. : probes). This parameter is used only if time series results are stored (for probes, this is simply activated filling \file{probe\_locations.txt} in the input folder).
+
+\item[fr\_max] \index{fr\_max}\defaultvalue{100} is the maximum permissible value for the Froude number. Should Fr exceed this value at the end of a time step, the flow velocity is reduced such that $\max ||\mathbf{v}|| = \mathrm{fr\_max} \sqrt{gh}$.
+
+\item[gravity] \defaultvalue{9.81}specifies the value of the gravitational acceleration.
+
+\item[h\_min] \defaultvalue{$10^{-5}$}represents the minimal water depth value considered by the Riemann solvers. When the water depth is below this value, the corresponding (cell-computed) unit discharge is neglected.
+%%%%%\item[model\_building] \defaultvalue{none}\index{building}
+
+\item[hotstart\_time] \defaultvalue{0}\index{hotstart}If defined, the initial conditions are read from an output file located in the \folder{input}.
+
+\item[h\_stop] \defaultvalue{false}. Specifies whether the simulation should stop when the water depth becomes negative in one of the cells. 
+\begin{description}
+	\item [false] the computation will not be stopped if a negative depth is computed in one of the cells at the end of the hyperbolic time step.
+	\item [true] the computation will be stopped as soon as the water depth is negative in at least one cell at the end of the hyperbolic time step.
+\end{description}
+Note: the occurrence of negative depths can be reduced using the divergence correction function (see \param{div\_corr}).
+
+\item[model\_building] \defaultvalue{none}\index{Source term!Building}sets how the buildings are accounted. Allowed values:
+\begin{description}
+    \item[none] no building effect computed
+\end{description}
+
+\item[model\_friction] \defaultvalue{none}\index{Friction} specifies the bottom friction model. Allowed values:
+\begin{description}
+    \item[none] no friction model
+    \item[chezy] \index{Friction!Chezy} Chezy's model is used  .
+    \item[manning] \index{Friction!Manning}the Manning formulation is used  .
+    \item[strickler] \index{Friction!Strickler}friction is modelled using Strickler's model  .
+\end{description}
+
+\item[model\_gates] \defaultvalue{none}\index{Source term!gates}sets how the gates are accounted. Allowed values:
+\begin{description}
+    \item[none] no gate effect computed
+\end{description}
+
+%%%%%\item[model\_gates] \defaultvalue{none}\index{gates}
+
+\item[model\_hyperb] \defaultvalue{none}\index{Model!Hyperbolic}Specifies the hyperbolic model  . Allowed values:
+\begin{description}
+    \item[none] no hyperbolic model
+    \item[ddp] \index{Model!Hyperbolic!DDP}Depth-Dependent Porosity model  .
+    \item[dip] \index{Model!Hyperbolic!DIP}Dual-Integral Porosity model  .
+    \item[sp] \index{Model!Hyperbolic!SP}Single Porosity model  .
+    \item[swes] \index{Model!Hyperbolic!SWES}Shallow water model  .
+\end{description}
+
+\item[model\_infiltration] \defaultvalue{none}\index{Source term!Infiltration}sets how the infiltration is accounted. Allowed values:
+\begin{description}
+    \item[none] no infiltration
+\end{description}
+
+\item[model\_orifice] \defaultvalue{none}\index{Source term!orifice}sets how the orifices are accounted. Allowed values:
+\begin{description}
+    \item[none] no orifice effect computed
+\end{description}
+
+\item[model\_precip] \defaultvalue{none}\index{Source term!precipitation}sets how the rain is accounted. Allowed values:
+\begin{description}
+    \item[none] no rain
+\end{description}
+
+\item[model\_pump] \defaultvalue{none}\index{Source term!pump}sets how the pumps are accounted. Allowed values:
+\begin{description}
+    \item[none] no pump effect computed
+\end{description}
+
+\item[model\_sing\_headloss] \defaultvalue{none}\index{Source term!singular headloss}sets how the singular headloss are accounted. Allowed values:
+\begin{description}
+    \item[none] no singular headloss computed
+\end{description}
+
+\item[model\_logjam] \defaultvalue{none}\index{Transport!logjam}sets the model for log transport. Allowed values:
+\begin{description}
+    \item[none] no log transport computed
+\end{description}
+
+\item[model\_transport\_reaction] \defaultvalue{none}Not used yet
+
+
+\item[model\_wind] \defaultvalue{none}\index{Source term!Wind}sets how the wind effect is computed. Allowed values:
+\begin{description}
+    \item[none] no wind effect computation
+    \item[smithbanke] \index{Source term!Wind}wind effect computation using the Smith \& Banke model  .
+\end{description}
+
+\item[negative\_depth\_detection] \defaultvalue{0}activates the negative depth detection. Allowed values:
+\begin{description}
+    \item[0] no check
+    \item[1] stop the program if the water depth is negative.
+\end{description}
+
+\item[momentum\_dissipation] \defaultvalue{0}\index{Source term!momentum dissipation}defines if the momentum dissipation is accounted. Allowed values:
+\begin{description}
+    \item[0] no momentum dissipation
+    \item[1] momentum dissipation computed.
+\end{description}
+
+\item[n\_it\_div\_max] \defaultvalue{0}\index{Divergence correction} 
+sets the maximal number of iterations allowed in the divergence correction process. This parameter is used only if the parameter \param{div\_corr} is set to limit\_flux.
+
+\item[num\_scheme] defines the numerical scheme used to compute the hyperbolic part of the equation. Default and other possible values depend on the chosen hyperbolic model:
+
+\begin{tabular}{p{3cm}|p{3cm}|p{7cm}}
+\hline
+\param{model\_hyperb} keyword & default value for \param{num\_scheme} & allowed values for \param{num\_scheme} \\
+\hline
+\hline
+ddp  & godunov & godunov \\
+\hline
+dip  & godunov & godunov \\
+\hline
+sp   & godunov & godunov \\
+\hline
+swes & godunov & godunov, muscl\_evr\\
+\hline
+\end{tabular}\\
+
+\item[read\_wall\_from\_file] \defaultvalue{0}\index{Transport}Set how the boundaries are defined for the log transport.  Allowed values:
+\begin{description}
+    \item[0] no supplementary file
+    \item[1] read transport walls from \file{walls\_for\_transport.txt}
+\end{description}
+
+\item[small] \defaultvalue{$10^{-20}$}Numerical parameter to avoid division by 0. Cannot be changed
+
+\item[store\_flag] \defaultvalue{default}defines stored variables in hydrodynamics results maps. \pfg{reprendre ce point si on fait des formats différents pour chaque modèle} Allowed values: \textbf{none}, \textbf{default} and \textbf{all}. See section \ref{}\pfg{add ref to resulthydro} for the list of stored variables, depending on the user-defined hyperbolic model (parameter \param{model\_hyperb}).
+
+\item[t\_0] \defaultvalue{0}Starting time of the simulation.\pfg{need for mr\_tests with t\_0 not 0} \pfg{later one: is there a link between t\_0 and the hotstart?}
+
+\item[t\_max] \defaultvalue{100}Ending time of the simulation.
+
+\item[verb\_map\_boussinesq] \index{Boussinesq}\defaultvalue{1}specifies if the Boussinesq coefficients map used in the computation has to be written (0: no / $>0$: yes) in \file{log/boussinesq.txt}. Even if \param{verb\_map\_boussinesq} is set to 1, the file \file{log/boussinesq.txt} is written only if the user-defined hyperbolic model \ar{comprends pas}involved the Boussinesq coefficient.\pfg{add a list of the hyperbolic models (all except swes?) using the Boussinesq coefficient}
+
+\item[verb\_map\_init\_cond] \index{Initial conditions}\defaultvalue{1}specifies if the initial conditions map used in the computation has to be written (0: no / $>0$: yes) in \file{log/initial\_conditions\_map.txt}.
+
+\item[verb\_map\_porosity] \defaultvalue{1} \index{Porosity}\defaultvalue{1}specifies if the porosity values maps used in the computation have to be written (0: no / $>0$: yes). The files generated depend also on the user-defined hyperbolic model:\\
+
+\begin{tabular}{c|c}
+\hline
+\param{model\_hyperb} keyword & files generated \\
+\hline
+\hline
+\multirow{3}{*}{ddp} & \file{DDP\_debug.txt} \\
+                     & \file{DDP\_PhiG.txt} \\
+                     & \file{DDP\_PhiW.txt} \\
+\hline                     
+\multirow{2}{*}{dip} & \file{DIP\_PhiG.txt} \\
+                     & \file{DIP\_PhiW.txt} \\
+\hline                     
+sp   & \file{SP\_PhiW.txt} \\
+\hline                     
+swes &  none \\
+\hline                     
+\end{tabular}
+
+\item[verb\_process\_friction] \defaultvalue{0}specifies the level of verbosity of the friction computation function. The bigger the value, the more verbosity you get (0 = no verbosity) NOT USED
+
+\item[verb\_process\_hyperb] \defaultvalue{0}specifies the verbosity level for of the functions computing the hyperbolic part. The higher the value, the stronger the verbosity (0 = no verbosity)
+
+\item[verb\_process\_momentum\_diff] \defaultvalue{0} NOT USED
+
+\item[verb\_process\_overall] \defaultvalue{0}specifies the level of verbosity of the main workflow. The higher the value, the stronger the verbosity (0 = no verbosity).
+
+\item[verb\_process\_velocity\_corr] \defaultvalue{0} NOT USED
+
+
+\item[verb\_properties\_cells] \defaultvalue{1}specifies if the cells properties have to be written (0: no / $>0$: yes) in \file{log/cells.txt}.
+
+\item[verb\_properties\_interfaces] \defaultvalue{1}specifies if the interfaces properties have to be written (0: no / $>0$: yes) in \file{log/interfaces.txt}.
+
+\item[verb\_properties\_nodes] \defaultvalue{1}specifies if the nodes properties have to be written (0: no / $>0$: yes) in \file{log/nodes.txt}.
+
+
+\item[v\_max] \defaultvalue{100} specifies the maximum permissible velocity. Should $||\mathbf{v}||$ exceed this value at the end of a time step, the flow velocity is reduced such that $\max ||\mathbf{v}|| = \mathbf{v\_max} $.
+
+
+
+%%%%\item[verb\_process\_velocity\_corr] \defaultvalue{0} NOT USED
+\end{description}
+
+\subsection{Example}
+\begin{verbatim}
+= unread line
+# sign to comment a full line : (# =)
+=== Model
+model_hyperb	dip
+num_scheme	godunov
+t\_max	100.
+dt\_max	1.5
+dt\_map	10.
+dt\_time\_series	15.
+========
+model_friction	chezy
+========
+\end{verbatim}

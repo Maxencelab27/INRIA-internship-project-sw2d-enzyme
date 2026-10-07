@@ -1,0 +1,179 @@
+\hypertarget{InputConvFormat}{}
+\section{File \texttt{input.conv}}
+\subsection{Purpose}
+\texttt{input.conv} is a text file specifying how the \swConverter executable is to be run for mesh processing. 
+
+\subsection{Format description}
+\texttt{input.conv} is a text file. It contains one keyword per line, with format
+\begin{lstlisting}
+<KEYWORD> <VALUE>
+\end{lstlisting}
+The order of the keywords does not matter. Empty lines or lines starting with hash '\#' or equal '=' signs are considered as comment lines.\\
+Note that
+\begin{itemize}
+\item The keywords and its value must be separated by at least one space or tabulation character.
+\item Keyword spelling is not case sensitive.
+\item If a given keyword occurs several times in the file, the last read value overwrites the previously specified ones.
+\end{itemize}
+
+\subsection{List of allowed keywords}
+
+
+%
+%\subsection{Format description}
+%%
+%\begin{footnotesize}
+%\begin{tabular}{p{4cm} | p{10cm} }
+%\hline
+%Field(s)/keyword & Specification \\
+%\hline
+%\hline
+% 2 comment lines & user-defined text \\
+%\hline
+%\texttt{=== Converter} & header line 3/3 \\
+%\hline
+%\texttt{overwrite} & 
+%\begin{itemize}
+%\item [0]: \Q{What happens then?}
+%\item [1]: the \texttt{input.solv} file will be overwritten
+%\item [?]: \Q{Any other available options?}
+%\end{itemize}\\
+%\hline
+%\texttt{default bc} & an integer specifying the default boundary code for all the interfaces that are not included in the boundary code file \\
+%\hline
+%\texttt{mesh\_file} & name of the .2dm file (only the .2dm format is supported in this version of the code) \\
+%\hline
+%\texttt{bc\_file} & name of the boundary code file \\
+%\hline
+%======== & indicates the end of the file \\
+%\hline
+%\end{tabular}
+%\end{footnotesize}
+
+\begin{description}
+\item[a\_min] \defaultvalue{-1} If \texttt{amin} is positive, any cell with area smaller than \texttt{amin} will be listed in  \file{log/cells\_small.txt}. 
+
+\item[bc\_file] \nodefaultvalue name of the  \emph{.bc} file (including the \emph{.bc} extension). This file has to be located in the \file{primary\_files} folder. The format of the \emph{.bc} file is presented in Section \ref{sec:bc_file_format}.
+
+\item[default\_bc] \{\textit{No default value}\} boundary condition code assigned to all the boundaries that are not listed in the file defined with the \param{bc\_file} keyword. Boundary codes are assumed to be negative integers.
+
+\item[overwrite] \defaultvalue{0} defines if former \file{input/geometry.sw2d} file is overwritten. Allowed values:
+\begin{description}
+\item [0] \swConverter runs only if the file \file{input/geometry.sw2d} does not exist.
+\item [1] \swConverter runs anyhow and file \file{input/geometry.sw2d} is either created or overwritten.
+\end{description}
+
+\item[mesh\_file] \nodefaultvalue name of the \emph{.2dm}  file (including the \emph{.2dm} extension). This file has to be located in the \file{primary\_files} folder. The format of the \emph{.2dm} file is presented in Section \ref{sec:SMS_file}.
+
+\item[topo\_file] \nodefaultvalue name of the file for the (optional) topography correction. This file has to be located in the \file{primary\_files} folder. The format of this file is presented in Section \ref{sec:topo_file}.  
+
+\item[topo\_option] \nodefaultvalue option indicating how the topography (cell field) is modified when several points (defined in the topo\_file) belong to a given cell. Allowed values:
+\begin{description}
+\item [min] the cell bottom elevation is set to the minimum elevation of the points within the cell
+\item [max] the cell bottom elevation is set to the maximum elevation of the points within the cell
+\item [mean] the cell bottom elevation is set to the average elevation of the points within the cell
+\end{description}
+\end{description}
+
+\subsection{Sample file}
+\begin{verbatim}
+= This is header line 1/2 for the input.conv sample file
+# characters indicating a comment line : # or =
+=== Converter
+overwrite   1
+default_bc  -1
+mesh_file   2d_hills.2dm
+bc_file	2d_hills.bc
+========
+\end{verbatim}
+%%
+%%
+\section{\label{sec:SMS_file}Mesh file format}
+In the current version of \swdd \emph{.2dm}  is the only supported mesh file format.
+More information on this format can be found \href{https://www.xmswiki.com/wiki/SMS:2D_Mesh_Files_*.2dm}{here}.
+%%
+%%
+\section{\label{sec:topo_file}Topography correction file format  }
+
+\subsection{Purpose}
+The topography correction file contains the list of points used to locally correct the topography computed from the .2dm file. It is read only if keyword \textbf{topo\_file} is present in the \texttt{input.conv} file.  In that case, the \textbf{topo\_option} keyword has to appear in the input file, together with a correct value.\\
+
+{\remark{This topography correction is handled by the \swConverter and is valid for the whole simulation. It is different from the topography evolution presented in Chapter  \ref{ch:swSolver}, which corresponds to a change of topography \textbf{during} the simulation (not necessarily at $t=0$).}}
+
+\subsection{Format description}
+The first line contains the header (which is not read by the software). Each of the following lines contains the $x,y,z$ coordinates of a single correction point separated by a space or a tabulation.
+\begin{lstlisting}
+# header 
+<x> (tab or space) <y> (tab or space) <z>
+\end{lstlisting}
+
+
+\subsection{Sample file}
+\begin{verbatim}
+x	y	z
+0.2500000000e+02 0.1250000000e+03 0.1450000000e+01
+0.2500000000e+02 0.1250000000e+03 0.2450000000e+01
+0.7500000000e+02 0.1250000000e+03 0.1400000000e+01
+0.1250000000e+03 0.1250000000e+03 0.1350000000e+01
+0.1750000000e+03 0.1250000000e+03 0.1300000000e+01
+0.2250000000e+03 0.1250000000e+03 0.1250000000e+01
+\end{verbatim}
+%%
+%%
+\section{\label{sec:bc_file_format}Boundary code file format}
+%
+\subsection{Purpose}
+This file is used to specify the types of boundary conditions (BCs) to be used over the various parts of the boundary during the simulation. All boundary interfaces sharing the same boundary code (e.g. -1, or -2, or any negative integer) are assigned the same BC type and numerical value at a given simulated time (e.g. boundary type -2 is a prescribed water depth $h = 3$\:m at $t=5.0$\:s). The boundary time series (or boundary rating curves) are specified in a different file.
+
+\swConverter starts with assigning the default BC code (the value for \texttt{default\_bc} in file \texttt{input.conv}) to all boundary interfaces. In a second step, the BC codes are modified for all the boundary interfaces listed in the BC code file.
+
+%This file is a text file that must be hand-edited by the user. It is optional. It is not needed if the boundary codes are specified directly within the .2dm file using nodestrings (a functionality of the SMS mesh generator).\\
+%If nodestrings are not used the boundary codes must be defined manually within the BC code file. 
+This file is usually named with extension .bc to allow for faster visual identification within the folder, but the .bc extension is not mandatory.
+%
+\subsection{Format specification}
+\begin{footnotesize}
+\begin{tabular}{p{4cm} | p{10cm} }
+\hline
+Field(s) & Specification \\
+\hline
+\hline
+$N$ & number of interfaces in the present file \\
+\hline
+$b_1 \rightharpoonup e_1 \rightharpoonup c_1$ &
+\begin{itemize}
+\item [$b_1$] Id of the beginning node of the 1st interface
+\item [$e_1$] Id of the end node of the 1st interface in the file
+\item [$c_1$] BC code of the 1st interface
+\item [$\rightharpoonup$] Tabulation character or space
+\end{itemize} \\
+\hline
+$\vdots$ & (repeat) \\
+\hline
+$b_N \rightharpoonup e_N \rightharpoonup c_N$ & 
+\begin{itemize}
+\item [$b_N$] Id of the beginning node of the $N$th interface
+\item [$e_N$] Id of the end node of the $N$th interface in the file
+\item [$c_N$] BC code of the $N$th interface
+\end{itemize} \\
+\hline
+\end{tabular}
+\end{footnotesize}
+Note: the BC code $c_i$ should be negative.
+
+\subsection{Sample file}
+In the following file, the first 5 boundary interfaces are assigned boundary condition type 2, while the remaining 5 are assigned boundary condition type 3. 
+\begin{verbatim}
+10
+1995	1741	-2
+1741	1742	-2
+1742	1743	-2
+1743	1744	-2
+1744	1745	-2
+1745	1746	-3
+1746	1747	-3
+1747	1938	-3
+1938	1939	-3
+1939	1940	-3
+\end{verbatim}
+

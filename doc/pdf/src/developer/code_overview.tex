@@ -1,0 +1,180 @@
+%%%
+%%%
+%%%
+%%%
+\section{The main classes / namespaces}
+Please also read Subsections \ref{subsec_main_principles}, \ref{subsec_glossary}, \ref{subsec_overview_folder_structure}.
+The main classes are the following. Parentheses comprise the folder where the .h files for these classes can be found.
+\begin{description}
+\item[(common/geometry/) swMesh]
+\item [(common/) swCell] Attributes and methods for Cell-type objects
+\item [(common/) swEdgeBoundary] Attributes and methods for boundary edge-type objects
+\item [(common/) swEdgeIntern] Attributes and methods for internal edge-type objects
+\item [(common/) swLog] Attributes and methods for log file writing
+\item [(common/) swNode] Attributes and methods for node-type objects
+\item [(common/) swIO] Contains the attributes and methods for Input-Output purposes.
+\item [(solver/models/common) swBoundaryConditionRatingCurves] Methods and attributes for handling rating curve-like boundary conditions
+\item [(solver/models/common) swBoundaryConditionTimeSeries] Methods and attributes for handling time series-like boundary conditions
+\item [(solver/models/common) swSource] Methods and attributes for handling source terms
+\item [(solver/models/) swParent]
+\item [(solver/models/) swSwes]
+\end{description}
+%%%
+%%%
+%%%
+%%%
+\section{Variable types, naming conventions}
+The main variable types are the following:
+\begin{itemize}
+\item cell-based variables
+\item (boundary) edge-based variables
+\item (internal) edge-based variables
+\item node-based variables
+\end{itemize}
+The 
+%%%
+%%%
+%%%
+%%%
+\section{Solver: code architecture}
+%%
+%%
+The structure is the following:
+\begin{verbatim}
+main
+|- swParent
+|- sw<Model>
+    |- sw<Model>.h
+    |- sw<Model><Process><Type><Sub-type><Method>.cpp
+\end{verbatim}
+%%%
+%%%
+%%%
+%%%
+\section{Solver: simulation sequence}
+%%%
+%%%
+\subsection{main}
+The \textbf{main} performs the following tasks:
+\begin{itemize}
+\item gets the name of the \swd project folder (where the /input and other folders are located)
+\item instantiates the \texttt{swIO} class, so as to make I/O methods available + define the variable \texttt{simulation\_folder}. The pointer is \texttt{m\_io}.
+\item creates log solver file (log/consoleSolver.log)
+\item Read the solver parameters (\texttt{swSolverParam} class). The pointer is \texttt{m\_param\_solver}
+\item Creates the Mesh (class \texttt{swMesh}). The pointer is \texttt{m\_mesh}. Builds the mesh, i.e. get the cell/edge/node properties and mesh connectivity info (reading instruction in \texttt{readGeometriyFile*.cpp}).
+\item Select the model and create it (in \texttt{swParent} class). The \texttt{solver\_param} pointer is an input argument to the method. 
+\item Call \texttt{m\_model->init()}
+\item Call \texttt{m\_model->execute()}
+
+
+\end{itemize}
+%%%
+%%%
+\subsection{\texttt{sw<Model>.init()}}
+This method performs a number of model-dependent tasks. Detailed here for Swes.
+%%
+%%
+\begin{itemize}
+%
+\item Imports the solver parameters required by the model from the \texttt{m\_solver\_param->} attributes.
+%
+\item Builds up the mesh properties required by the model. This is done by the \texttt{setMeshTables()} method.
+%
+\item Reads and assigns the initial conditions. These are model-specific. Their number and nature does not depend on the processes that are activated.
+%
+\item Reads and assigns the boundary conditions. These are model-specific. Their number and nature does not depend on the processes that are activated. 
+%
+\begin{enumerate}
+\item Sets up the following BC pointers: \texttt{bc\_ratingcurve\_list} and \texttt{bc\_timesries\_list}.
+\item uses these pointers to read the BC files (using the appropriate m\_io pointer) by calling \texttt{readBoundaryTimeSeriesFile()}.
+\item sets up unorderd maps so as to associate the BC codes (that are negative) with the corresponding time series. At the end of \texttt{intBoundaryCondition}, for each boundary edge $i$, the pointer \texttt{edge\_bnd\_bc\_pointer[i]} contains a pointer called \texttt{bc} of type \texttt{swBoundaryCondition} that provides access to the BC time series and type.
+\end{enumerate}
+%
+\item Reads and assigns the various model parameters. These are specific to the local \texttt{sw<Model>} class. The number and type of parameters to be read my depend on some solver parameters. For instance, if a specific friction model is selected (\textbf{model\_friction $\neq$ "none"}), the method that reads the friction parameter from the friction map file and assigns it to the appropriate parameter must be called.
+%
+\item (optional) Compute the edge factors that are used by the \texttt{computeBalance()} method for the sake of faster CPU
+%
+\item resize the fluxes and Riemann state vectors
+%
+\item Writes (text) log fils in the \textbf{/log} folder to serve as a tracebak for solver execution.
+\end{itemize}
+%%%
+%%%
+\subsection{\texttt{sw<Model>.execute()}}
+%%%
+%%%
+
+All models are different by definition. However, all transient shallow water models involve the following compulsory steps:
+\begin{itemize}
+%
+%
+\item Prior to time loop: initialize simulation time, etc.
+%
+%
+\item Time loop: 
+\begin{enumerate}
+%
+\item \texttt{computeBC()}:interpolates the boundary conditions from the tables initialized at the \texttt{sw<Model>.init()} stage.
+%
+\item \texttt{hypCompute()} : computes the hyperbolic terms for the hydrodynamic modeln. Computing them using explicit finite volumes requires the following steps:
+\begin{enumerate}
+%
+\item \texttt{computeBC()}:interpolates the boundary conditions from the tables initialized at the \texttt{sw<Model>.execute()} stage.
+%
+\item \texttt{computeLRStates()}: Compute the left and right states of the Riemann problems: This step is method-dependent (the computation is not the same if a Godunov or a MUSCL scheme is used)
+%
+\item \texttt{computeTimeStep()}. The storage period and CFL constraints require that $\Delta t$ be computed at each time level.
+%
+\item \texttt{computeFluxes()}. The fluxes across boundary and internal interfaces are computed by solving the Riemann problems.
+%
+\item \texttt{computeBalance()}. The balance is carried out for mass, momentum and any other conserved variable, using the previously computed fluxes as a basis.
+%
+\item \texttt{DivCorr()}. Apply divergence correction to avoid cell over-drying.
+%
+\end{enumerate}
+%
+%
+\item \texttt{parabCompute()}. Compute the contribution of parabolic terms (if applicable)
+%
+%
+\item Source terms. The list of applicable source terms is model-dependent. For instance, in the SWES equations, the possible source terms are friction, wind-induced stress, precipitation/infiltration. They are applied sequentlially, following a first-order time splitting.
+
+%
+
+\end{enumerate}
+%
+%
+%
+\item After time loop: close files, finalize CPU time computation
+\end{itemize}
+%%%
+%%%
+%%%
+\section{Where can I find / What are these variables}
+%%%
+%%%
+\subsection{pointers}
+\begin{description}
+\item [bc\_ratingcurve\_list]: \texttt{swBoundaryConditionRating}. Pointer defined at the \texttt{initBoundaryConditions()} stage (belongs to \texttt{swParent}).
+\item [bc\_timeseries\_list]: \texttt{swBoundaryConditionTimeSeries}. Pointer defined at the \texttt{initBoundaryConditions()} stage (belongs to \texttt{swParent}).
+\item [m\_io] : \texttt{swIO} class. Pointer defined at the class construction stage. The class is instantiated in the main.cpp of swSolver. \\
+How to get it from a given model : \texttt{m\_solver\_param->m\_io->}
+\item [m\_mesh] : \texttt{swMesh} class. Pointer defined at the class construction stage. The class is instantiated in the main.cpp of swSolver.
+\item [m\_model]: \texttt{sw<Model>} class. Pointer defined by \texttt{swParent::create()}
+\item [m\_solver\_param] : \texttt{swSolverParam} class. Pointer defined at the class construction stage. The class is instantiated in the main.cpp of swSolver. 
+\end{description}
+%%%
+%%%
+\subsection{File names}
+%%%
+\begin{description}
+\item [Reserved file names]: these are provided in the \texttt{src/common/swFile.h}. They are relative to the root of the project folder.
+\item [swIO::getAbsolutePath]: this method takes a relative path (relative to the simulation folder) and as an input and returns the absolute path.\\
+Example : if the user runs 
+\begin{verbatim}
+sw2dSolver test/test1
+\end{verbatim}
+then swIO::getAbsolutePath("input/geometry.sw2d") will return "test/test1/input/geometry.sw2d"
+\end{description}
+%%%
+%%%

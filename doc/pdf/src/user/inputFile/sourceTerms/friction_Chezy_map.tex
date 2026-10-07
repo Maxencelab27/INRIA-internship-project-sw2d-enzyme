@@ -1,0 +1,59 @@
+\subsection{friction\_chezy\_map.txt}
+\index{Friction!Chezy}
+%
+\subsubsection{Purpose}
+If Chezy's law is selected for the friction model, the Chezy coefficient must be provided on a cell-by-cell basis. The Chezy may be anisotropic. Therefore, it is a tensor. It is specified in the form $(C_1 , C_2, \alpha_C)$, where $C_1$ and $C_2$ are the friction coefficients in the two principal directions of the horizontal plane, and $\alpha_C$ is the angle of the first principal direction with the $x-$axis.
+%
+\subsubsection{Input file format}
+%
+File format for a uniform Chezy tensor $C$.  \texttt{\textbf{Bold}} : keyword, must appear as such in the file. \texttt{<Tab>}: tabulation character. \\
+    \begin{tabular}{p{6cm} | p{9cm}}
+    \hline
+    Field(s) & Comment(s) \\
+    \hline  \hline
+    \texttt{\textbf{Unif} <Tab> \textbf{1}} & Flag is 1 because $C$ is uniform \\ \hline
+    \texttt{\textbf{==== Default Param}} & Section separator line, leave unchanged \\  \hline
+    \texttt{\textbf{Chezy\_1 Chezy\_2 alpha}} & Comment line, leave unchanged \\  \hline
+    \texttt{Chezy\_1 <Tab> Chezy\_2 <Tab> alpha} & The uniform values for $C_1$, $C_2$ and $\alpha_C$ ($\alpha_C$ in degrees) \\ \hline
+    \texttt{\textbf{==== Distrib}} & Section separator line, leave unchanged \\  \hline
+    \end{tabular}
+%
+\vspace{10mm} \\
+%
+File format for a spatially distributed parameter set.  \texttt{\textbf{Bold}} : keyword, must appear as such in the file. \texttt{<Tab>}: tabulation character. \\
+    \begin{tabular}{p{6cm} | p{9cm}}
+    \hline
+    Field(s) & Comment(s) \\
+    \hline  \hline
+    \texttt{\textbf{Unif} <Tab> \textbf{0}} & Flag is 0 because $C$ is spatially variable \\ \hline
+    \texttt{\textbf{==== Default Param}} & Section separator line, leave unchanged \\  \hline
+    \texttt{\textbf{Chezy\_1 Chezy\_2 alpha}} & Comment line, leave unchanged \\  \hline
+    \texttt{Chezy\_1 Chezy\_2 alpha}     & This value will be ignored because \texttt{Flag} = 1 \\ \hline
+    \texttt{\textbf{==== Distrib}} & Section separator line, leave unchanged \\  \hline
+    \texttt{Chezy\_1[i] <Tab> Chezy\_2[i] <Tab> alpha[i]}      & Values for $C_1$, $C_2$ and $\alpha_C$ ($\alpha_C$ in degrees), provided on a cell-by-cell basis. Index i is the index of the cell in the mesh.  \\ \hline
+    \end{tabular}
+%
+\subsubsection{Sample files}
+%
+\paragraph*{Example\#1: Uniform Chezy tensor}
+The Chezy tensor is uniform for all cells. It is respectively 60 and 70 in the 1st and 2nd principal directions. The 1st principal direction makes a 45 degree angle with the $x-$axis.
+\begin{verbatim}
+Unif	1
+==== Default Param
+Chezy_1	Chezy_2	alpha
+60.	70.	45.
+==== Distrib
+\end{verbatim}
+%
+\paragraph*{Example\#2: Distributed Chezy tensor}
+There are 3 cells in the model. The Chezy is respectively 60 and 70 in the 1st and 2nd principal directions. Its angle with the $x-$axis is respectively 0, 10 and 30 degrees in Cells 1, 2 and 3.
+\begin{verbatim}
+Unif	0
+==== Default Param
+Chezy_1	Chezy_2	alpha
+60.	70.	45.
+==== Distrib
+60.	70.	0.
+60.	70.	10.
+60.	70.	30.
+\end{verbatim}

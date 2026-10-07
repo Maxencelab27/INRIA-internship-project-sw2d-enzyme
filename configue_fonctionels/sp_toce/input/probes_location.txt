@@ -1,0 +1,19 @@
+x	y	name
+0.331	7.655	probe1
+1.111	7.317	probe2
+3.797	5.959	probe3						
+3.87	6.479	probe4						
+4.192	6.257	probe5						
+4.514	6.035	probe6						
+4.663	5.837	probe7						
+4.712	6.184	probe8						
+4.861	5.986	probe9						
+5.183	5.764	probe10						
+6.9	4.5	probe11						
+6.9	5	probe12						
+6.9	5.5	probe13					
+6.9	6	probe14						
+6.9	6.5	probe15					
+6.9	7	probe16
+6.9	7.5	probe17
+

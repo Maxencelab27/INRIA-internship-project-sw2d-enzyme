@@ -1,0 +1,36 @@
+\section{Opening the results in QGIS}
+
+\subsection{Text files}
+
+The result maps in text format (\file{ResultHydro***.txt}) can be opened and displayed in the QGIS software. A single file (i.e. results at a given time or a map of maximum values) corresponds to one layer in QGIS.\\
+
+The file is imported doing the following steps:
+
+\begin{itemize}
+  \item In the menu bar, click \textbf{Layer} $\rightarrow$ \textbf{Add Layer} $\rightarrow$ \textbf{Add Delimited Text Layer}.
+  \item Select the file to import and the layer name in the first fields. Then, in \textbf{File Format}, select \textbf{Regular Expression Delimiter} and enter \verb|\s+| as the expression. You can leave the other values as default.
+  \item Click \textbf{Add}.
+\end{itemize}
+
+The points displayed correspond to the centers of the cells. You can adjust the display of these points by double-clicking on the layer in the left side panel. For example, the \textbf{Categorized} and \textbf{Graduated} options allow you to match the color of the points to the values in a field.
+
+\subsection{NetCDF files}\label{nc_qgis}
+
+The NetCDF format result files (which can be obtained with sw2dOutputConvrter from the binary files) can also be viewed in QGIS. For these files, all simulation results and geometry data are contained in a single file.\\
+
+The file is imported doing the following steps:
+
+\begin{itemize}
+  \item Drag the desired file into the QGIS window.
+  \item Select the layer called \texttt{mesh2d}, then click \textbf{Add Layer}.
+\end{itemize}
+
+By clicking on the layer in the left sidebar, you can adjust the display: the symbology tab allows you to choose which variable is displayed, and whether or not the mesh is displayed.\\
+
+It is also possible to vary the time step displayed doing the following steps :
+
+\begin{itemize}
+  \item right-click on the toolbar and check the \textbf{Time Controller Panel} box.
+  \item Set the start and end times: the start time the 01-01-2025 00:00 and the end time is the start date + simulation time. The time step must also be adapted to the simulation time step.
+  \item Start the time display with the pause button or drag the cursor to navigate through the time steps.
+\end{itemize}

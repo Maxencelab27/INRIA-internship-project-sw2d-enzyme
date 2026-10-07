@@ -1,0 +1,66 @@
+\hypertarget{HydroBoundaryTimeSeriesFormat}{}
+\subsection{Hydro\_boundary\_time\_series.txt}
+\index{Boundary}
+\subsubsection{Purpose}
+This file is made to prescribe the boundary conditions for hydrodynamics (number, type and values). These conditions come in addition with the default one, corresponding to a wall condition $q=0$.
+%
+\subsubsection{Input file format}
+ \begin{tabular}{p{6cm} | p{9cm}}
+    \hline
+    Field(s) & Comment(s) \\
+    \hline  \hline
+    \texttt{\textbf{\#Comment   } } & Comment line, may be modified but not removed \\ \hline
+    \texttt{\textbf{\#bcs}} & Comment line, may be modified but not removed \\  
+    \hline
+    \texttt{\textbf{n}} & Integer $\geq 0$, number of (non default) boundary conditions \\  \hline
+    \texttt{\textbf{\# Codes   } } & Comment line, may be modified but not removed \\ \hline
+    \texttt{Code\_1 (...)  Code\_i  (...) Code\_n} & (negative values) the codes found in the .bc file used by \swConverter. Separated by spaces or tabs. \\ 
+    \hline
+    \texttt{\textbf{\# Types:}} & Comment line, may be modified but not removed \\  
+    \hline
+    \texttt{Type\_1 <Tab> (...) Type\_n} & BC type for each of the $n$ boundary codes specified 2 lines above. Separated by spaces or tabs.
+The following types are available.
+    \begin{description}
+    \item [fr] (--) prescribed outflowing Froude value
+    \item [h] (m) prescribed water depth
+    \item [phiWq] (m$^2$s$^{-1}$) prescribed unit discharge (positive if inflowing) multiplied by the (edge) porosity
+    \item [q] (m$^2$s$^{-1}$) prescribed unit discharge (positive if inflowing) across available flow section (see hereafter for details)
+    \item [z] (m) prescribed free surface elevation
+    \end{description} \\ \hline
+    \texttt{\textbf{\#   } } & Comment line, could be changed but not removed \\ \hline
+    \texttt{\textbf{\#}} & Comment line, could be changed but not removed \\  \hline
+    \texttt{Time\_0 Value\_1 <Tab> (...) Value\_n} & Time value, then field values for each of the $n$ boundary conditions. Separated by tabs. \\ \hline
+    \texttt{Time\_1 Value\_1 <Tab> (...) Value\_n} & Time value, then field values for each of the $n$ boundary conditions. Separated by tabs. \\ \hline
+    \end{tabular}
+%   
+\\
+~\\ 
+Note that
+\begin{itemize}
+\item Type Fr: this boundary should always correspond to outflowing conditions, otherwise leading to instability.
+\item Types phiq, q and u: a positive numerical value corresponds to inflowing conditions. In this case, the flow velocity vector is assumed to be locally orthogonal to the boundary. If the numerical value is negative (outflowing condition), the transverse flow velocity is advected outside the computational domain.
+\item Difference between types "phiWq" and "q": if "phiq" is used, the mass flux at the boundary is the numerical value written in the file. If option "q" is used, the mass flux is the numerical value multiplied by the porosity ($\phi$ for the SP model, $\phi_\Gamma$ for the DIP model).%for the DIP/DDP models).
+\end{itemize}   
+    
+%    
+\subsubsection{Sample files}
+In this sample file, there are 3 different types of boundary condition. BC 1 is impervious ($q = 0 \forall t$), BC 2 is a prescribed hydrograph boundary, BC 3 is a prescribed Froude number boundary.
+
+\begin{verbatim}
+#BC time series for "Gardon" model
+#number of boundary condition types
+3
+# Codes
+-1 -2 -3
+#Types: q, z, fr, h
+q q fr
+#—
+# t   	q	q	fr	
+ 0.		0.	0.	0.5
+1800.	0.	0.1	0.5
+14400	0.	0.1	0.5	
+28800	0.	15.	0.5
+43200	0.	5.	0.5
+57600	0.	0.1	0.5
+1e7		0.	0.1	0.5
+\end{verbatim}

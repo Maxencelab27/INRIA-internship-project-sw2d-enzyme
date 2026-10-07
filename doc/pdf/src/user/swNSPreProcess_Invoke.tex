@@ -1,0 +1,26 @@
+\section{Invoking \swNSPreProcess}
+
+NB: The \swNSPreProcess was coded in Python. It can be compiled into an executable file (using pyinstaller, for example), but by default, only the Python script is available. This chapter explains how to use this utility in both cases. \\
+Note that you must have Python installed to run the Python script. \\
+
+The \swNSPreProcess is used to create \file{input/qsections.txt} and \file{primary\_files/\textlangle filename\textrangle.bc}  files from the nodestrings defined in the \file{primary\_files/\textlangle filename\textrangle.2dm} file.
+Each nodestring in the .2dm file is converted into a qesction and/or a boundary and written in the corresponding file(s).
+
+\begin{enumerate}
+	\item Localize your project folder. Make sure that the \file{NS\_conversion.txt} and \file{\textlangle filename\textrangle.2dm} files are present in the \file{primary\_files} folder.
+	\item Open a shell/prompt (command line window).
+	\item \begin{itemize}
+		\item If you have \swNSPreProcess in the form of an executable file, type
+		\begin{small}\begin{verbatim}
+		sw2dNSPreProcess <path_to_project_folder> <destination_format>
+		\end{verbatim}\end{small}
+		\item If you are using the python script, type
+		\begin{small}\begin{verbatim}
+		python <path_to_python_apps>/sw2dNSPreProcess.py <path_to_project_folder> <destination_format>
+		\end{verbatim}\end{small}
+	\end{itemize}
+	This results in the creation of two files: \begin{itemize}
+		\item \file{primary\_files/\textlangle filename\textrangle.bc}, where \textlangle filename\textrangle  is the same as the .2dm file name
+		\item \file{input/qsections.txt}
+	\end{itemize}
+\end{enumerate}

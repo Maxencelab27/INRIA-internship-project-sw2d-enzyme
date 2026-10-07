@@ -1,0 +1,37 @@
+\subsection{extraction\_times\_list.txt}\label{sec:extraction_times_list}
+\index{Probes}
+\subsubsection{Purpose}
+This file specifies additional storage times in the form of maps. These are extra storage times that do not replace the \textbf{dt\_map}-periodic storage times specified in the input.solv file.
+%
+\subsubsection{Format description}
+\begin{tabular}{p{5cm} | p{10cm}}
+\hline
+Field(s) & Format \\
+\hline
+\hline
+\texttt{\# < text >} & Any line starting with the \texttt{\#} character are considered as comment lines and will be ignored \\
+\hline
+$t_1$ \texttt{name}$_1$ & extra map storage time \#1, followed by its label. The label will be appendend to the name of the map file created for this specific storage time. The time and the label must be separated by at least one space character (DO NOT USE TABs) \\
+\hline
+$\cdots$ & \\
+\hline
+$t_1$ \texttt{name}$_1$ & extra map storage time \#1, followed by its label. The label will be appendend to the name of the map file created for this specific storage time. The time and the label must be separated by at least one space character (DO NOT USE TABs) \\
+\hline
+\end{tabular}
+%
+\subsubsection{Example}
+In the file hereafter, 4 additional storage times are requested.
+\begin{verbatim}
+#
+# sample extractions times for specific data extractions
+#
+
+# Time   Extra label inserted in map file name
+11.2 extra_time_11.2s
+24. extra_time_24.0s
+17.4 extra_time_17.4s
+# comment line, insert as many as you like
+
+# Blank lines like above will be ignored
+22 extra_time_22s
+\end{verbatim}

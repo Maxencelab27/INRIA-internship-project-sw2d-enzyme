@@ -1,0 +1,17 @@
+\section{Invoking \swPorosityMapper}
+NOTE: it is expected that the binary file \swPorosityMapper is in your path, so that it may be invoked from anywhere in your directories. If not, you will have to make sure that you enter the complete relative path to the \swPorosityMapper file. Do not hesitate to use SW2D shortcuts (see Chapter \ref{ch:shortcuts}).
+
+The \swPorosityMapper binary file is used to generate porosity map files.
+Files \texttt{input/geometry.sw2d}, \texttt{primary\_files/input.pmap} and \texttt{primary\_files/buildings.txt} must be created before running the mapper.
+It is run as follows.
+
+\begin{enumerate}
+	\item Navigate to the parent folder of the \swdd project folder.
+	\item Make sure that the \texttt{buildings.txt} file is present in the \texttt{primary\_files} folder
+	\item Open a shell/prompt (command line window).
+	\item Type
+	\begin{verbatim}
+	sw2dPorosityMapper.exe <path_to_project_folder>
+	\end{verbatim}
+	\item One or three text files are generated based on the porosity model : \texttt{<POROSITY>\_cell\_porosity\_map.txt} and possibly \texttt{<POROSITY>\_edge\_bnd\_porosity\_map.txt} and \texttt{<POROSITY>\_edge\_int\_porosity\_map.txt}, where \texttt{<POROSITY>} is the porosity model specified in \texttt{input.pmap}.
+	\end{enumerate}

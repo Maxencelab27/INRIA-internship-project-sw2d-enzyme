@@ -1,0 +1,240 @@
+%%%
+%%%
+%%%
+\section{Overview}
+%%%
+\subsection{Main principles}\label{subsec_main_principles}
+The following, general development principles have been retained by the founding developer team.
+%%%
+\paragraph*{Minimality.}
+For each \texttt{sw<Model>} class, a single .h file and several .cpp files if needed.
+%%%
+\paragraph{Subsidiarity.}
+Classes, functions, methods are defined at the lowest possible level. For instanec, the time loop (for a transient model), initialization of parameters and variables, writing of results are model-dependent. Consequently, they are defined individually for each \texttt{sw<Model>} class. 
+
+
+%%%
+\subsection{Glossary}\label{subsec_glossary}
+The following definitions are used hereafter.
+\begin{description}
+\item [Model] (in the context of \swSolver). A model is a simplified representation of reality. It means:
+\begin{itemize}
+\item a set of state variables (generally, but not necessarily, conserved variables)
+\item a set of governing equations describing the behaviours of these variables
+\item the definitions of the fluxes, source terms, etc. representing the various processes at work
+\item a set of space- and/or time-dependent parameters
+\item a number of numerical techniques managing the solution of the governing equations (e.g. Godunov, Muscl-Evr, etc.), tailored specifically to the model under consideration.
+\end{itemize}
+\item [Process] A process is attached to a specific part of the governing equations. So far, three types are recognized in the \swSolver nomenclature:
+\begin{itemize}
+\item Hyp for the hyperbolic part of the equations
+\item Parab for the parabolic part (diffusion)
+\item SourceTerms for the source terms part (RHS of the governing equations)
+\end{itemize}
+\item [Type] A particular type of source term. Examples: Wind, Friction, PrecipitationInfiltration, SingularHeadLoss
+\item [sub-type] Within a given type: a specific formulation for this type. Example: for Type = Friction, sub-type = Manning.
+\item [Method] A specific numerical method used for the time integration of the governing equations. Examples: Godunov, Muscl-Evr.
+\end{description}
+%%%
+%
+\section{Directories and files}\label{sec_sourceFileNameStructure}
+See also \ref{sec_namingRules}.
+\subsection{Overview of folder structure}\label{subsec_overview_folder_structure}
+
+\begin{tabular}{| p{6cm} | p{8cm} |}
+\hline
+\texttt{src/} & the general folder for all source code files \\
+\hline
+\texttt{src/common} & source files used by several apps \\
+\hline
+\texttt{src/sw2dConverter} & source files that are specific to the \swConverter executable \\
+\hline
+\texttt{src/sw2dSolver} & source files that are specific to the \swSolver executable \\
+\hline
+\texttt{src/sw2dSolver/common} & general purpose source files  in the \swSolver executable \\
+\hline
+\texttt{src/sw2dSolver/models} & folder containing the various model subfolders \\
+\hline
+\texttt{src/sw2dSolver/models/common} & folder containing the files that are used by several models \\
+\hline
+\texttt{src/sw2dSolver/models/<model>} & folder containing the files for Model \texttt{<model>} (e.g. liswes, swes, sp). \\
+\hline
+\texttt{src/sw2dSolver/models/swParent.*} & header + source file for the \texttt{<Parent>} class from which all models inherit. \\
+\hline
+\texttt{src/sw2dSolver} & source files that are specific to the \swZone executable \\
+\hline
+\end{tabular}\\
+%%
+%%
+\subsection{in \texttt{<Model>} folders}
+\paragraph{General rule.}
+A .cpp file name has the following structure:
+\begin{lstlisting}
+ sw<Model><Process><Type><Sub-type><Method>.cpp
+ \end{lstlisting}
+  All arguments between \texttt{< >} are optional, however the order of these arguments (even empty) should be preserved.
+There is only 1 .h file for a given model : \texttt{sw<Model>.h}. All .cpp files falling within the context of this \texttt{<Model>} use the header file \texttt{sw<Model>.h} and are not allowed to use the header from another model.
+%%%
+\paragraph{Example\#1:} \texttt{swSwesHypGodunov.cpp} (uses \texttt{swSwes.h}): 
+\begin{itemize}
+\item \texttt{<Model> = Swes} (the Shallow water equations)
+\item \texttt{<Process> = Hyp} (the hyperbolic part of the equations is being dealt with)
+\item \texttt{<Type>, <Sub-type>} are empty (meaningless for hyperbolic terms)
+\item \texttt{<Method> = Godunov} (the first-order Godunov scheme is used to solve the hyperbolic part of the shallow water equations)
+\end{itemize}
+%%%
+%%%
+\paragraph{Example\#2:} \texttt{swSwesSourceFrictionChezy} (uses \texttt{swSwes.h}):
+\begin{itemize}
+\item \texttt{<Model> = Swes} (the Shallow water equations)
+\item \texttt{<Process> = Source} (the source term part of the equations is being dealt with)
+\item \texttt{<Type> = Friction} within the source term, the specific process bein handled is friction
+\item \texttt{<Sub-type> = Chezy} the friction term is computed using Chezy's approach.
+\item \texttt{<Method>} is empty because there is only one method used for the time integration, so there is no need to define a specific keyword for it (it would be different if e.g. an explicit + implicit + RK2 methods were availble for instance).
+\end{itemize}
+%
+%
+%
+%
+\section{Class, method and variable naming rules}\label{sec_namingRules}
+%
+%
+%
+\subsection{Class naming}\label{subsec_classNamingRules}
+SW2D classes always start with the \texttt{sw} prefix. This prefix is followed by a number of keywords, each starting with a capital letter for improved readability.
+
+%
+%
+\paragraph{common/ classes.}
+
+%
+%
+\paragraph{models/ classes.}
+
+%
+%
+%
+\subsection{Method naming}
+Wihtin a given class, a given method name always starts with a lowercase character. When the method is made of several words, any new word starts with an uppercase character. Example:
+\texttt{computeTimeStep}
+%
+%
+%
+\subsection{variable naming}
+\begin{itemize}
+\item Variable names are made of lowercase characters. One of the very few exceptions are L (and its mirror R) to denote the left- and right-hand side attributes of interfaces, beause most code editors do not allow for an easy distinction between lowercase L and 1 (unit number).
+\item When a variable is made of several words, each word is separated from the preceding by an underscore (\_) character.
+\item When the variable refers to a specific attribute for an object, the variable name should always follow a descending hierarchy through object properties. 
+
+Example:
+\texttt{edge\_midpoint\_coordinate\_x[i]} refers to the $x-$ coordinate of the midpoint of an edge. The logic is the following:
+\begin{itemize}
+\item an \text{edge} has a number of attributes, such as its length, normal unit vector, etc. Here, the particular attribute under consideration is its midpoint, hence \texttt{\_midpoint}.
+\item one of the attributes of the midpoint is its set of coordinates, hence \texttt{\_coordinate}
+\item the particular coordinate of interest is the $x-$ coordinate, hence \texttt{\_x}.
+\end{itemize}
+\end{itemize}
+
+%
+%
+%
+%
+\section{Coding rules}
+
+Each class should be described in a dedicated set of 2 files: \texttt{<class>.h} and \texttt{<class>.cpp}.
+%
+%
+%
+\subsection{Headers}
+
+Header (.h) files have the following structure.
+\begin{enumerate}
+	\item \texttt{\# pragma once} instruction.
+	\item \texttt{\# include< >} for system/language classes (e.g. \texttt{<vector>}, \texttt{<string>}), in alphabetical order.
+	\item \texttt{\# include " "} instructions for sw2d classes(e.g. "swIO.h"), in alphabetical order .
+	\item \texttt{class} instruction defining the local classes.
+	\item For each class
+	\begin{enumerate}
+	\item public methods (alphabetical order),
+	\item public attributes (alphabetical order),
+	\item Protected methods (alphabetical order),
+	\item Protected attributes (alphabetical order),
+	\item Private methods (alphabetical order),
+	\item Private variables (alphabetical order).
+	\end{enumerate}
+\end{enumerate}
+%
+%
+%
+\subsection{CPP files}
+
+C++ (.cpp) have the following structure.
+
+\begin{enumerate}
+	\item \texttt{\# include} instructions for external (e.g. math, IO) libraries,in alphabetical order,
+	\item \texttt{\# include} instructions for sw2d libraries, in alphabetical order,
+	\item Constructor method for the class,
+	\item Destructor method for the class,
+	\item other methods, in alphabetical order, irrespective of their public/protected/private nature.
+\end{enumerate}
+%
+%
+%
+\subsection{Code commenting}
+%
+%
+\paragraph{Reserved keywords.}
+The following keywords are reserved to help the developer team to track issues in the code. They are used as entries in the Doxygen-generated documentation. They may appear in .h and/or .cpp files.
+\begin{itemize}
+\item \texttt{/** @bug: <text> **/} Signalling a bug.
+\item \texttt{/** @todo: <text> **/} Tasks that are incomplete/still to be done.
+\item \texttt{/** @why: <text> **/} Request for information.
+
+\end{itemize}
+
+%
+%
+%
+%
+\subsection{Doxygen fields}
+%
+%
+%
+\paragraph{Header files.}
+The attributes of the class are briefly documented in the header file next to their declaration. The following bracketing should be used for the purposes of Doxygen: \texttt{/**<  **/}
+
+Example: 
+\begin{verbatim}
+     std::vector<double> z_bottom;   /**< [i]: bottom level of cell with Id i **/
+\end{verbatim}
+%
+%
+\paragraph{C++ files.}
+For each method, the purpose, parameters and return type of the method should be described using Doxygen formatting:
+\begin{itemize}
+\item \texttt{/**} to start the Doxygen commenting sequence
+\item \texttt{@brief} followed by the decription of the method (on the same line)
+\item \texttt{@param} name of the variable, followed by its decription (1 line per parameter). Can be in or out.
+\item \texttt{@return} meaning of the variable returned by the method (in the case where only one variable is expected)
+\item \texttt{*/} to close the Doxygen commenting sequence
+\end{itemize}
+Example:
+\begin{verbatim}
+/**
+ * @brief Computes fluxes at boundary edges for the SWES models
+ * @param[in] celL: Id of cell on the left-hand side of the interface 
+ * @param[in] celR: Id of cell on the right-hand side of the interface 
+ * @param[in] qL  : normal unit discharge in the cell on the LHS of the interface 
+ * @param[in] qR  : normal unit discharge in the cell on the RHS of the interface 
+ * @param[in] rL  : tangent unit discharge in the cell on the LHS of the interface 
+ * @param[in] rR  : tangent unit discharge in the cell on the RHS of the interface 
+ * @param[in] side: the side of the interface on which the boundary is located ('L' or 'R')
+ * @param[in] zL  : free surface elevation in the cell on the LHS of the interface
+ * @param[in] zR  : free surface elevation in the cell on the RHS of the interface
+ * @param[out] F1 : mass flux in the direction normal to the interface
+ * @param[out] F2 : momentum flux in the direction normal to the interface
+ * @param[out] F3 : momentum flux in the direction tangent to the interface 
+ * @param[out] s2R: geometric source term on the RHS of the interface
+ */
+
+\end{verbatim}

@@ -1,0 +1,92 @@
+\section{System Requirements}
+% \subsection{Conda}
+% The \swdd software strongly relies on Conda, an open source package management. This software is mandatory for any install from sources. Installing SW2D thanks to binary files \textit{does not} require installing Conda.\\
+% Conda is a tool to install and manage different software libraries, possibly at different versions, into independent system configurations called environments. Each environment has a name and stores its own version of each library (distinct from the one of your general system) so that you can make installations that would be incompatible with the rest of your system without impacting its functioning and breaking everything!
+% Concretely, miniconda will create a new directory for each environment where it will download libraries, binaries and packages. \\
+% SW2D has its own set of required libraries at specific versions, and the safest way to install it and its
+% requirements without affecting the rest of your system is to do it through a new independent conda environment.\\
+
+% Download Conda for Linux, MacOs and Windows on \href{https://docs.conda.io/en/latest/miniconda.html}{conda.io}. %%\pfg{add precision: which version of python for conda, what install options? (add to path, admin mode, etc.)}
+
+\subsection{Git}
+Git is a free and open source distributed version control system designed to handle everything from small to very large projects with speed and efficiency.\\
+Git is easy to learn and has a tiny footprint with lightning fast performance. It outclasses SCM tools like Subversion, CVS, Perforce, and ClearCase with features like cheap local branching, convenient staging areas, and multiple workflows.\\
+
+In the that Git is not already installed on your machine, you may download it from \href{https://git-scm.com/downloads}{\textcolor{blue}{here}}.
+
+\subsection{C++ compiler and related tools}\label{sec:C++}
+
+\subsubsection{Linux}
+
+The \texttt{gcc} compiler, \texttt{make} and \texttt{cmake} are pre-installed on most Linux distributions. In the case you don't have them, install the essential GCC set of tools:
+    \begin{lstlisting}[language=bash]
+	sudo apt install build-essential
+	sudo apt install cmake
+    \end{lstlisting}
+\subsubsection{MacOs}
+The \texttt{gcc} compiler, \texttt{make} and \texttt{cmake} are usually pre-installed on your Apple computer. You may want to doublecheck with the complete install of XCode command line tools:\\
+    \begin{lstlisting}[language=bash]
+        sudo xcode-select --install
+    \end{lstlisting}
+
+\subsubsection{Windows}
+\begin{enumerate}
+    \item Install \texttt{MSYS2} for Windows
+    \begin{enumerate}
+        \item Download the \texttt{MSYS2} installer from \href{https://msys2.org}{\textcolor{blue}{https://msys2.org}}
+        \item Run the installer (no need to change the default options)
+    \end{enumerate}
+    
+    \item Start the \texttt{MSYS2} utility (\texttt{MSYS2 MSYS}) with admin privileges
+
+    \item Type the following command
+    \begin{lstlisting}[language=bash]
+        pacman -S mingw-w64-ucrt-x86_64-gcc (answer Y)
+    \end{lstlisting}
+   
+    \item If you are willing to install from sources or make developments in the code, type the following 2 commands
+    \begin{lstlisting}[language=bash]
+        pacman -S mingw-w64-ucrt-x86_64-make (answer Y)
+        pacman -S mingw-w64-ucrt-x86_64-cmake (answer Y)
+    \end{lstlisting}
+
+    \item Setup environment variables
+    \begin{enumerate}
+        \item In the Search bar, type \texttt{Modify user envir. variables" (your user account)}
+        \item in PATH of User variables (not environment variables), add new path:
+        \begin{itemize}
+            \item \lstinline{C:\[Path1]\msys64\ucrt64\bin} where \lstinline{[Path1]} is the location where \texttt{MSYS2} has been installed
+        \end{itemize}
+    \end{enumerate}
+\end{enumerate}
+
+\subsection{Python}
+
+Although most of \texttt{sw2d} is coded in C++, some parts or additional tools are coded in Python (e.g. mr-tests process, sw2dOutputConverter).
+The developer must therefore have installed python to work with these (optional) parts of the code, as well as certain modules. To do this, follow the steps below :
+
+\begin{itemize}
+    \item Download and install Python from \href{https://www.python.org/downloads/}{\textcolor{blue}{Python official website}}.
+    \item Set up environment variables :
+    \begin{enumerate}
+        \item In the Search bar, type \texttt{Modify user envir. variables" (your user account)}
+        \item In PATH of User variables (not environment variables), add paths where Python has been installed, e.g.:
+        \lstinline{C:\Users\[user_name]\AppData\Local\Programs\Python}
+    \end{enumerate}
+    \item Install modules : Open your terminal and type the following commands :
+    \begin{enumerate}
+        \item \lstinline{python -m pip install numpy}
+        \item \lstinline{python -m pip install matplotlib}
+        \item (optional) \lstinline{python -m pip install netCDF4}
+        \item (optional) \lstinline{python -m pip install pyinstaller}
+    \end{enumerate}
+\end{itemize}
+
+
+% \begin{figure}[H]
+%    \begin{center}
+%    \includegraphics[width=0.8\columnwidth]{figures/layout.png}
+%    \caption{\label{fig:Dev_layout}Workflow of a typical \swdd computation}
+%    \end{center}
+%\end{figure}
+%

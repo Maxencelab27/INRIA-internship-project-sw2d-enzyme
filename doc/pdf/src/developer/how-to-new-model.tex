@@ -1,0 +1,236 @@
+\section{Abstract}
+This is the step-by-step procedure to be followed to develop a new hyperbolic model. Template : \texttt{generic}.
+%
+%
+%
+%
+\section{Structure}
+%
+%
+%
+\subsection{Definition of "Model"}
+The term "hyperbolic model" encompasses the following.
+\begin{itemize}
+\item A model (i.e. a set of governing equations) for the propagation process (e.g. shallow water equations, single porosity model, dual integral porosity model). This means that the expressions for the conserved variables, fluxes, wave propagation speeds, etc., must be defined.
+\item Models for the various processes (precipitation, infiltration, friction, momentum dissipation, etc.) that are liable to be involved (e.g. precipitation is not treated in the same way in the SWEs, SP and DIP models).
+\item Methods for the numerical solution of the governing equations (e.g. implementation of the Godunov or MUSCL-EVR techniques).
+\end{itemize}
+From one model to another, the parameters may not have the same nature and may take different names (e.g. the SP model requires that a map be provided for the Boussinesq and Porosity parameters, while the SWEs model does not).
+%
+%
+%
+\subsection{File structure \& naming}
+\textbf{Please read Subsection  \ref{sec_namingRules} first.}
+
+
+Any new hyperbolic model will incorporate 
+\begin{itemize}
+\item existing, general procedures used by several models (e.g. for time series reading, boundary condition interpolation). These can be found in the \texttt{src/Common} folder,
+\item procedures inherited from existing ones and overriding them,
+ \item new procedures.\\
+\end{itemize}
+The latter two types are implemented in .cpp and .h files placed in a folder that is specific to the model under consideration.
+
+%
+%
+%
+%
+\section{Step 1: source file creation}
+%
+%
+\subsection{Tasks}
+\begin{enumerate}
+\item Create a folder for the source code that will be specific to the new model. This new folder should be located under \texttt{solver/models/}.
+\item Create the .h file for this new model (reminder: there is only one .h file for a given model, while there may be several .cpp files).
+\item Create the .cpp files along the nomenclature \texttt{sw<model><Process><Type><Sub-type><Method>}
+\item Introduce the new source file names in \texttt{src/sw2dSolver/CmakeLists.txt}
+\end{enumerate}
+%
+%
+\subsection{Example}
+Structure of the src/sw2dSolver folder with source file detail for the DIP model.
+\begin{lstlisting}
+src/sw2dsolver
+|---common
+|---models
+    |---common
+    |---dip
+    |    |- swDip.cpp
+    |    |- swDip.h
+    |    |- swDipHyp.cpp
+    |    |- swDipHypGodunov.cpp
+    |    |- swDipMusclEvr.cpp
+    |    |- swDipParab.cpp
+    |    |- swDipSourceFriction.cpp
+    |    |- swDipSourceRunoffInfiltration.cpp
+    |    |- swDipSourceSourceWind.cpp
+    |---liswes
+    |---sp
+    |---swes
+\end{lstlisting}
+%
+%
+%
+\section{Step 2: allowing for a new model}
+%
+%
+%
+\subsection{Tasks}
+\begin{enumerate}
+\item In \texttt{swSolverParam.cpp}, modify \texttt{swSolverParam::setModelHyperb()}:
+\begin{enumerate}
+	\item Introduce the new model name in the test, 
+	\item Add it to the list of allowed model keywords.
+\end{enumerate}
+\item in \texttt{swParent.cpp}
+\begin{enumerate}
+\item include the header file of the new model
+\item  \texttt{swParent::create()} introduce model creation.
+\end{enumerate}
+\end{enumerate}
+%
+%
+%
+\subsection{Example}
+\paragraph{swSolverParam::setModelHyperb():}
+ Source code allowing for the DIP, LISWEs, SWEs and SP models. Any other model name will trigger a fatal error and the solver to stop.
+\begin{lstlisting}
+bool swSolverParam::setModelHyperb(const std::string& text)
+/**
+ * @brief Sets the hyperbolic mode (with or without porosity)
+ * @param[in] text containing the model
+ * @return bool of exit\_success/failure
+ */
+{
+    model_hyp = swString::toLower(text);
+    if (!((model_hyp == "dip")
+          (model_hyp == "liswes") ||
+          (model_hyp == "sp") ||
+          (model_hyp == "swes")))
+    {
+        logError() << "  Invalid value for parameter 'model_hyp'" << text;
+        logError() << "    allowed values for the 'model_hyp' parameter are";
+        logError() << "    - dip\tDual Integral Porosity model"
+        logError() << "    - liswes\tLocal Inertial Shallow Water Equations";
+        logError() << "    - swes\tclassical Shallow Water Equations";
+        logError() << "    - sp\tSingle Porosity model";
+        return EXIT_FAILURE;
+    }
+    return EXIT_SUCCESS;
+}
+\end{lstlisting}
+%
+%
+\paragraph{swParent::create():}
+\begin{lstlisting}
+    swParent *model = nullptr;
+    logInfo() << "  model_hyp = " << solver_param->getModelHyp();
+    if (solver_param->getModelHyp() == "dip")
+    {
+        model = new swDip();
+    }
+    else if (solver_param->getModelHyp() == "liswes")
+    {
+        model = new swLiswes();
+    }
+    else if (solver_param->getModelHyp() == "sp")
+    {
+        model = new swSp();
+    }
+    else if (solver_param->getModelHyp() == "swes")
+    {
+        model = new swSwes();
+    }
+    else
+    {
+        logError() << "Hyperbolic model not implemented:" << solver_param->getModelHyp();
+        logError() << "  Allowed hyperbolic models (keyword model_hyperb) are:";
+        logError() << "    - liswes : local inertial shallow water model";
+        logError() << "    - sp     : single porosity model";
+        logError() << "    - swes   : classical shallow water model";
+        logFatal(__FILE__, __func__, __LINE__);
+    }
+
+\end{lstlisting}
+%
+%
+%
+\section{Reading parameter files}
+%
+%
+%
+\subsection{Tasks}
+\begin{enumerate}
+\item Should any model-specific parameter files be needed by the new model in addition to the already existing ones, their names must be reserved in the \texttt{common/fileList.h} source file.
+\item in \texttt{sw<Model>.cpp}, define a function \texttt{set<whaterver>parameter()} to be called by the \texttt{sw<Model>::init()} function
+\end{enumerate}
+
+%
+%
+%
+\subsection{Example}
+For the DIP model, the cell and edge porosity parameter files are DIP-specific and must be added to the list of existing files in fileLIst.h:
+\begin{lstlisting}
+    const std::string input_dip_porosity_cell_file = input_folder + "DIP_cell_porosity_map.txt";
+    const std::string input_dip_porosity_edge_file = input_folder + "DIP_edge_porosity_map.txt";
+\end{lstlisting}
+%
+%
+%
+%
+
+%
+%
+%
+%
+\begin{comment}
+\section{Reading initial conditions files}
+
+%
+%
+%
+%
+\section{Reading time series files}
+%
+%
+%
+%
+\section{Implementing the time stepping part}
+%
+%
+%
+%
+%
+%
+%
+\section{Implementing specific outputs}
+%
+%
+%
+\subsection{Log files}
+%
+%
+\paragraph{Declaring log file names.}
+Any model-specific log files must be added to the list of reserved names in \texttt{serc/common/swFile.h}.\\
+For example, the DIP log files:
+\begin{lstlisting}
+    const std::string log_dip_porosity_cell_file = log_folder + "DIP_porosity_cells.log";
+    const std::string log_dip_porosity_edge_file = log_folder + "DIP_porosity_edges.log";
+\end{lstlisting}
+%
+%
+\paragraph{Implementing logs.}
+Log file writing functions are called in the sw<Model>::init() function. A generic writeLogs() function calls the model-specific writeLog***() functions. \\
+Any new model-specific writeLog must be declared in sw<Model>.h and implemented in sw<Model>.cpp. \\
+Example:
+
+
+
+%
+%
+\subsection{Simulation results}
+%
+%
+%
+\subsection{Citation logs}
+\end{comment}

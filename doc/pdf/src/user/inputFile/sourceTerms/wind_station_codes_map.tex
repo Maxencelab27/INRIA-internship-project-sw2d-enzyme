@@ -1,0 +1,60 @@
+\subsection{wind\_station\_codes\_map.txt}\label{sec_SourceTerm!Wind!windStationMap}
+\index{Source term!Wind}
+\subsubsection{Purpose}
+SW2D takes as an input a wind forcing that is variable in both space and time. At a given time, the wind is taken uniform over zones (also called "stations") within the computational domain. The shape and extension of these zones remain constant over the entire simulation. The purpose of the file \texttt{wind\_stations\_codes\_map.txt} is to specify the spatial extension of these zones on a cell-by-cell basis. The stations are assigned integer numbers, that are not necessarily consecutive. 
+
+Non-consecutive station numbering allows maximum flexibility. Assume for instance the user is willing to make a scenario analysis using two different time series over the same area. In the first simulation, Station code 1 will be assigned do the entire domain. In the second run, Station code 2 will be assigned to all cells. This does not require that the compete time series be changed.
+%
+\subsubsection{Input file format}
+%
+File format for a uniform station code.  \texttt{\textbf{Bold}} : keyword, must appear as such in the file. \texttt{<Tab>}: tabulation character. \\
+    \begin{tabular}{p{6cm} | p{9cm}}
+    \hline
+    Field(s) & Comment(s) \\
+    \hline  \hline
+    \texttt{\textbf{Unif} <Tab> \textbf{1}} & Flag is 1 because there is only one wind station for the entire domain (uniform station map) \\ \hline
+    \texttt{\textbf{==== Default Param}} & Section separator line, leave unchanged \\  \hline
+    \texttt{\textbf{Xind}} & Comment line, leave unchanged \\  \hline
+    \texttt{Xind } & The (uniform) wind station code to be used over the entire domain \\ \hline
+    \texttt{\textbf{==== Distrib}} & Section separator line, leave unchanged \\  \hline
+    \end{tabular}
+%
+\vspace{10mm} \\
+%
+File format for a spatially distributed wind station code.  \texttt{\textbf{Bold}} : keyword, must appear as such in the file. \texttt{<Tab>}: tabulation character. \\
+    \begin{tabular}{p{6cm} | p{9cm}}
+    \hline
+    Field(s) & Comment(s) \\
+    \hline  \hline
+    \texttt{\textbf{Unif} <Tab> \textbf{0}} & Flag is 0 because there is more than one wind station for the entire domain \\ \hline
+    \texttt{\textbf{==== Default Param}} & Section separator line, leave unchanged \\  \hline
+    \texttt{\textbf{Xind}} & Comment line, leave unchanged \\  \hline
+    \texttt{Xind } & This value will be ignored because \texttt{Flag} is zero \\ \hline
+    \texttt{\textbf{==== Distrib}} & Section separator line, leave unchanged \\  \hline
+    \texttt{Xind[i] }  & Wind station codes, provided on a cell-by-cell basis. Index i is the index of the cell in the mesh.  \\ \hline
+    \end{tabular}
+%
+\subsubsection{Sample files}
+%
+\paragraph*{Example\#1: Uniform wind station code}
+In this example, the station code is uniformly 1 over the entire domain.
+\begin{verbatim}
+Unif	1
+==== Default Param
+Xind
+1
+==== Distrib
+\end{verbatim}
+%
+\paragraph*{Example\#2: Distributed wind station code}
+In this example, there are three cells in the domain. Cells 1 and 3 have station code 1, cell 2 has station code 4.
+\begin{verbatim}
+Unif	0
+==== Default Param
+Xind
+1
+==== Distrib
+1
+4
+1
+\end{verbatim}

@@ -1,0 +1,16 @@
+\section{Starting a simulation from a previous run}
+\subsection*{Objectives}
+Performing a simulation using the shallow water equations implies to provide the initial distribution of the hydrodynamic variables. When modeling real world configuration, it can be useful to \emph{(i)} compute initial state coherent with the shallow water equations and known boundary conditions or to \emph{(ii)} pursue a previous simulation.
+
+This section presents the use of hotstart feature \emph{i.e.} starting a simulation using results of a previous run.
+
+\subsection*{Using the hoststart feature}
+The hotstart feature requires that a simulation using the \swSolver has run. For the sake of this tutorial, this simulation is assumed to be in the folder \file{root/simu1}. The hotstart feature aims to use a map of the hydrodynamic result \file{root/simu1/output/ResultHydro\_pDDDDdHHhMMmSSsXXX.txt} as initial condition for an other simulation using the same geometry file \file{root/simu1/input/geometry.sw2d}.
+
+The hotstart is activated using the following steps:
+\begin{enumerate}
+\item Create the new simulation (in the folder \file{root/simu2}). It is generally more convenient to make a copy of the folder \file{root/simu1} and to use it for the second simulation.
+\item Copy the selected result map \file{root/simu1/output/ResultHydro\_pDDDDdHHhMMmSSsXXX.txt} to the new input folder \file{root/simu2/input} without renaming the file.
+\item Open the file \file{root/simu2/input/input.solv} and define the keyword \param{hotstart\_time} to the time (in seconds) corresponding to pDDDDdHHhMMmSSsXXX. The data contained in the hotstart file will be the initial conditions of the new simulation and will thus correspond to the hydrodynamic at the time defined by the keyword \param{t0} (whatever its value).
+\item run \swSolver
+\end{enumerate}

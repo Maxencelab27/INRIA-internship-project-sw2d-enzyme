@@ -1,0 +1,19 @@
+\section{Simulation sequence}
+
+The \swdd simulation sequence is the following.
+
+\paragraph*{Prior to the simulation.}
+It is assumed that a mesh file is readily available. At present, the \texttt{.2dm} file format is accepted. The .2dm format description can be found on the \href{https://www.xmswiki.com/wiki/SMS:2D_Mesh_Files_*.2dm}{SMS:2DM Wiki page}.
+You may build your own mesh with the \href{https://aquaveo.com/software/sms/}{Aquaveo SMS} software (Windows only), that is compatible with QGIS input files.\\
+For Linux/MacOS users, the Python module \href{https://py2dm.readthedocs.io/}{py2dm} can be used to build simple mesh files.
+
+\paragraph*{Typical simulation sequence.}
+\begin{enumerate}
+	\item (Mandatory) Process the mesh. This is done via the \swConverter executable, see Chapter \ref{ch:swConverter}.
+	\item (Optional) Create the input files for the various spatially distributed model parameters (e.g. friction coefficient, porosity, etc.). This step is carried out using the \swZone executable (see Chapter \ref{ch:swZone}).
+	\item (Mandatory) Create the input files for time-varying series, such as rainfall, boundary condition time series. This step must be done manually. See Chapter \ref{ch:swSolver} for time series file format specifications.
+	\item  (Mandatory) Run the simulation. This is done by starting the \swSolver executable (see Chapter \ref{ch:swSolver}).
+\end{enumerate}
+
+\paragraph*{Binary files in the path}
+Starting from now, it is expected that the binary files \swConverter, \swZone, \swSolver are in your user path, so that they may be invoked from anywhere in your directories. If not, you will have to make sure that you enter the complete relative path to the executables. Don't hesitate to use SW2D shortcuts (see Chapter \ref{ch:shortcuts}).

@@ -1,0 +1,58 @@
+\subsection{DIP\_cell\_porosity\_map.txt}\label{sec_Model!Hyperbolic!DIP!cellPorosityMap}
+\index{Model!Hyperbolic!DIP}
+\subsubsection{Purpose}
+The Dual Integral Porosity (DIP) model requires that the storage porosity $\phi_\Omega$ be specified on a cell-by-cell basis.
+%
+\subsubsection{Input file format}
+%
+File format for a uniform storage porosity.  \texttt{\textbf{Bold}} : keyword, must appear as such in the file. \texttt{<Tab>}: tabulation character. \\
+    \begin{tabular}{p{6cm} | p{9cm}}
+    \hline
+    Field(s) & Comment(s) \\
+    \hline  \hline
+    \texttt{\textbf{Unif} <Tab> \textbf{1}} & Flag is 1 because $\phi_\Omega$ is uniform \\ \hline
+    \texttt{\textbf{==== Default Param}} & Section separator line, leave unchanged \\  \hline
+    \texttt{\textbf{PhiW}} & Comment line, leave unchanged \\  \hline
+    \texttt{Phi\_Omega}     & The uniform $\phi_\Omega$ value \\ \hline
+    \texttt{\textbf{==== Distrib}} & Section separator line, leave unchanged \\  \hline
+    \end{tabular}
+%
+\vspace{10mm} \\
+%
+File format for a spatially distributed parameter set.  \texttt{\textbf{Bold}} : keyword, must appear as such in the file. \texttt{<Tab>}: tabulation character. \\
+    \begin{tabular}{p{6cm} | p{9cm}}
+    \hline
+    Field(s) & Comment(s) \\
+    \hline  \hline
+    \texttt{\textbf{Unif} <Tab> \textbf{0}} & Flag is 0 because $\phi_\Omega$ is spatially variable \\ \hline
+    \texttt{\textbf{==== Default Param}} & Section separator line, leave unchanged \\  \hline
+    \texttt{\textbf{PhiW}} & Comment line, leave unchanged \\  \hline
+    \texttt{Phi\_Omega}     & This value will be ignored because \texttt{Flag} = 1 \\ \hline
+    \texttt{\textbf{==== Distrib}} & Section separator line, leave unchanged \\  \hline
+    \texttt{Phi\_Omega [i]}      & Storage porosity $\phi_\Omega$, provided on a cell-by-cell basis. Index i is the index of the cell in the mesh.  \\ \hline
+    \end{tabular}
+%
+\subsubsection{Sample files}
+%
+\paragraph*{Example\#1: Uniform storage porosity}
+The porosity is identical for all cells, equal to 0.5.
+\begin{verbatim}
+Unif	1
+==== Default Param
+PhiW
+0.5
+==== Distrib
+\end{verbatim}
+%
+\paragraph*{Example\#2: Distributed storage porosity}
+There are 3 cells in the model, cells 1 to 3 have storage porosities of 0.5, 0.7 and 0.1 respectively.
+\begin{verbatim}
+Unif	0
+==== Default Param
+PhiW
+0.5
+==== Distrib
+0.5
+0.7
+0.1
+\end{verbatim}

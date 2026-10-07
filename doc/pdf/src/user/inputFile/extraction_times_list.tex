@@ -1,0 +1,44 @@
+\subsection{extraction\_times\_list.txt}
+%%
+\subsubsection{Purpose}
+
+This file contains a line for each extra result to display at chosen times that may be different from the storing times defined by \param{dtstor} parameter.
+
+This option is activated by the presence of the file in the input folder (no specific parameter is required in the \emph{input.solv}).
+
+The results are stored in new output files (one per chosen time) with the same format as results stored with the \param{dtstor} timestep. 
+
+%%
+\subsubsection{Format description}
+ Each line contains the time in seconds from the beginning of the simulation, at which the results extraction is expected, following by a chosen name for this result.
+
+Times do not need to be ordered in the file.
+
+Lines starting with a hash are ignored as well as empty lines or space only lines.
+If two lines give the same time, the second one is ignored. 
+
+Note that the name following the time is mandatory.
+%%
+\paragraph*{Sample file}
+\pfg{Répertoire d'exemple: mettre ce fichier dans distrib/file\_template/input/... }
+With the following input file
+
+\begin{verbatim}
+#
+# some extractions times for specific data extractions
+#
+3  extract\_time\_3
+
+10 time\_10
+  
+3     extract\_time\_1
+#20  extract\_time\_20
+\end{verbatim}
+
+the code will generate 2 output files with names:
+\begin{verbatim}
+    ResultsTime_p0000d00m03s000_extract_time_3.csv
+    ResultsTime_p0000d00m10s000_time_10.csv
+\end{verbatim}
+
+Note that the real extraction time is the nearest time computed according to the current timestep and may be different from the chosen time.

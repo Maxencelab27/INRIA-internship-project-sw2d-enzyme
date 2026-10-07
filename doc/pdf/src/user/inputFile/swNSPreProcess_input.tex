@@ -1,0 +1,48 @@
+\section{File \texttt{NS\_conversion.txt}}
+\subsection{Purpose}
+This is text a file specifying, for each nodestring, the name of the boundary and/or qsection in which it will be converted.
+
+\subsection{Format description}
+\begin{footnotesize}
+\begin{tabular}{p{4cm} | p{10cm} }
+\hline
+Field(s) & Specification \\
+\hline
+\hline
+$NS$    $bc\_code$   $qsection\_name$ & This is the header line. It must be inserted without modification \\
+\hline
+$ns_1 \rightharpoonup bc_1 \rightharpoonup qsection_1$ &
+\begin{itemize}
+\item [$ns_1$] SMS ID of the 1st nodestring
+\item [$bc_1$] BC code of the destination boundary for the 1st nodestring, $0$ means no boundary
+\item [$qsection_1$] Name of the destination qsection for the 1st nodestring, $None$ means no qsection
+\item [$\rightharpoonup$] Tabulation character or space
+\end{itemize} \\
+\hline
+$\vdots$ & (repeat) \\
+\hline
+$ns_N \rightharpoonup bc_N \rightharpoonup qsection_N$ &
+\begin{itemize}
+\item [$ns_N$] SMS ID of the $N$th nodestring
+\item [$bc_N$] BC code of the destination boundary for the $N$st nodestring, $0$ means no boundary
+\item [$qsection_N$] Name of the destination qsection for the $N$st nodestring, $None$ means no qsection
+\end{itemize} \\
+\hline
+\end{tabular}
+\end{footnotesize}
+
+\subsection{Sample file}
+
+In the following file : \begin{itemize}
+    \item Nodestring 1 is converted into a boundary with BC code $-1$ and a qsection with name $q_1$.
+    \item Nodestring 2 is converted into a qsection with name $q_2$.
+    \item Nodestring 3 is converted into a boundary with BC code $-2$.
+\end{itemize}
+
+\begin{verbatim}
+NS	bc_code	qsection_name
+1	-1	q_1
+2	0	q_2
+3	-2	None
+\end{verbatim}
+%%

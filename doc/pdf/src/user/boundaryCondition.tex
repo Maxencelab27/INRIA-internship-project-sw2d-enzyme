@@ -1,0 +1,82 @@
+\chapter{Boundary conditions}
+
+The boundary edges, are always oriented so that there is no cell on the left hand side of the edge and a cell on the right hand side.
+
+Looking for the fluxes (F1 and F2) through the boundary.
+
+The parameters and the state variables are fully known: $q_{in}$, $h_{in}$ or $z_{in}$ (depending on the considered model).
+
+\begin{subequations}
+\begin{eqnarray}
+u_{in} & = & q_{in} / h_{in} \\
+h_{in} & = & \max(z_{in} - z_{\min}, 0.)
+\end{eqnarray}
+\end{subequations}
+where $z_{\min}$ is the minimum bottom elevation on the edge.
+
+\section{time interpolation}
+The boundary time series are defined in the file hydro\_boundary\_time\_series.txt for hydrologic conditions 
+
+\begin{equation}
+    bc\left(t\right) = 
+\end{equation}
+For the sake of simplicity, $bc\left(t\right)$ is simplified in $bc$.
+
+\section{f-type boundary condition}
+\subsection{purpose}
+The f-type boundary condition produces the same fluxes as in the inner cell. 
+
+Such Dirichlet boundary condition is encountered in case of uniform flow. However, the definition of an uniform flow is valid at the scale of a fully wet cross-section that is not always coherent with a 2D discretization of the model. Moreover, the uniform flow condition is hydraulically coherent at the downstream (respectively upstream) boundary in case of mild (respectively steep) slope. The effect of such boundary condition in any other hydraulic configuration is unpredictable but without leading to any numerical problem.
+
+\subsection{formulation}
+\subsubsection{SW and SP model}
+\begin{subequations}
+\begin{eqnarray}
+F_{1} & = & q_{in} \\
+F_{2} & = & q_{in} u_{in} + g h_{in} ^ 2 / 2
+\end{eqnarray}
+\end{subequations}
+
+\subsubsection{DIP model}
+\begin{subequations}
+\begin{eqnarray}
+F_{1} & = & q_{in} \\
+F_{2} & = & q_{in} u_{in} Phi_R / Phi_G + g h_{in} ^ 2 / 2
+\end{eqnarray}
+\end{subequations}
+
+\begin{comment}
+\subsubsection{DDP model}
+\begin{subequatddpDDPs}
+\begin{eqnarray}
+F_{1} & = & \theta_{\omega} u_{in} \\
+F_{2} & = & \theta_{\omega} u_{in} ^ 2 + pressure_force \\
+pressure_force & = & pressureForceOmegaOfZ(celR, z_{in})
+\end{eqnarray}
+\end{subequations}
+\end{comment}
+
+\section{c-type boundary condition}
+\subsection{purpose}
+The c-type boundary condition imposes the Froude number value at the boundary. This corresponds to a depth-velocity relationship that can be seen as a classical rating curve for a rectangular weir. This boundary condition is compulsorily an outlet thus the boundary velocity is negative: $u_{bc} \leq 0$.
+
+The user defined boundary value $bc$ is assumed to be positive. \pfg{what happens if bc<0??}
+
+\subsection{formulation}
+\subsubsection{SW model}
+The Riemann invariant $u-2c$ along the wave travelling from the inner cell to the boundary is used to determine the value of the pressure wave celerity $c_{BC}$ on the boundary:
+\begin{equation}
+c_{bc} = \frac{u_{in} - 2 * c_{in}}{- bc - 2}
+\end{equation} The minus in front of $bc$ appears as the boundary velocity $u_{bc}$ is negative whereas $bc$ is positive. For supercritical flow with $\mathrm{Fr}_{in} > 2$ (thus entering the domain), the pressure wave speed at the boundary becomes negative $c_{bc} < 0$. As this is physically incoherent, $c_{bc}$ is bounded to 0.
+
+The variables at the boundary are computed as: $u_{bc} = - bc * c_{bc}$ and $h_{bc} = c_{bc}^2 / g$.
+\begin{subequations}
+\begin{eqnarray}
+F1 & = & u * h \\
+F2 & = & specificForce(uR, hR) + (F1 - q1) * L1
+\end{eqnarray}
+\end{subequations}
+
+\pfg{what if inner cell torrentiel sortant?}
+
+        

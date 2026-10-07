@@ -1,0 +1,93 @@
+\newcommand{\ar}[1]{\index{to be checked}{\textcolor{blue}{AR:#1}}}
+\newcommand{\BCFile}{description of the boundary type. This file is only used to generate the \file{geometry.geo} file.}
+\newcommand{\BoussinesqMap}{spatial distribution of the Boussinesq coefficient~}
+\newcommand{\CellPorosityMap}[1]{spatial distribution of the storage porosity in cells (#1 model)~}
+\newcommand{\defaultvalue}[1]{\textit{\{Default value = #1}\}~}
+\newcommand{\EdgePorosityMap}[1]{spatial distribution of the conveyance porosity along interfaces (#1 model)~}
+\newcommand{\file}[1]{\textit{#1}}
+\newcommand{\folder}[1]{\textit{#1}}
+\newcommand{\Fr}{\mathrm{Fr}}
+\newcommand{\FrictionStricklerMap}{spatial distribution of the Strickler coefficient~}
+\newcommand{\GeometryFile}{geometry file~}
+\newcommand{\h}{\mathrm{h}}
+\newcommand{\HydroBCTimeSeries}{boundary condition time series~}
+\newcommand{\InitialConditionsMap}{spatial distribution of the initial condition~}
+\newcommand{\InputSWD}{input file~}
+\newcommand{\keyword}[2]{\textbf{#1}=#2}
+\newcommand{\MeshFile}{mesh. This file is only used to generate the \file{geometry.geo} file.~}
+\newcommand{\m}{\mathrm{m}}
+\renewcommand{\today}{\ifcase \month \or January\or February\or March\or April\or May \or June\or July\or August\or September\or October\or November\or December\fi, \number \year} 
+
+% --- Lire et extraire la version ---
+\newread\versionfile
+\openin\versionfile=\rootpath/src/common/version.h
+\read\versionfile to \linea
+\read\versionfile to \lineb
+\read\versionfile to \linec % cette ligne contient la version
+\closein\versionfile
+% Extraire le contenu entre guillemets
+\def\extractversion#1"#2"#3\endextractversion{#2}
+\edef\myversion{\expandafter\extractversion\linec\endextractversion}
+
+
+\newcommand{\nodefaultvalue}{\textit{\{No default value}\}~}
+\newcommand{\param}[1]{\textbf{#1}}
+\newcommand{\pfg}[1]{\index{to be checked}{\textcolor{blue}{PFG:#1}}}
+\newcommand{\Q}[1]{\textcolor{red}{\textbf{Q:} #1}}
+\newcommand{\ResultBoundaryFluxes}{time series of the discharge crossing each type of boundary.~}
+\newcommand{\ResultHydroFile}{hydrodynamic results at time XXX. XXX is the time from the beginning of the simulation using the ISO...\pfg{complete} format.~}
+\newcommand{\rmk}{\index{remark}\textcolor{red}}
+\newcommand{\s}{\mathrm{s}}
+\newcommand{\swd}{SW2D}
+\newcommand{\swConverter}{\emph{sw2dConverter\:}}
+\newcommand{\swConverterReverse}{\emph{swConverterReverse\:}}
+\newcommand{\swNSPreProcess}{\emph{sw2dNSPreProcess\:}}
+\newcommand{\swOutputConverter}{\emph{swOutputConverter\:}}
+\newcommand{\swPorosityMapper}{\emph{sw2dPorosityMapper\:}}
+\newcommand{\swPostProcess}{\emph{sw2dPostProcess\:}}
+\newcommand{\swSolver}{\emph{sw2dSolver\:}}
+\newcommand{\swZone}{\emph{sw2dZone\:}}
+\newcommand{\swdd}{SW2D~}
+
+\newtheorem{remark}{Remark}
+
+
+% --- Setup
+\parindent 0pt % pas de retrait en début de paragraphe
+ \hypersetup{
+    pdfborderstyle={/S/U/W 1}, % underline links instead of boxes
+    linkbordercolor=red,       % color of internal links
+    citebordercolor=green,     % color of links to bibliography
+    filebordercolor=magenta,   % color of file links
+    urlbordercolor=blue        % color of external links
+}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+    basicstyle=\ttfamily\small,
+    backgroundcolor=\color{backcolour},
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,   
+    frame=single,
+    keepspaces=true,                 
+%    numbers=left,                    
+%    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2}
+\lstset{style=mystyle}
+\definecolor{lightgray}{gray}{0.9}
+\newcommand{\inlinecode}[1]{\colorbox{backcolour}{\lstinline {#1}}}
+
+
+\newcommand{\citeCode}[1]{\texttt{\zz#1\zz}}%In a perfect world, this would be changed to allow linebreaks anywhere in #1
+
+\def\zz#1{%
+ \ifx\zz#1\else
+   #1\linebreak[1]\expandafter\zz
+ \fi}
+
+\externaldocument{../Guides/user/InputFile/input_sw2d}
+\externaldocument{../Guides/user/InputFile/input_zone}
+% === Setup

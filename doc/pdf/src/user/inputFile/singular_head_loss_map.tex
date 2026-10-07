@@ -1,0 +1,71 @@
+\subsection{singular\_head\_loss\_map.txt}
+\index{HeadLoss}
+\subsubsection{Purpose}
+The DIP and SP models allow for a singular head loss term. Such head loss is spatially distributed via an anisotropic head loss coefficent tensor. There are two  possibilities: either (i)~the tensor is uniform over the entire domain,or (ii)~it is spatially distributed and must be provided on a cell-by-cell basis.
+%The DDP, DIP and SP models allow for a singular head loss term. Such head loss is spatially distributed via an anisotropic head loss coefficent tensor. There are two  possibilities: either (i)~the tensor is uniform over the entire domain,or (ii)~it is spatially distributed and must be provided on a cell-by-cell basis.
+%
+\subsubsection*{Input file format}
+%
+File format for a uniform tensor.  \texttt{\textbf{Bold}} : keyword, must appear as such in the file. \texttt{<Tab>}: tabulation character. \\
+    \begin{tabular}{p{6cm} | p{9cm}}
+    \hline
+    Field(s) & Comment(s) \\
+    \hline  \hline
+    \texttt{\textbf{Unif} <Tab> \textbf{1}} & Flag is 1 because the tensor is uniform over the entire domain \\ \hline
+    \texttt{\textbf{==== Default Param}} & Section separator line, leave unchanged \\  \hline
+    \texttt{\textbf{hsing ksing1 ksing2 alphasing}} & Comment line, leave unchanged \\  \hline
+    \texttt{hsing <Tab> ksing1 <Tab> ksing2 <Tab> alphasing} & \texttt{hsing}: threshold water depth above which the head loss is to be computed \\
+     & \texttt{ksing1}: the head loss coefficient in Principal direction no. 1 \\
+     & \texttt{ksing2}: the head loss coefficient in Principal direction no. 2 \\
+     & \texttt{alphasing}: the angle (in degrees) between the $x-$ axis and the 1st principal direction \\
+     \hline
+    \texttt{\textbf{==== Distrib}} & Section separator line, leave unchanged \\  \hline
+    \end{tabular}
+%
+\vspace{10mm} \\
+%
+File format for a uniform tensor.  \texttt{\textbf{Bold}} : keyword, must appear as such in the file. \texttt{<Tab>}: tabulation character. \\
+    \begin{tabular}{p{6cm} | p{9cm}}
+    \hline
+    Field(s) & Comment(s) \\
+    \hline  \hline
+    \texttt{\textbf{Unif} <Tab> \textbf{0}} & Flag is 0 because the tensor is spatially distributed  \\ \hline
+     \texttt{\textbf{==== Default param}} & Section separator line, leave unchanged \\  \hline
+
+    \texttt{\textbf{hsing ksing1 ksing2 alphasing}} & Comment line, leave unchanged \\  \hline
+    \texttt{hsing <Tab> ksing1 <Tab> ksing2 <Tab> alphasing} & \texttt{hsing}: these numerical values will be ignored \\
+    \texttt{\textbf{==== Distrib}} & Section separator line, leave unchanged \\  
+    \hline
+
+    \texttt{\textbf{hsing ksing1 ksing2 alphasing}} & Comment line, leave unchanged \\  \hline
+    \texttt{hsing <Tab> ksing1 <Tab> ksing2 <Tab> alphasing} & \texttt{hsing}: threshold water depth above which the head loss is to be computed \\
+     & \texttt{ksing1}: the head loss coefficient in Principal direction no. 1 \\
+     & \texttt{ksing2}: the head loss coefficient in Principal direction no. 2 \\
+     & \texttt{alphasing}: the angle (in degrees) between the $x-$ axis and the 1st principal direction \\
+     \hline
+    \end{tabular}
+%
+\subsubsection{Sample files}
+%
+\paragraph*{Example\#1: Uniform head loss tensor}
+In this example, the tensor is uniform over the entire domain.
+\begin{verbatim}
+Unif	1
+==== Default Param
+hsing	ksing1	ksing2	alphasing
+0.01	0.01	0.01	0
+==== Distrib
+\end{verbatim}
+%
+\paragraph*{Example\#2: Distributed wind station code}
+In this example, there are three cells in the domain. 
+\begin{verbatim}
+Unif	0
+==== Default Param
+hsing	ksing1	ksing2	alphasing
+0.0	0.0	0.0	0.0
+==== Distrib
+0.0001	0.00	0.00	0.	
+0.0003	0.10	0.50	30.
+0.0001	0.00	0.00	0.
+\end{verbatim}

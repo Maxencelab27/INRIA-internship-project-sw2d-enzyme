@@ -1,0 +1,93 @@
+%%
+%%
+\section{File \texttt{input.zone}}
+\subsection{Purpose}
+This file is the main file controlling the \swZone executable. Its purpose is to create spatially distributed (cell- or edge-based) parameter files to be read as inputs by \swSolver. The parameters are assumed to be uniform within zones defined by polygons.
+%
+\subsection{Format description}
+Empty lines or lines starting with hash '\#' or equal '=' signs are ignored. The spelling of the parameters is case sensitive.
+
+This text file contains four mandatory blocks that are delimited by specific line strings.
+
+\begin{scriptsize}
+\begin{tabular}{l | l | l}
+\hline
+Block & starting line string & ending line string \\
+\hline
+Block 1 & \texttt{Block1: zones list BEGIN (compulsory line)} & \texttt{Block1: zones list END (compulsory line)} \\
+Block 2 & \texttt{Block2: default parameter value BEGIN (compulsory line)} & \texttt{Block2: default parameter value END (compulsory line)} \\
+Block 3 & \texttt{Block3: linking variable-zone BEGIN (compulsory line)} & \texttt{Block3: linking variable-zone END (compulsory line)} \\
+Block 4 & \texttt{Block4: output file names BEGIN (compulsory line)} & \texttt{Block4: output file name END (compulsory line)} \\
+\hline
+\end{tabular}
+\end{scriptsize}
+
+\subsubsection{Block 1}
+Each line of Block 1 defines one polygon. For each polygon, the summits can be either identified by their coordinates or as a node of the mesh. Each line should correspond to one of the two possible formats:
+\begin{itemize}
+    \item 
+    \begin{lstlisting}
+    <NAME> $P$ $x_1$ $y_1$ $x_2$ $y_2$ ... $x_i$ $y_i$ ... \end{lstlisting}
+where \texttt{<NAME>} is the name of the zone, $P$ indicates that the summits are defined by physical coordinates, and the $x_i,y_i$ couples are the coordinates of the polynomial vertices.
+    \item 
+        \begin{lstlisting}
+<NAME> $N$ $n_1$ $n_2$ ... $n_i$ ...
+\end{lstlisting}
+where \texttt{<NAME>} is the name of the zone, $N$ indicates that the summits are defined by mesh nodes, and the $n_i$ are the node identifiers for the vertices of the polynomial. The $n_i$ must therefore correspond to actual mesh node numbers.
+\end{itemize}
+
+
+\subsubsection{Block 2}
+Each line of Block 2 defines the default value for each parameter. The format is the following
+\begin{lstlisting}
+<PARAM> <DEFAULT VALUE>
+\end{lstlisting}
+where \texttt{<PARAM>} is the name of the parameter and \texttt{<DEFAULT VALUE>} is the default value for this parameter. Note that
+\begin{itemize}
+\item SI units are used for all parameters
+\item \swZone does not check whether the value is physically meaningful
+\end{itemize}. 
+
+\subsubsection{Block 3}
+Each line in Block 3 assigns a numerical value to a parameter within a polygon previously defined in Block 1. The format is the following
+\begin{lstlisting}
+<PARAM> <VALUE> <NAME>
+\end{lstlisting}
+where \texttt{<PARAM>} is the name of the parameter, \texttt{<VALUE>} is its numerical value and \texttt{<NAME>} is the name of one of the polygons defined in Block 1. 
+
+The parameters assigned in this Block 3 must have a default value defined in Block 2.
+
+If two or more blocks overlap, the parameter values provided in the last polygon of the list will overwrite those previously defined in the overlapping area. 
+
+\subsubsection{Block 4}
+Each line in Block 4 defines the files to be created by \swZone and the parameters to be written into them. The format is the following
+\begin{lstlisting}
+<FILENAME> <PARAM_1> ... <PARAM_i> ...
+\end{lstlisting}
+where \texttt{<FILENAME>} is the output file name and \texttt{<PARAM\_i>} are the parameters to be written into this file. 
+
+\subsection{Sample file}
+In this sample file, the parameter file \texttt{initial\_conditions\_map.txt} is to be filled with three different parameters : h, q and v.
+The default values for h, q and v are 50, 0.0 and -1.0 respectively.
+A quadrangular polygon (called "Zone1") is defined by the coordinates of its vertices $(-1,-1), (400,-1),(400,1), (-1,1)$. Within this polygon, the parameter \texttt{h} is set to 10, while q and v are equal to their default values. 
+A second polygon (called "Zone2") is defined as a draft (the \# character indicates that this is a comment line) using the Ids of its 7 vertices. 
+
+\begin{verbatim}
+= line of comments
+# symbol to comment : (# =)
+Block1: zones list BEGIN (compulsory line)
+Zone1	P	-1	-1	400	-1	400	1	-1	1
+#Zone2	N	1   2   3   4   5   8   12
+Block1: zones list END (compulsory line)
+Block2: default parameter value BEGIN (compulsory line)
+h	50.
+q	0.
+v	-1.
+Block2: default parameter value END (compulsory line)
+Block3: linking variable-zone BEGIN (compulsory line)
+h	10.	Zone1
+Block3: linking variable-zone END (compulsory line)
+Block4: output file name BEGIN (compulsory line)
+initial_conditions_map.txt  h   q   v
+Block4: output file name END (compulsory line)
+\end{verbatim}

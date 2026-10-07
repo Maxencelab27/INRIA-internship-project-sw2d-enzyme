@@ -1,0 +1,30 @@
+\section{Time monitoring}
+The \swSolver executable monitors the time spent on each step within the time loop sequence (i.e. between the first and last time steps in the simulation). Here is a typical console output
+
+\begin{lstlisting}
+[Info] Total clock time =  2.56636 
+[Info] Hyperbolic time  =  1.41228  ( 55 % ) 
+[Info]    - LRStates    =  0.403368  ( 15 % ) 
+[Info]    - TimeStep    =  0.087421  ( 3 % ) 
+[Info]    - Fluxes      =  0.147892  ( 5 % ) 
+[Info]    - Balance     =  0.756254  ( 29 % ) 
+[Info]    - Div. corr.  =  0.001173  ( 0 % ) 
+[Info] Parabolic time  =  0.001153  ( 0 % ) 
+[Info] Source time      =  0.074666  ( 2 % ) 
+[Info] Storage time     =  1.05195  ( 40 % )
+\end{lstlisting}
+
+The breakdown is as follows.\\
+\begin{tabular}{p{3cm} p{11cm}}
+Total clock time & The total time spent between beginning and end of the time stepping process (model initialization is not included)\\
+Hyperbolic time & Total time spent in the hyperbolic part of the simulation\\
+\;\; --  LRStates & The time spent in the definition of the Riemann problems at the interfaces (hyperbolic model)\\
+\;\; --  TimeStep & The time spent in computing the time step from CFL stability constraints (hyperbolic model)\\
+\;\; --  Fluxes & The time spent to compute fluxes for the finite volume method (hyperbolic model)\\
+\;\; --  Balance & The time spent to update state variables from the computed fluxes (hyperbolic model)\\
+\;\; --  Div. corr & The time spent in bounding the velocity and Fr to physically acceptable values (hyperbolic model)\\
+Parabolic time & Total time spent in the parabolic part of the simulation\\
+Source time& The time spent in computing the effets of the source terms (friction, precipitation, wind stress, etc.)\\
+Storage time& The time spent to store fields in output files
+\end{tabular}
+

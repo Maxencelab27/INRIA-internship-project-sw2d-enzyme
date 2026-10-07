@@ -1,0 +1,34 @@
+\subsection{wind\_time\_series.txt}\label{sec_SourceTerm!Wind!windTimeSeries}
+\index{Source term!Wind}
+\subsubsection{Purpose}
+SW2D takes as an input a wind forcing that is variable in both space and time. At a given time, the wind is taken spatitally uniform over zones (also called "stations") within the computational domain. The shape and extension of these zones remain constant over the entire simulation. The purpose of the file \texttt{wind\_time\_series.txt} is to specify the variations of the wind speed with time on a station-by-station basis. The stations are assigned integer numbers, that are not necessarily consecutive. 
+The file \texttt{wind\_time\_series.txt} can be generated using the \swZone executable (see Chapter \ref{ch:swZone}).
+%
+\paragraph*{Warning.}
+Assume that $n$ and $N$ are respectively the smallest and largest (integer) station numbers in a given station code map (See Section \ref{sec_SourceTerm!Wind!windStationMap}). Then, although there are only $N - n + 1$ "active" stations in the model, the time series file should incorporate the time series for Stations 1 to $N$.
+%
+\subsubsection{Format description}
+%
+File format.  \texttt{\textbf{Bold}} : keyword, must appear as such in the file. \texttt{<Tab>}: tabulation character. \\
+    \begin{tabular}{p{6cm} | p{9cm}}
+    \hline
+    Field(s) & Comment(s) \\
+    \hline  \hline
+    \texttt{\textbf{\#Wind time series}}  & Comment/header line \\ \hline
+    \texttt{\textbf{\#Wind stations}}  & Comment/header line \\ \hline
+    \texttt{N} & Number of stations in the time series file \\ \hline
+    \texttt{\textbf{\#}} & Section separator line, leave unchanged \\  \hline
+    \texttt{\textbf{\#t |u| angle}} & Comment line, leave unchanged \\  \hline
+    \texttt{t} , $N$ couples \texttt{( <Tab> u\_norm <Tab> u\_angle) } & \texttt{t} : time (s) ; \texttt{u\_norm}: wind speed (m/s) ; \texttt{u\_angle} (degrees): direction the wind comes from, counted positive clockwise from North \\ \hline
+    \end{tabular}
+\subsubsection{Sample file}
+%
+\begin{verbatim}
+#Wind time series for static wind test
+#wind stations
+1
+#
+# t |u|	angle
+0 	0.5 -90 
+1e6	0.5	-90
+\end{verbatim}

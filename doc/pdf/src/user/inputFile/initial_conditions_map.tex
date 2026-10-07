@@ -1,0 +1,91 @@
+\hypertarget{InitialConditionsFileFormat}{}
+\subsection{initial\_conditions\_map.txt\label{sec_initialConditionsMap}}
+\index{Initial conditions}
+%\hyperlink{InitialConditionsFileFormat}{Goto InitialConditionsFileFormat}
+
+%
+\subsubsection{Purpose}
+The well-posedness of the shallow water problem requires initial conditions and boundary conditions be provided. The present section deals with the specification of initial conditions.
+
+The initial conditions may be either uniform or spatially distributed. They are provided on a cell-by-cell basis. Two types of variable must be provided: the water depth or free surface elevation, and the flow velocity or unit discharge components.
+
+%
+\subsubsection{Format description}
+%
+File format for a uniform initial condition.  \texttt{\textbf{Bold}} : keyword, must appear as such in the file. \texttt{<Tab>}: tabulation character. \\
+    \begin{tabular}{p{6cm} | p{9cm}}
+    \hline
+    Field(s) & Comment(s) \\
+    \hline  \hline
+    \texttt{\textbf{Unif} <Tab> \textbf{1}} & Flag is 1 because the initial conditions are uniform \\ \hline
+    \texttt{\textbf{==== Default Param}} & Section separator line, leave unchanged \\  \hline
+    \texttt{\textbf{z}} or \texttt{\textbf{h}} \texttt{<Tab>} \texttt{\textbf{u}} or \texttt{\textbf{q}} \texttt{<Tab>} \texttt{\textbf{v}} or \texttt{\textbf{r}} & \texttt{\textbf{h}}: the first numerical value in the record is the water depth \\ 
+     & \texttt{\textbf{z}}: the first numerical value in the record is the surface elevation \\
+     & \texttt{\textbf{u}}: the second numerical value in the record is the $x-$ flow velocity\\ 
+     & \texttt{\textbf{q}}: the second numerical value in the record is the $x-$ unit discharge\\ 
+     & \texttt{\textbf{v}}: the third numerical value in the record is the $y-$ flow velocity\\ 
+     & \texttt{\textbf{r}}: the third numerical value in the record is the $y-$ unit discharge\\ 
+    \hline
+     \texttt{z} or \texttt{h} \texttt{<Tab>} \texttt{u} or \texttt{q} \texttt{<Tab>} \texttt{v} or \texttt{r} & The three numerical values for the uniform initial condition \\      
+     \texttt{\textbf{==== Distrib}} & Section separator line, leave unchanged \\  
+     \hline
+    \end{tabular}
+%
+\vspace{10pt}
+
+File format for a spatially variable initial condition.  \texttt{\textbf{Bold}} : keyword, must appear as such in the file. \texttt{<Tab>}: tabulation character. \\
+    \begin{tabular}{p{6cm} | p{9cm}}
+    \hline
+    Field(s) & Comment(s) \\
+    \hline  \hline
+    \texttt{\textbf{Unif} <Tab> \textbf{1}} & Flag is 0 because the initial conditions are spatially variable \\ \hline
+    \texttt{\textbf{==== Default Param}} & Section separator line, leave unchanged \\  \hline
+    \texttt{Val\_1 <Tab> Val\_2 <Tab> Val\_3}  & These 3 numerical values will be ignored because \texttt{Flag} = 0 \\ \hline
+    \texttt{\textbf{==== Distrib}} & Section separator line, leave unchanged \\  \hline
+    \texttt{\textbf{z}[i]} or \texttt{\textbf{h}[i]} \texttt{<Tab>} \texttt{\textbf{u}[i]} or \texttt{\textbf{q}[i]} \texttt{<Tab>} \texttt{\textbf{v}[i]} or \texttt{\textbf{r}[i]} 
+    & \texttt{\textbf{h}}: the first numerical value in the record is the water depth \\ 
+     & \texttt{\textbf{z}}: the first numerical value in the record is the surface elevation \\
+     & \texttt{\textbf{u}}: the second numerical value in the record is the $x-$ flow velocity\\ 
+     & \texttt{\textbf{q}}: the second numerical value in the record is the $x-$ unit discharge\\ 
+     & \texttt{\textbf{v}}: the third numerical value in the record is the $y-$ flow velocity\\ 
+     & \texttt{\textbf{r}}: the third numerical value in the record is the $y-$ unit discharge\\ 
+     \hline
+     \texttt{z[i]} or \texttt{h[i]} \texttt{<Tab>} \texttt{u[i]} or \texttt{q[i]} \texttt{<Tab>} \texttt{v[i]} or \texttt{r[i]} 
+    &Initial conditions for cell $i$, index $i$ is the index of the cell in the mesh \\
+    \hline
+     \end{tabular}
+%
+\subsubsection{Sample files}
+%
+\paragraph*{Example \#1: uniform initial conditions (elevation-velocity)}
+The initial condition is uniform. The free surface elevation (1 m) and the flow velocity (0 m/s in both directions of space) are the same in all cells.
+\begin{verbatim}
+Unif	1
+==== Default Param
+z	u	v
+1	0	0
+==== Distrib
+\end{verbatim}
+%
+\paragraph*{Example \#2: uniform initial conditions (depth-unit discharge)}
+The initial condition is uniform. The water depth (2 m) and the unit discharge (1 m$^2$/s in the $x-$direction, 0 m$^2$/s in the $y-$direction) are the same in all cells.
+\begin{verbatim}
+Unif	1
+==== Default Param
+h	q	r
+2	1	0
+==== Distrib
+\end{verbatim}
+%
+\paragraph*{Example \#3: distributed initial conditions}
+There are 3 cells in the model. In Cell\#1, the initial free surface elevation is 10m, the flow velocity is zero. In Cell\#2, the free surface elevation is 10m, the $x-$velocity is 1 m/s and the $y-$velocity is zero. In the third cell, the free surface elevation is 5 m, and the initial flow velocity is zero. 
+\begin{verbatim}
+Unif	0
+==== Default Param
+z	u	v
+1	0	0
+==== Distrib
+10. 0.  0.
+10. 1.  0.
+5.  0.  0.
+\end{verbatim}

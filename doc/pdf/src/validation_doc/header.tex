@@ -1,0 +1,34 @@
+\documentclass[10pt,a4paper,openany]{book}
+\input{\docpath/common/packages}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\geometry{left=15mm, bottom=20mm, right=15mm, top=20mm}
+\setcounter{secnumdepth}{3}
+\newcommand{\plotTest}{\begingroup
+  \catcode`_=12 \doPlotTest}
+
+\newcommand{\doPlotTest}[1]{
+     \clearpage
+
+     \section{\texttt{#1}}
+     
+     \vspace*{\fill}
+     \begin{figure}[!h]
+        \centering
+     	\includegraphics[scale=1]{\detokenize{#1}\noexpand/graph_scripts/figure_python_results.png}
+     \caption{Test \texttt{#1}}
+     \end{figure}
+     \vspace*{\fill}
+}
+
+\newcommand{\test}[1]{\emph{\texttt{#1}}}
+
+%%% increase vertical spacing in equations
+\usepackage{mathtools}
+\setlength{\jot}{7pt}
+%%% ------ 
+\title{Results - MR Tests}

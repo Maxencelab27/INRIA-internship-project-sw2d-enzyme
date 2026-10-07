@@ -1,0 +1,324 @@
+\hypertarget{InputSwddFormat}{}
+\section{File \texttt{input.solv}}
+\subsection{Purpose}
+This file is the main file controlling the simulation. It defines the models that have to be used and the key parameters.
+
+\subsection{Format description}
+\texttt{<input.solv>} is a text file. It contains one keyword per line, with format
+\begin{lstlisting}
+<KEYWORD> <VALUE>
+\end{lstlisting}
+The order of the keywords does not matter. Empty lines or lines starting with hash '\#' or equal '=' signs are considered as comment lines.\\
+Note that
+\begin{itemize}
+\item The keywords and its value must be separated by at least one space or tabulation characters.
+\item Keywords spelling is not case sensitive.
+\item If a given keyword occurs several times in the file, the last read value overwrites the previously specified ones.
+\item All physical parameters (e.g. gravitational acceleration, etc.) are in S.I. units.
+\end{itemize}
+
+\subsection{List of allowed keywords}
+
+\begin{description}
+\begin{comment}
+\item[compute\_hydro] \defaultvalue{compute}\index{transport!transport_hydro} specifies how the hydrodynamic fields are provided to the transport simulation. Allowed values:
+\begin{description}
+    \item[compute] compute hydrodynamics by solving the shallow water equations 
+    \item[read] read hydrodynamic variables from a file \Q{dans ce cas, quel est le nom et le format de ce fichier?}
+\end{description}
+
+\item[contact\_ext\_margin] \defaultvalue{0.01}\index{transport!contact_ext_margin} set the buffer size for dealing with debris contact
+
+\item[contact\_restitution] \defaultvalue{1}\index{transport!contact\_restitution} elastic coefficient for debris contact
+\end{comment}
+
+
+\item[cfl\_max] \defaultvalue{1}\index{Courant_number} defines the maximum permissible Courant/CFL number for timestep computation. Any strictly positive value may be specified. However, the CFL may be limited automatically to a maximum value ensuring stability depending on the \textbf{num\_scheme} used (e.g. 1 for the Godunov or MUSCL-EVR scheme).
+
+\item [ddpDDP\_chi\_phi\_max]  \Q{Unknown parameter} \defaultvalue{20.0} upper bound for the ratio $\phi_\Omega / \phi_\Gamma$ in the Depth-Dependent Porosity (ddpDDP) closure model. Used only if \textbf{model\_hyperb = ddpDDP}.
+
+\item [ddpDDP\_chi\_theta\_max]  \Q{Unknown parameter} \defaultvalue{20.0} upper bound for the ratio $\theta_\Omega / \theta_\Gamma$ in the Depth-Dependent Porosity (ddpDDP) closure model. Used only if \textbf{model\_hyperb = ddpDDP}.
+
+\item [ddp\_ztab0\_log]  \Q{Unknown parameter} \defaultvalue{\texttt{no}} defines whether the lower elevations for the $\phi_\Gamma (z)$ and $\phi_\Omega (z)$ laws should be cast into a log file for further graphical display. The file is named \texttt{ddp\_zTab.txt}. Allowed values:
+\begin{description}
+\item [no] no file will be written. Any previously existing file in the \texttt{/log} folder will be erased.
+\item [yes] the file will be written.
+\end{description}
+\textbf{NOTE} the $z-$ values cas in the file are the minimum values in the $\phi(z)$ laws. Denoting by $z_{\min,i}$ the lower point for the $\phi_\Gamma(z)$ law at Interface $i$, in the log file the elevation $z_{\min,i}$ is assigned to all the points of this interface. The same principle is retained for the cells. Therefore, the interfaces and cells appear horizontal in the log files. However, their elevations are only those of their lowest points.
+
+\item[div\_corr] \defaultvalue{none}\index{Divergence correction}specifies whether divergence correction is to be activated. Allowed values:
+\begin{description}
+    \item[none] no divergence correction
+    \item[limit\_flux]  prevents cell drying issues by reducing the divergence of numerical fluxes across the interfaces. This is an iterative process, requiring that the value for \param{n\_it\_div\_max} be set.
+    \item[limit\_timestep] applies a reduction factor to the computation time step to avoid cell overdrying
+\end{description}
+
+\item[dt\_map](s) \defaultvalue{100}specifies the time interval for storing the hydrodynamic variables in the form of maps (in the \textbf{output} folder).
+\begin{description}
+	\item[Remark:] Additional map storage times that are not multiplae of \textbf{dt\_map} may be specified in a separate file, see Subsection \ref{sec:extraction_times_list}.
+\end{description}
+
+\item[dt\_max](s) \defaultvalue{10}specifies the maximum permissible computational timestep.
+
+\item[dt\_time\_series](s) \index{Probes}\defaultvalue{100}specifies the time interval for pointwise storage of the results (at probes). This parameter is used as soon as the file \file{probe\_locations.txt} in the input folder is not empty (see Subsection \ref{sec:probe_locations}).
+
+\item[fr\_max] \index{fr\_max}\defaultvalue{100} is the maximum permissible value for the Froude number Fr. Should Fr exceed this value at the end of a time step, the flow velocity is reduced such that $\max ||\mathbf{v}|| = \mathrm{fr\_max} \sqrt{gh}$.
+
+\item[gravity] (ms$^{-2}$) \defaultvalue{9.81}specifies the value of the gravitational acceleration.
+
+\item[h\_min] (m) \defaultvalue{$10^{-5}$}is a threshold depth. The mass and momentum fluxes between two adjacent cells are computed only provided that the water depth is larger than \param{h\_min} in at least one of the cells.
+%%%%%\item[model\_building] \defaultvalue{none}\index{building}
+
+%\item[hotstart\_time] (s) \defaultvalue{0}\index{hotstart}If defined, the initial conditions are read from a previously computed ResultHydro file. This file must be copied into the input folder and will supersede the initial conditions file. The value for hotstart\_time must correspond to the numerical value of the time present in the name of the ResultHydro file.  \Q{Not working yet (at least not this way).}
+
+\item [log\_write] \defaultvalue{false} Specifies whether log files should be written in the log folder.
+\begin{description}
+\item [false] Log files will not be written (saves disk space in case of big meshes).
+\item [true] Log files will be written at the end of the initialization stage.
+\end{description}
+
+%\item[model\_building] \defaultvalue{none}\index{Source term!Building}sets how buildings are accounted for. Allowed values:
+%\begin{description}
+%    \item[none] no building effect computed
+%    \item[cell\_average] individual buildings are not represented but the cell average effect is accounted
+%\end{description}
+
+\item[model\_friction] \defaultvalue{none}\index{Friction} specifies the bottom friction model. Allowed values:
+\begin{description}
+    \item[none] no friction model
+    \item[chezy] \index{Friction!Chezy} Chezy's model is used. Requires the additional map file \file{input/friction\_chezy\_map.txt}.
+    \item[manning] \index{Friction!Manning}the Manning formulation is used. Requires the additional map file \file{input/friction\_manning\_map.txt}.
+    \item[strickler] \index{Friction!Strickler}friction is modelled using Strickler's model. Requires the additional map file \file{input/friction\_strickler\_map.txt}.
+\end{description}
+
+%%%%%\item[model\_gates] \defaultvalue{none}\index{gates}
+
+\item[model\_hyperb] \defaultvalue{none}\index{Model!Hyperbolic}Specifies the hyperbolic model. Allowed values:
+\begin{description}
+%    \item[ddpDDP]  \Q{Unknown parameter}\index{Model!Hyperbolic!ddpDDP}Depth-Dependent Porosity model (ddpDDP). Requires additional files \texttt{Boussinesq\_map.txt}, \texttt{ddpDDP\_cell\_porosity\_map.txt}, \texttt{ddpDDP\_edge\_porosity\_map.txt}. See also keywords \textbf{ddpDDP\_chi\_phi\_max} and \textbf{ddpDDP\_chi\_theta\_max}
+   
+  %  \item[dip]  \Q{Unknown parameter}\index{Model!Hyperbolic!DIP}Dual-Integral Porosity model. Requires the files \texttt{DIP\_cell\_momentum\_dissipation\_map.txt}, \texttt{DIP\_cell\_porosity\_map.txt}.
+  \item [liswes]  \index{Model!Hyperbolic!LISWES} Local Inertial Shallow water model  
+   \item[sp]  \index{Model!Hyperbolic!SP}Single Porosity model.
+    \item[swes] \index{Model!Hyperbolic!SWES}Shallow water model.
+\end{description}
+%
+\item [model\_infiltration] \defaultvalue{none}\index{Source term!infiltration}
+sets how infiltration is modelled. Allowed values:
+\begin{description}
+	\item [none] No infiltration.
+	\item [h\_proportional]. The infiltration rate in a given cell is equal to $k$ times the water depth. Required file: \texttt{infiltration\_parameter\_map.txt} that provides the cellwises $k$ values.
+	\item [horton]. The infiltration rate is equal to $I_c$, the soil infiltration capacity, as long as the water depth is non-zero. Required file: \texttt{infiltration\_parameter\_map.txt} that provides the cellwise $I_c$ values.
+\end{description}
+%
+\item [model\_momentum\_diffusion] \defaultvalue{none} \index{Model!Parabolic!Momentum diffusion}
+Defines how momentum diffusion is to be accounted for.
+\begin{description}
+\item [none] No momentum diffusion
+\item [velocity\_independent] The momentum diffusion coefficient is constant in space and time. Its numerical value is specified with the keyword \textbf{momentum\_diffusion\_coefficient}.
+\end{description}
+%
+\item [model\_momentum\_diffusion\_coefficient] \defaultvalue{$10^{-6}$} \index{Model!Parabolic!Momentum diffusion}
+The numerical value of the momentum diffusion coefficient, in m$^2$s$^{-1}$.
+%
+%
+
+\item[model\_momentum\_dissipation] \defaultvalue{none}\index{Source term!momentum dissipation}defines if the momentum dissipation is accounted. Allowed values:
+\begin{description}
+    \item[none] no momentum dissipation
+    \item[active] momentum dissipation is accounted for. In this case, the file \texttt{DIP\_cell\_momentum\_dissipation\_map.txt} must be provided in the \texttt{input} folder.
+\end{description}
+%
+%
+\item [model\_porosity\_rainfall] \defaultvalue{water\_only} \index{Source term!rainfall!porosity}
+defines how the rainfall source term is accounted for in porosity models. Allowed values:
+\begin{description}
+	\item [everywhere] the rain is assumed to fall onto 100 \% of the computational cells. The rain falling onto the solid phase (fraction $1 - \phi$ of the cell area, where $\phi$ is the storage porosity) is routed instantaneously to the water phase. This amounts to multiplying the rainfall intensity onto the water phase (fraction $\phi$) by $1/\phi$. In the cells where $\phi = 0$, the rainfall contribution is zero.
+	\item [water\_only] the rain is assumed to fall only onto the fraction of the cell occupied by water. The rain falling onto the emerged topography is assumed to infiltrate instantaneously and is not accounted for in the water balance.
+\end{description}
+%
+\item[model\_runoff] \defaultvalue{none}\index{Source term!runoff}
+sets how the rain is accounted for in the runoff generation process. Allowed values:
+\begin{description}
+    \item [none] no runoff generation
+    \item [full\_rainfall] 100 \% of the rainfall intensity falling onto a given cell is converted to runoff.
+    \item[infiltration\_coefficient] rainfall is accounted for. On each cell, the amount of runoff is the rainfall multiplied by (1 -- infiltration\_coefficient). The following files are required:
+    \begin{itemize}
+    	\item \texttt{precipitation\_station\_codes\_map.txt}
+    	\item \texttt{precipitation\_time\_series.txt}
+    	\item \texttt{infiltration\_coefficient\_map.txt}
+	\end{itemize}     
+    \item[runoff\_coefficient] rainfall is accounted for. On each cell, the amount of runoff is the rainfall multiplied by runoff\_coefficient. The following files are required:
+    \begin{itemize}
+    	\item \texttt{precipitation\_station\_codes\_map.txt}
+    	\item \texttt{precipitation\_time\_series.txt}
+    	\item \texttt{runoff\_coefficient\_map.txt}
+	\end{itemize}     
+     \item[scs] rainfall is accounted for. The runoff is computed from the scs parameters. The following files are required:
+    \begin{itemize}
+    	\item \texttt{precipitation\_station\_codes\_map.txt}
+    	\item \texttt{precipitation\_time\_series.txt}
+    	\item \texttt{scs\_parameter\_map.txt}
+\end{itemize}     
+
+\end{description}
+
+%
+
+
+\item[model\_singular\_headloss] \defaultvalue{none}\index{Source term!singular headloss}sets how the singular headloss are accounted. Allowed values:
+\begin{description}
+    \item[none] no singular headloss computed
+     \item[active] singular headloss computed
+\end{description}
+
+%\item[model\_logjam] \defaultvalue{none}\index{Transport!logjam}sets the model for log transport. Allowed values:
+%\begin{description}
+%    \item[none] no log transport computed
+%\end{description}
+
+%\item[model\_transport\_reaction] \defaultvalue{none}Not used yet
+
+
+\item[model\_wind] \defaultvalue{none}\index{Source term!Wind}sets how the wind effect is computed. Allowed values:
+\begin{description}
+    \item[none] no wind effect computation
+    \item[smithbanke] \index{Source term!Wind}wind effect computation using Smith \& Banke's model.
+\end{description}
+
+\item[negative\_depth\_detection] \defaultvalue{none}specifies whether the simulation should stop when the water depth becomes negative in at least one of the cells. 
+\begin{description}
+	\item [none] the computation will not be stopped if a negative depth is computed in one of the cells at the end of the hyperbolic time step.
+	\item [active] the computation will be stopped as soon as the water depth is negative in at least one cell at the end of the hyperbolic time step.
+\end{description}
+Note: the occurrence of negative depths can be reduced using the divergence correction function (see \param{div\_corr}).
+
+
+\item[n\_it\_div\_max] \defaultvalue{0}\index{Divergence correction}  sets the maximal number of iterations allowed in the divergence correction process. This parameter is used only if the parameter \param{div\_corr} is set to limit\_flux.
+
+\item[num\_scheme] defines the numerical scheme used to compute the hyperbolic part of the equation. Default and other possible values depend on the hyperbolic model:
+
+\begin{tabular}{p{3cm}|p{3cm}|p{7cm}}
+\hline
+\param{model\_hyperb} keyword & default value for \param{num\_scheme} & allowed values for \param{num\_scheme} \\
+\hline
+\hline
+ddp  & godunov & godunov \\
+\hline
+dip  & godunov & godunov \\
+\hline
+sp   & godunov & godunov \\
+\hline
+swes & godunov & godunov, muscl\_evr\\
+\hline
+\end{tabular}\\
+
+\item[output\_format] \defaultvalue{all}defines whether output should be written in text or binary files. Allowed values:
+\begin{description}
+     \item[all] both txt and bin files are generated
+     \item[bin] only bin files are generated
+     \item[txt] only bin files are generated
+\end{description}
+
+\item[phi\_min] (m) \defaultvalue{same as small\_real ($10^{-16}$)} is a threshold on phi. The mass and momentum fluxes between two adjacent cells are computed only provided that the phi is larger than \param{phi\_min} in at least one of the cells.
+
+\item[q\_section] \defaultvalue{0}defines if qsection fluxs are computed.
+If this option is ativated \file{qsection.txt} must exist in the \file{input} folder.
+It results in the creation of \file{output/qsection.txt} Allowed values:
+\begin{description}
+    \item[0] no q sections
+    \item[1] read q sections from \file{input/qsection.txt} and write fluxes into \file{output/qsection.txt}
+\end{description}
+
+\item[store\_flag] \defaultvalue{default}defines stored variables in hydrodynamics results maps.  Allowed values: 
+\begin{description}
+\item [none] Nothing is stored in the output files
+\item [default] The minimal sel of variables to reconstruct all other variables is stored: $x,y,z_b,$ + conserved variables
+\item[all] As default + additional variables (hydraulic head, flow velocity, Froude number, CFL, etc.)
+\end{description}
+
+The list of stored variables depends on the hyperbolic model.
+
+\item[t\_0] (s) \defaultvalue{0} Starting time of the simulation. 
+
+\item[t\_max] (s) \defaultvalue{100}Ending time of the simulation.
+
+\item[topo\_discretization] \defaultvalue{discontinuous}. Defines how the topographical source term is to be discretized in the SWES, SP and DIP models. 
+Allowed values:
+\begin{description}
+\item [blending] The source term is discretized as a mixture between a piecewise constant topography and a continuous one. The blending between these two discretizations is a continuous, linear function of the ratio of the surface to bottom gradient.
+\item [discontinuous] The source term is discretized on the assumption of a piecewise constant cell bottom elevation.
+\end{description}
+
+
+\begin{comment}
+
+\item[verb\_algo\_timestep]  \defaultvalue{0} controls the degree of verbosity of the CFL-based time step limitation. For \textbf{algo\_timestep} $\ge 2$, the Id of the limiting cell and its flow variables are stored in the log file.
+
+\item[verb\_map\_boussinesq] \index{Boussinesq}\defaultvalue{1}specifies if the Boussinesq coefficients map used in the computation has to be written (0: no / $>0$: yes) in \file{log/boussinesq.txt}. Note that this option will be disregarded when model\_hyperb = swes because this model does not use the Boussinesq coefficient.
+
+\item[verb\_map\_init\_cond] \index{Initial conditions}\defaultvalue{1}specifies if the initial conditions map used in the computation has to be written (0: no / $>0$: yes) in \file{log/initial\_conditions\_map.txt}.
+
+\item[verb\_map\_porosity] \defaultvalue{1} \index{Porosity}\defaultvalue{1}specifies if the porosity values maps used in the computation have to be written (0: no / $>0$: yes). The files generated depend also on the user-defined hyperbolic model:\\
+
+\begin{tabular}{c|c}
+\hline
+\param{model\_hyperb} keyword & files generated \\
+\hline
+\hline
+\multirow{3}{*}{ddpDDP} & \file{ddpDDP\_debug.txt} \\
+                     & \file{ddpDDP\_PhiG.txt} \\
+                     & \file{ddpDDP\_PhiW.txt} \\
+\hline                     
+\multirow{2}{*}{dip} & \file{DIP\_PhiG.txt} \\
+                     & \file{DIP\_PhiW.txt} \\
+\hline                     
+sp   & \file{SP\_PhiW.txt} \\
+\hline                     
+swes &  none \\
+\hline                     
+\end{tabular}
+
+\item[verb\_process\_ddpDDP] \defaultvalue{0}specifies the level of verbosity for all ddpDDP model-specific computations. The bigger the value, the more verbosity you get (0 = no verbosity).
+
+\item[verb\_process\_friction] \defaultvalue{0}specifies the level of verbosity of the friction computation function. The bigger the value, the more verbosity you get (0 = no verbosity) NOT IMPLEMENTED
+
+\item[verb\_process\_hyperb] \defaultvalue{0}specifies the verbosity level for of the functions computing the hyperbolic part. The higher the value, the stronger the verbosity (0 = no verbosity)
+
+\item[verb\_process\_momentum\_diff] \defaultvalue{0}  NOT IMPLEMENTED
+
+\item[verb\_process\_overall] \defaultvalue{0}specifies the level of verbosity of the main workflow. The higher the value, the stronger the verbosity (0 = no verbosity).
+
+\item[verb\_process\_velocity\_corr] \defaultvalue{0}  NOT IMPLEMENTED
+
+\item[verb\_properties\_cells] \defaultvalue{1}specifies if the cells properties have to be written (0: no / $>0$: yes) in \file{log/cells.txt}.
+
+\item[verb\_properties\_interfaces] \defaultvalue{1}specifies if the interfaces properties have to be written (0: no / $>0$: yes) in \file{log/interfaces.txt}.
+
+\item[verb\_properties\_nodes] \defaultvalue{1}specifies if the nodes properties have to be written (0: no / $>0$: yes) in \file{log/nodes.txt}.
+
+\end{comment}
+
+\item[vmax] (ms$^{-1}$) \defaultvalue{100} specifies the maximum permissible velocity. Should $||\mathbf{v}||$ exceed this value at the end of a time step, the flow velocity is reduced such that $\max ||\mathbf{v}|| = \mathbf{vmax} $.
+
+
+
+%%%%\item[verb\_process\_velocity\_corr] \defaultvalue{0} NOT USED
+\end{description}
+
+\subsection{Example}
+\begin{verbatim}
+= unread line
+# sign to comment a full line : (# =)
+=== Model
+model_hyperb	dip
+num_scheme	godunov
+tmax	100.
+dt_max	1.5
+dt_map	10.
+dt_time_series	15.
+========
+model_friction	chezy
+========
+\end{verbatim}
+This chapter describes the format of the parameter files in the \file{input} folder.

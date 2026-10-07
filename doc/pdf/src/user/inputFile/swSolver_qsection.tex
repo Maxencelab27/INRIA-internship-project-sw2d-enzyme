@@ -1,0 +1,54 @@
+\subsection{\label{sec:qsection}qsection.txt}
+%
+\subsubsection{Purpose}
+This file is used to specify the sections over which the fluxes are to be computed during the simulation.
+A qsection is made up of all the edges associated with the same qsection name.
+
+For each edge, the order in which the nodes are specified affects the result: when an edge is defined from its south node to its north node, a positive discharge crosses the edge from west to east.
+
+%
+\subsubsection{Format specification}
+\begin{footnotesize}
+\begin{tabular}{p{4cm} | p{10cm} }
+\hline
+Field(s) & Specification \\
+\hline
+\hline
+$N$ & number of edges in the present file \\
+\hline
+$b_1 \rightharpoonup e_1 \rightharpoonup name_1$ &
+\begin{itemize}
+\item [$b_1$] Id of the beginning node of the 1st edge
+\item [$e_1$] ID of the end node of the 1st edge in the file
+\item [$name_1$] name of the 1st qsection
+\item [$\rightharpoonup$] Tabulation character or space
+\end{itemize} \\
+\hline
+$\vdots$ & (repeat) \\
+\hline
+$b_N \rightharpoonup e_N \rightharpoonup name_M$ & 
+\begin{itemize}
+\item [$b_N$] Id of the beginning node of the $N$th edge
+\item [$e_N$] ID of the end node of the $N$th edge in the file
+\item [$name_M$] name of the $M$th qsection
+\end{itemize} \\
+\hline
+\end{tabular}
+\end{footnotesize}
+
+%
+\subsubsection{Sample file}
+In the following file, the first 5 edges are part of q section names qsection\_1, while the remaining 5 are part of q section names qsection\_2. 
+\begin{verbatim}
+10
+1995	1741	qsection\_1
+1741	1742	qsection\_1
+1742	1743	qsection\_1
+1743	1744	qsection\_1
+1744	1745	qsection\_1
+1745	1746	qsection\_2
+1746	1747	qsection\_2
+1747	1938	qsection\_2
+1938	1939	qsection\_2
+1939	1940	qsection\_2
+\end{verbatim}

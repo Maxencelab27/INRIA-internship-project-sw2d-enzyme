@@ -1,0 +1,32 @@
+
+\hypertarget{ProbeLocationFileFormat}{}
+\subsection{probe\_locations.txt}\label{sec:probe_locations}
+\index{Probes}
+\subsubsection{Purpose}
+This file specifies the locations at which the flow variables are to be stored at the pre-defined \textbf{dt\_time\_series} time interval.
+%
+\subsubsection{Format description}
+\begin{tabular}{p{5cm} | p{10cm}}
+\hline
+Field(s) & Format \\
+\hline
+\hline
+\texttt{x  y  name} & This is the header line. The string \texttt{x  y  name} must be inserted without modification \\
+\hline
+$x_1 \; y_1$ \texttt{name}$_1$ & $x$ and $y$ coordinates (in m) of the 1st probe and its name, separated by at least one space character \\
+\hline
+$\cdots$ & \\
+\hline
+$x_N \; y_N$ \texttt{name}$_N$ & $x$ and $y$ coordinates (in m) of the $N$th probe and its name, separated by at least one space character \\
+\hline
+\end{tabular}
+%
+\subsubsection{Example}
+In the file hereafter, there are 4 probes
+\begin{verbatim}
+x	y	name
+50	0	probe_1
+150	0	probe_2
+350	0	probe_3
+450	0	probe_4
+\end{verbatim}

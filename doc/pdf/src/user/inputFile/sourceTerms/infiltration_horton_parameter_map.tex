@@ -1,0 +1,63 @@
+\subsection{Infiltration\_horton\_parameter\_map.txt}
+\index{Source term!Infiltration}
+\subsubsection{Purpose}
+This file is required when \textbf{model\_infiltration} is set to \textbf{horton}. In this case, the infiltration rate $I$ is computed as
+\begin{equation}
+I = K
+\end{equation} where $K$ is the infilitration capacity. The spatial distribution for $K$ must be provided.
+%
+\subsubsection{Format description}
+File format for a uniform $K$.  
+\texttt{\textbf{Bold}} : keyword, must appear as such in the file. \texttt{<Tab>}: tabulation character. \\
+    \begin{tabular}{p{6cm} | p{9cm}}
+    \hline
+    Field(s) & Comment(s) \\
+    \hline  \hline
+    \texttt{\textbf{Unif} <Tab> \textbf{1}} & Flag is 1 because $k$ is uniform \\ 
+    \hline
+    \texttt{\textbf{==== Default Param}} & Section separator line, leave unchanged \\
+    \hline
+    \texttt{\textbf{Infiltration\_coeff}} & Comment line, leave unchanged \\  
+    \hline
+    \texttt{k} & The uniform value for $K$ (in m.s$^{-1}$) \\ 
+    \hline
+    \texttt{\textbf{==== Distrib}} & Section separator line, leave unchanged \\  
+    \hline
+    \end{tabular}
+%
+\vspace{10mm} \\
+%
+File format for a spatially distributed $k$.  
+\texttt{\textbf{Bold}} : keyword, must appear as such in the file. \texttt{<Tab>}: tabulation character. \\
+    \begin{tabular}{p{6cm} | p{9cm}}
+    \hline
+    Field(s) & Comment(s) \\
+    \hline  \hline
+    \texttt{\textbf{Unif} <Tab> \textbf{0}} & Flag is 0 because $k$ is spatially variable \\ 
+    \hline
+    \texttt{\textbf{==== Default Param}} & Section separator line, leave unchanged \\ 
+    \hline
+    \texttt{\textbf{Infiltration\_coeff}} & Comment line, leave unchanged \\ 
+    \hline
+    \texttt{k}     & This value will be ignored because \texttt{Flag} = 1 \\ 
+    \hline
+    \texttt{\textbf{==== Distrib}} & Section separator line, leave unchanged \\  
+    \hline
+    \texttt{k[i]}      & Values for $K$ (in m.s$^{-1}$, provided on a cell-by-cell basis. Index i is the index of the cell in the mesh.  \\ 
+    \hline
+    \end{tabular}
+
+\paragraph*{Sample file}
+For a spatially ditributed $K$.
+
+\begin{verbatim}
+Unif	0
+==== Default Param
+Horton_coeff
+1e-5
+==== Distrib
+1.2e-5
+2.0e-5
+9.0e-5
+1.1e-4
+\end{verbatim}

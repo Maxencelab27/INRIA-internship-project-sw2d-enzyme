@@ -1,0 +1,59 @@
+\subsection{cell\_momentum\_dissipation\_map.txt}\label{sec_Model!Hyperbolic!cellMomentumDissipationMap}
+\index{Model!Hyperbolic!DIP}
+\subsubsection{Purpose}
+The Dual Integral Porosity (DIP) model requires that the momentum dissipation tensor $\mu$ be specified on a cell-by-cell basis \cite{Guinot_al_2017}. This tensor is characterised by the momentum disspation coefficients $(\mu_1,\mu_2)$ in two orthogonal principal directions and the angle $\alpha_\mu$ between the 1st principal direction and the $x-$ axis.
+%
+\subsubsection{Input file format}
+%
+File format for a uniform tensor.  \texttt{\textbf{Bold}} : keyword, must appear as such in the file. \texttt{<Tab>}: tabulation character. \\
+    \begin{tabular}{p{6cm} | p{9cm}}
+    \hline
+    Field(s) & Comment(s) \\
+    \hline  \hline
+    \texttt{\textbf{Unif} <Tab> \textbf{1}} & Flag is 1 because the tensor is uniform \\ \hline
+    \texttt{\textbf{==== Default Param}} & Section separator line, leave unchanged \\  \hline
+    \texttt{\textbf{mu1}  \textbf{mu2}  \textbf{alphamu}} & Comment line, leave unchanged \\  \hline
+    $\mu_1 \quad \mu_2 \quad \alpha_\mu$      & The uniform values for $(\mu_1, \mu_2, \alpha_\mu)$ \\ \hline
+    \texttt{\textbf{==== Distrib}} & Section separator line, leave unchanged \\  \hline
+    \end{tabular}
+%
+\vspace{10mm} \\
+%
+File format for a spatially distributed parameter set.  \texttt{\textbf{Bold}} : keyword, must appear as such in the file. \texttt{<Tab>}: tabulation character. \\
+    \begin{tabular}{p{6cm} | p{9cm}}
+    \hline
+    Field(s) & Comment(s) \\
+    \hline  \hline
+    \texttt{\textbf{Unif} <Tab> \textbf{0}} & Flag is 0 because the tensor is spatially distributed \\ \hline
+    \texttt{\textbf{==== Default Param}} & Section separator line, leave unchanged \\  \hline
+    \texttt{\textbf{PhiW}} & Comment line, leave unchanged \\  \hline
+    \texttt{dummy  dummy dummy}     & These 3 values are ignored because \texttt{Flag} = 1 \\ \hline
+    \texttt{\textbf{==== Distrib}} & Section separator line, leave unchanged \\  \hline
+     $\mu_1 \quad \mu_2 \quad \alpha_\mu$      &  $(\mu_1, \mu_2, \alpha_\mu)_i$, provided on a cell-by-cell basis (1 line per cell). Index $i$ is the index of the cell in the mesh.  \\ \hline
+    \end{tabular}
+%
+\subsubsection{Sample files}
+%
+\paragraph*{Example\#1: Uniform dissipation tensor}
+Momentum dissipation coefficients in the principal directions are 0.25 and 0.10 respectively. The angle of the 1st principal direction with the $x-$
+axis is 10 degrees.
+\begin{verbatim}
+Unif	1
+==== Default Param
+mu1		mu2	alpha_mu
+0.25	0.10	10.0
+==== Distrib
+\end{verbatim}
+%
+\paragraph*{Example\#2: Distributed storage porosity}
+There are 3 cells in the model. Cells 1 to 3 have the same dissipation coefficients, but the angle of the 1st principal direction increases from 10 to 30 degrees from Cell 1 to Cell 3.
+\begin{verbatim}
+Unif	0
+==== Default Param
+PhiW
+0. 0.	0.
+==== Distrib
+0.25	0.10	10.0
+0.25	0.10	20.0
+0.25	0.10	30.0
+\end{verbatim}

@@ -1,0 +1,10 @@
+\subsection{DDP\_edge\_porosity\_map.txt}\label{sec_Model!Hyperbolic!DDP!edgePorosityMap}
+\index{Model!Hyperbolic!DDP}
+\subsubsection{Purpose}
+The Depth-Dependent Porosity (DDP) model requires that the variations in the connectivity porosity $\phi_\Gamma$ with the water depth be specified on an interface-per-interface basis. This is the domain-based $\phi_\Gamma(z)$ law in the original publication \cite{Guinot_al_2018}.
+The code provides 5 types of pre-defined law. They are described in Subsection \ref{sec_Model!Hyperbolic!DDP!cellPorosityMap}.
+%
+\subsubsection{Format description}
+The format is exactly the same as that of the cell porosity map, see \ref{sec_Model!Hyperbolic!DDP!cellPorosityMap}. The only difference is that the running index i goes from 1 to the number of interfaces (not the number of cells).
+\subsubsection{Sample files}
+See Subsection \ref{sec_Model!Hyperbolic!DDP!cellPorosityMap}.

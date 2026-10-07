@@ -1,0 +1,55 @@
+%%%
+\section{Python apps tests}
+%%%
+\subsection{Overview}
+In addition to the SW2D executables, coded in C++ and compiled, Python scripts are available in utils/python/apps. \\
+These scripts are auxiliary to the software and are therefore not subject to mr-tests required for branch merging.
+However, there are test cases intended to test their proper functioning, which can be used when necessary (for example, when making changes to these scripts).
+
+\subsection{Functioning}
+
+For each app, a single Python script runs all its tests and displays the results in the console.
+Subsection \ref{py_tests_usage} explains how to run these tests.
+
+\subsubsection{\swConverterReverse}
+These tests run the \swConverterReverse for each case and then compare the outputs with reference.\\
+
+Since the \swConverterReverse is supposed to reproduce the input files used to create a \file{geometry.sw2d} file, the reference files for a given test case are the ones used to create the \file{geometry.sw2d} for that case.
+The tests verify that the \swConverterReverse runs without error and the outputs are exactly identical to the reference.\\
+
+At the end of the tests, a table is displayed in the console.
+It contains one row per test case and one column per element tested (\swConverterReverse successful execution, correct results).
+All fields must be \texttt{Success}.
+
+\subsubsection{\swNSPreProcess}
+These tests run the \swNSPreProcess for each case and then compare the outputs with reference.\\
+
+Since the \swNSPreProcess reads nodetrings in a .2dm file and create the .bc and qsections.txt file, the reference files are hand-made by developers.
+The tests verify that the \swNSPreProcess runs without error and the outputs are exactly identical to the reference. \\
+
+At the end of the tests, a table is displayed in the console.
+It contains one row per test case and one column per element tested (\swNSPreProcess successful execution, correct results).
+All fields must be “Success.”
+
+\subsubsection{\swOutputConverter}
+These tests run the \swConverter, the \swSolver and the \swOutputConverter for each case and then compare the outputs with reference.\\
+
+The \swOutputConverter can convert a binary file into a netcdf file or text files. In these tests, the file is converted into text, and the reference files for a test case are the solver text outputs for that test.
+The tests verify that \swConverter, \swSolver and \swOutputConverter run without error and the outputs are identical to the reference with a tolerance defined in the test script.
+This margin of error is present because converting doubles to binary and then to text can lead to minor approximations.\\
+
+At the end of the tests, a table is displayed in the console.
+It contains one row per test case and one column per element tested (\swConverter, \swSolver, \swOutputConverter successful execution, correct results) and a column for computation time.
+All fields must be “Success.”
+
+\subsection{Usage} \label{py_tests_usage}
+To run all the test cases dedicated to a python app, follow these steps :
+\begin{itemize}
+    \item Open a shell/prompt.
+    \item Navigate to \file{utils/python/apps/tests/\textlangle app\_name\textrangle} where \textlangle app\_name\textrangle  is the name of the app you want to test.
+    \item Type :
+    \begin{verbatim}
+	python <app_name>_tests.py
+	\end{verbatim}
+    This will run the tests and display the result table in the console.
+\end{itemize}

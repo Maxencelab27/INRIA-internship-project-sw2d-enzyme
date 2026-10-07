@@ -1,0 +1,20 @@
+\section{The compile chain}
+%%%
+\subsection{Rationale}
+The idea is to understand how \texttt{CMakeFiles} work. 
+These files are used both under Windows and Unix/MacOS, 
+even if the \texttt{cmake} command is not used the same way.
+%%%
+\subsection{Implementation}
+The main file is located at the \texttt{sw2d/} root directory, under the name \texttt{CMakeLists.txt}. 
+This main file uses the \texttt{include} function to load a number of \texttt{.cmake} files located in the \texttt{cmake} directory. 
+These includes are made for the sake of clarity: they keep different objectives (main setup, 
+build types, flags, developer specific home made targets) separated.
+
+%%%
+\subsection{Usage}
+The \texttt{cmake} directory contains 2 \texttt{.cmake} files:
+\begin{itemize}
+    \item \texttt{MainSetup.cmake} contains all main settings that should not be modified (to be better understood)
+    \item \texttt{Builtypes.cmake} contains the possible building options (Debug, Release, RelWithDebInfo, Minisizerel) and the corresponding flags definitions
+\end{itemize}

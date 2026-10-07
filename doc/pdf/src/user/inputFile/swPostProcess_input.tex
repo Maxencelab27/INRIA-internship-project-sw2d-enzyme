@@ -1,0 +1,84 @@
+\section{File \texttt{input.postproc}}
+\subsection{Purpose}
+\texttt{input.postproc} is a text file specifying how the \swPostProcess executable is to be run for extracting results. 
+
+\subsection{Format description}
+\texttt{<input.postproc>} is a text file. It contains one keyword per line, with format
+\begin{lstlisting}
+<KEYWORD> <VALUE>
+\end{lstlisting}
+The order of the keywords does not matter. Empty lines or lines starting with hash '\#' or equal '=' signs are considered as comment lines.\\
+Note that
+\begin{itemize}
+\item The keywords and its value must be separated by at least one space or tabulation characters.
+\item The spelling of the keywords is not case sensitive.\\
+\item If a given keyword occurs several times in the file, the last read value overwrites the previously specified ones.
+\item All physical parameters (e.g. gravitational acceleration, etc.) are in S.I. units.
+\end{itemize}
+
+\subsection{List of allowed keywords}
+
+\begin{description}
+
+\item[compute\_max] \defaultvalue{0} Set if the maximal values have to be extracted from the existing results. Allowed values:
+\begin{description}
+\item[0] no computation of maximum values.
+\item[1] maximum values are computed.
+\end{description}
+The maximum values and corresponding times are stored in files \texttt{output/ResultHydro\_Max.txt} and \texttt{output/ResultHydro\_DateOfMax.txt} respectively.
+
+\item[first\_submersion] \defaultvalue{0} Set if the dates of first submersion have to be extracted from the existing results. Allowed values:
+\begin{description}
+\item[0] no computation of dates of first submersion.
+\item[1] date of first submersion are computed.
+\end{description}
+The dates of first submersion are stored in file \texttt{output/Submersion\_Durations.txt}.
+
+\item[h\_min] \defaultvalue{0.01} Set the minimum water depth at which a cell is considered flooded for the computation of submersion durations. Allowed values:
+\begin{description}
+\item Any number greater than or equal to zero
+\end{description}
+
+\item[input\_format] \defaultvalue{txt} Set the format of result file(s) to be used to compute the maximal values and submersion values. Allowed values:
+\begin{description}
+\item[bin] Binary file \texttt{ResultHydro.bin} is used to read the simulation results.
+\item[txt] Text files \texttt{ResultHydro**.txt} and/or \texttt{ResultTime**.txt} are used to read the simulation results.
+\end{description}
+
+\item[input\_max] \defaultvalue{all} Set the files to be used to compute the maximal values. Allowed values:
+\begin{description}
+\item[resulthydro] maximum values are computed using the map files \texttt{ResultHydro**.txt} alone. These are the maps stored periodically, with time intervals specified by the \texttt{dt\_map} keyword in the \texttt{input.solv} file.
+\item[resulttime] maximum values are computed using the extra storage maps \texttt{ResultTime**.txt} files only. The extra storage times are defined in the \texttt{extraction\_times\_list.txt} file. 
+\item[all] maximum values are computed using both regular and extra storage maps \\\texttt{ResultHydro**.txt} and \texttt{ResultTime**.txt}.
+\end{description}
+NB: \texttt{ResultTime**.txt} file names are expected to comply with the following format \\\texttt{ResultTime\_p????d??h??m??s???\_<custom\_string>.txt} where \texttt{<custom\_string>} is set by the user.
+
+\item[input\_submersion] \defaultvalue{all} Set the files to be used to compute the submersion durations and date of first submersion. Allowed values:
+\begin{description}
+\item[resulthydro] submersion values are computed using the map files \texttt{ResultHydro**.txt} alone. These are the maps stored periodically, with time intervals specified by the \texttt{dt\_map} keyword in the \texttt{input.solv} file.
+\item[resulttime] submersion values are computed using the extra storage maps \texttt{ResultTime**.txt} files only. The extra storage times are defined in the \texttt{extraction\_times\_list.txt} file. 
+\item[all] submersion values are computed using both regular and extra storage maps \\\texttt{ResultHydro**.txt} and \texttt{ResultTime**.txt}.
+\end{description}
+NB: \texttt{ResultTime**.txt} file names are expected to comply with the following format \\\texttt{ResultTime\_p????d??h??m??s???\_<custom\_string>.txt} where \texttt{<custom\_string>} is set by the user.
+
+\item[submersion\_durations] \defaultvalue{none} Set which submersion durations have to be computed. Allowed values:
+\begin{description}
+\item[none] no computaion of submersion durations.
+\item[max] maximum submersion durations are computed: it's the maximum uninterrupted time between a submersion and a drying.
+\item[total] total submersion durations are computed: it's the time between the first submersion and the last drying during the simulation.
+\item[all] both maximum and total submersion durations are computed.
+\end{description}
+The submersion durations are stored in file \texttt{output/Submersion\_Durations.txt}.
+
+\end{description}
+
+\subsection{Example}
+\begin{verbatim}
+= unread line
+# sign to comment a full line : (# =)
+=======
+compute_max   1
+input_max     all
+input_format  txt
+========
+\end{verbatim}

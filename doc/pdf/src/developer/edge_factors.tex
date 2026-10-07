@@ -1,0 +1,96 @@
+\section{The edge\_factors vectors}
+%%%
+\subsection{Rationale }
+The Flux\_multipliers arrays are introduced to speed up the balance process. They are specific to a given hyperbolic model because they involve the conserved variable and flux vectors.
+%%%
+\subsection{Shallow water equations}
+For a given interface $i$, the water depth and unit discharge components are advanced in time following
+The balance equations are
+%
+\begin{subequations}
+\begin{equation}
+h_{i,L} \Leftarrow h_{i,L} - \frac{w \Delta t}{A_L} F_1 
+\end{equation}
+\begin{equation}
+h_{i,R} \Leftarrow h_{i,R} + \frac{w \Delta t}{A_R} F_1 
+\end{equation}
+%
+\begin{equation}
+q_{i,L} \Leftarrow q_{i,L} - \frac{w \Delta t}{A_L} n_x F_2 + \frac{w \Delta t}{A_L} n_x s_{2L} + \frac{w \Delta t}{A_L} n_y F_3
+\end{equation}
+\begin{equation}
+q_{i,R} \Leftarrow q_{i,R} + \frac{w \Delta t}{A_R} n_x F_2 + \frac{w \Delta t}{A_R} n_x s_{2R} - \frac{w \Delta t}{A_R} n_y F_3
+\end{equation}
+%
+\begin{equation}
+r_{i,L} \Leftarrow r_{i,L} - \frac{w \Delta t}{A_L} n_y F_2 + \frac{w \Delta t}{A_L} n_y s_{2L} - \frac{w \Delta t}{A_L} n_x F_3
+\end{equation}
+\begin{equation}
+r_{i,R} \Leftarrow r_{i,R} + \frac{w \Delta t}{A_R} n_y F_2 + \frac{w \Delta t}{A_R} n_y s_{2R} + \frac{w \Delta t}{A_R} n_x F_3
+\end{equation}
+\end{subequations}
+%
+This is rewritten as
+\begin{subequations}
+\begin{equation}
+h_{i,L} \Leftarrow h_{i,L} + \mathrm{e\_f\_1\_F1\_L} \: F_1
+\end{equation}
+\begin{equation}
+h_{i,R} \Leftarrow h_{i,R} + \mathrm{e\_f\_1\_F1\_R} \: F_1
+\end{equation}
+\begin{equation}
+q_{i,L} \Leftarrow q_{i,L} + \mathrm{e\_f\_2\_F2\_L}\: F_2 + \mathrm{e\_f\_2\_s2L\_L}\: s_{2L} +  \mathrm{e\_f\_2\_F3\_L}\: F_3 
+\end{equation}
+\begin{equation}
+q_{i,R} \Leftarrow q_{i,R} + \mathrm{e\_f\_2\_F2\_R}\: F_2 + \mathrm{e\_f\_2\_s2R\_L}\: s_{2R} +  \mathrm{e\_f\_2\_F3\_R}\: F_3 
+\end{equation}
+\begin{equation}
+r_{i,L} \Leftarrow r_{i,L} + \mathrm{e\_f\_3\_F2\_L}\: F_2 + \mathrm{e\_f\_3\_s2L\_L}\: s_{2L} +  \mathrm{e\_f\_3\_F3\_L}\: F_3 
+\end{equation}
+\begin{equation}
+r_{i,R} \Leftarrow r_{i,R} + \mathrm{e\_f\_3\_F2\_R}\: F_2 + \mathrm{e\_f\_3\_s2R\_L}\: s_{2R} +  \mathrm{e\_f\_3\_F3\_R}\: F_3 
+\end{equation}
+\begin{equation}
+\mathrm{e\_f\_1\_F1\_L} = - \frac{w \Delta t}{A_L}
+\end{equation}
+\begin{equation}
+\mathrm{e\_f\_1\_F1\_R} = + \frac{w \Delta t}{A_R}
+\end{equation}
+\begin{equation}
+ \mathrm{e\_f\_2\_F2\_L} = - \frac{w \Delta t}{A_L} n_x
+\end{equation}
+\begin{equation}
+ \mathrm{e\_f\_2\_s2L\_L} =  \frac{w \Delta t}{A_L} n_x
+\end{equation}
+\begin{equation}
+ \mathrm{e\_f\_2\_F3\_L} = \frac{w \Delta t}{A_L} n_y
+\end{equation}
+\begin{equation}
+\mathrm{e\_f\_2\_F2\_R} = \frac{w \Delta t}{A_R} n_x
+\end{equation}
+\begin{equation}
+ \mathrm{e\_f\_2\_s2R\_R} = \frac{w \Delta t}{A_R} n_x
+\end{equation}
+\begin{equation}
+ \mathrm{e\_f\_2\_F3\_R} = - \frac{w \Delta t}{A_R} n_y
+\end{equation}
+\begin{equation}
+\mathrm{e\_f\_3\_F2\_L} F_2 = - \frac{w \Delta t}{A_L} n_y
+\end{equation}
+\begin{equation}
+ \mathrm{e\_f\_3\_s2L\_L} = \mathrm{e\_f\_3\_s2L\_L}
+\end{equation}
+\begin{equation}
+ \mathrm{e\_f\_3\_F3\_L} =  - \frac{w \Delta t}{A_L} n_x
+\end{equation}
+\begin{equation}
+\mathrm{e\_f\_3\_F2\_R} = \frac{w \Delta t}{A_R} n_y
+\end{equation}
+\begin{equation}
+ \mathrm{e\_f\_3\_s2R\_R} = \frac{w \Delta t}{A_R} n_y 
+\end{equation}
+\begin{equation}
+ \mathrm{e\_f\_3\_F3\_R} = \frac{w \Delta t}{A_R} n_x
+\end{equation}
+\end{subequations}
+%

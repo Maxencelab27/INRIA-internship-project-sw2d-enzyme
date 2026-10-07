@@ -1,0 +1,37 @@
+\subsection{precipitation\_time\_series.txt \rmk{Why "boundary"? It is a source term.}}
+
+\index{Source term!Precipitation}
+%
+\subsubsection{Purpose}
+SW2D takes as an input a precipitation field that is variable in both space and time. At a given time, the precipitation rate is taken uniform over zones (also called "stations") within the computational domain. The shape and extension of these zones remain constant over the entire simulation. The purpose of the file \texttt{precipitation\_time\_series.txt} is to specify the variations of the precipitation rate with time on a station-by-station basis. The stations are assigned integer numbers, that are not necessarily consecutive. 
+%
+\paragraph*{Warning.}
+Assume that $n$ and $N$ are respectively the smallest and largest (integer) station numbers in a given station code map (See Section \ref{sec_SourceTerm!Wind!precipitationStationMap}). Then, although there are only $N - n + 1$ "active" stations in the model, the time series file should incorporate the time series for $N$ stations.
+%
+\subsubsection{Format description}
+%
+File format.  \texttt{\textbf{Bold}} : keyword, must appear as such in the file. \texttt{<Tab>}: tabulation character. \\
+    \begin{tabular}{p{6cm} | p{9cm}}
+    \hline
+    Field(s) & Comment(s) \\
+    \hline  \hline
+    \texttt{\textbf{\#Precipitation time series}}  & Comment/header line \\ \hline
+    \texttt{\textbf{\#Precipitation stations}}  & Comment/header line \\ \hline
+    \texttt{N} & Number of stations in the time series file \\ \hline
+    \texttt{\textbf{\#}} & Section separator line, leave unchanged \\  \hline
+    \texttt{\textbf{\#t}} + $N$ times (\texttt{<Tab> \textbf{P}}) & Comment line, leave unchanged \\  \hline
+    \texttt{t} + $N$ times \texttt{(<Tab> P)} & \texttt{t} : time in seconds ; \texttt{P}: precipitation rate in m/s  \\ \hline
+    \end{tabular}
+%    
+\subsubsection{Sample file}
+There are 3 stations in the model.
+\begin{verbatim}
+#Precipitation time series for static wind test
+#wind stations
+3
+#
+# t P   P   P
+0 	1e-6    0e0   1e-5
+300 1e-6    1e-5    0e0
+360 0e0     0e0     0e0
+\end{verbatim}

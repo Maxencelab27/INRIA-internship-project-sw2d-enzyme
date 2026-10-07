@@ -1,0 +1,49 @@
+= ligne de commentaire
+# symbole pour commentaire : (# =)
+=== Model
+model_hyperb	sp
+model_friction	strickler
+model_singular_head_loss	active
+num_scheme	godunov
+topo_discretization	blending
+t_max	30.
+dt_max	0.1
+dt_map	1.0
+dt_time_series	0.2
+h_min	1e-5
+fr_max	10.0
+========
+store_flag	all
+
+============== Fonction cout ====================
+alpha_reg    0
+alpha_l1     0     # (desactive : L1 incompatible line-search lisse L-BFGS-B)
+alpha_spatial 0     # off (test ebauche 0.5 ville)
+alpha_phi_ref 0   # SANS ancrage : vrai probleme data-only (reconstruction honnete L-BFGS-B)
+h_weight     1  #input/w_h_city.csv
+q_weight     1 #input/w_q.csv
+cost_normalize  true
+
+==============  Minimisation ====================
+max_it	50
+porosity_ref_map        input/SP_cell_porosity_map.txt
+porosity_ebauche_map    input/phi_init_ones.txt
+#porosity_free_zone_map  input/free_zone_city.csv
+zonation false   # zones = regions uniformes de l ebauche (bougent en bloc)
+minimize_algo	lbfgsb
+
+====== fenetre d'assimilation ======
+windowed_assimilation	1
+assimilation_window_duration	20
+n_assimilation_windows	48
+t_state_assimilation	10
+
+# ----------options L-BFGS-B ---------
+phi_lower_bound	0.0
+phi_upper_bound	1.0
+lbfgsb_m	6
+lbfgsb_max_linesearch	30
+lbfgsb_epsilon	1e-5
+
+phi_transform  none
+dt_map_ad	0.5

@@ -1,0 +1,97 @@
+%\documentclass[a4paper]{report}
+\documentclass[openany]{book}
+\newcommand{\rootpath}{../../..}
+\input{../../common/packages} % Import packages
+\input{../../common/macros}   % Import macros
+%%%
+%%%
+\newcommand\guide{Developer's Guide}
+
+\newcommand\authors{Lilas Bugeau, Pascal Finaud-Guyot, Vincent Guinot, Antoine Rousseau}
+\addtolength{\footskip}{20pt}
+\pagestyle{fancy}
+
+%%% 
+\begin{document}
+
+\fancyhf{}
+\fancyhead[LE]{\small\truncate{15cm}{\leftmark}}
+\fancyhead[LO]{\small\truncate{15cm}{\rightmark}}
+\fancyfoot[C]{\thepage}  
+\makeatletter
+\let\ps@plain\ps@fancy
+\makeatother
+\input{../../common/firstpages.tex}
+
+
+%-- Part 1 - General
+\part{General procedures (read before you start coding)}
+%\markdownInput{../../../CONTRIBUTING.md}
+
+\chapter{Working environment \label{ch:workEnv}}
+\input{./developer/system_requirement}
+\input{./developer/compile_chain}
+\input{./developer/sw2d_command}
+%%% 
+\chapter{Compiling the source code}
+    \section{Linux}
+    \input{./developer/install-Linux}
+    \section{MacOS}
+    \input{./developer/install-MacOS}
+    \section{Windows}
+    \input{./developer/install-Windows}
+%
+\chapter{Generating the Doxygen documentation}
+\input{./developer/doxygen-generation}
+%
+
+\chapter{Programming standards \label{ch:standards}}
+\input{./developer/programming_standards}
+%%% 
+%
+%
+
+\chapter[Code verification]{Code verification \& branch merging \label{ch:mrTests}}
+
+\input{./developer/merge_tests}
+\input{./developer/python_apps_tests}
+%%%
+%%%
+%%%
+%== Part 1 - General
+
+
+
+
+%-- Part 2 - Specifics
+\part{Specific information}
+
+%%%
+% 
+\chapter{Code overview}
+\input{./developer/code_overview}
+
+%%%
+% 
+\chapter{Dictionary of variables \label{ch:dictionary}}
+\input{./developer/edge_factors}
+
+%%%
+% 
+%\chapter{Tools for developers}
+%\input{./developer/tools_for_developers}
+%== Part 2 - Specifics
+
+
+%-- Part 3 - How to
+\part{How to}
+\chapter{How to implement a new model}
+\input{./developer/how-to-new-model}
+
+\chapter{Get the boundary conditions}
+\input{./developer/how-to-boundary-conditions}
+%== Part 3 - How to
+
+
+
+\end{document}

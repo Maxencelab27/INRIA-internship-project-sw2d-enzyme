@@ -1,0 +1,43 @@
+\section{Minimal set of files and keywords for \swSolver}
+Prior to running the \swSolver executable the user must make sure that the following minimal set of files is available.
+
+\begin{enumerate}
+	\item the \texttt{input.solv} simulation configuration file  (even if it is empty)
+	\item the \texttt{geometry.sw2d} geometry file (produced but \swConverter)
+	\item \texttt{initial\_conditions\_map.txt}
+	\item \texttt{hydro\_boundary\_time\_series.txt}
+\end{enumerate}
+Besides, if specific models such as porosity-based models are activated, additional parameters may be required (porosity maps, etc.).
+\begin{table}[H]
+\index{Flie!input}
+\begin{tabular}{p{7cm}| p{8cm}}
+\hline
+Model(s) & Required file(s) \\
+\hline
+model\_friction = chezy & friction\_chezy\_map.txt \\
+\hline
+model\_friction = manning & friction\_manning\_map.txt \\
+\hline
+model\_friction = strickler & friction\_strickler\_map.txt \\
+\hline
+model\_hyp = dip & Boussinesq\_map.txt \\
+                 & DIP\_cell\_porosity\_map.txt \\
+                 & DIP\_edge\_bnd\_porosity\_map.txt \\
+                 & DIP\_edge\_int\_porosity\_map.txt \\
+\hline
+model\_hyp = sp & Boussinesq\_map.txt \\
+                & SP\_cell\_porosity\_map.txt \\
+\hline
+model\_infiltration = horton & infiltration\_horton\_parameter\_map.txt \\
+\hline
+model\_runoff = infiltration\_coefficient & infiltration\_coefficient\_map.txt \\ 
+      & precipitation\_station\_codes\_map.txt \\
+\hline
+model\_runoff = runoff\_coefficient & infiltration\_coefficient\_map.txt \\
+                & precipitation\_station\_codes\_map.txt \\         
+\hline
+model\_singular\_head\_loss = active & singular\_head\_loss\_map.txt \\
+\hline
+\end{tabular}
+
+\end{table}

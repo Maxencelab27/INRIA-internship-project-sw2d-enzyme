@@ -1,0 +1,27 @@
+\subsection{qsection.txt}
+%
+\subsubsection{Purpose}
+This file stores the instantaneous discharge crossing each qsection every \param{dt\_time\_series}. 
+For each Q Section, the stored discharge is the sum of the discharge crossing each of its edges.
+When an edge is defined in the input file from its south node to its north node, a positive discharge crosses the edge from west to east.
+%
+\subsubsection{Format description}
+\texttt{<Tab>}: tabulation character. \\
+    \begin{tabular}{p{6cm} p{9cm}}
+    \hline
+    \texttt{time <Tab> name\_1 <Tab> \ldots <Tab> name\_N} & This is the header line. \texttt{name\_1}, \ldots, \texttt{name\_N} represent the q section names as defined in the \file{input/qsection.txt} file \\
+    \hline 
+    $t$ \texttt{<Tab>} $Q_1$ \texttt{<Tab>} \ldots \texttt{<Tab>} $Q_N$ & $t$ is the stored time, $Q_i$ is the discharge (in $\mathrm{m^3.s^{-1}}$) through the q section \texttt{name\_i} \\
+    \hline
+    \ldots & one line per stored time \\ \hline
+    \end{tabular}
+%
+\subsubsection{Example}
+\begin{verbatim}
+time	qsection_1	qsection_2	qsection_3
+2.0000000000e+1	0.0000000000e+0	4.3274586317e+1	-1.4193271476e+1
+3.0000000000e+1	0.0000000000e+0	4.3149535653e+1	-1.4227591312e+1
+4.0000000000e+1	0.0000000000e+0	4.3074013841e+1	-1.4246148173e+1
+5.0000000000e+1	0.0000000000e+0	4.3030038602e+1	-1.4258119344e+1
+6.0000000000e+1	0.0000000000e+0	4.3000513361e+1	-1.4266604580e+1
+\end{verbatim}

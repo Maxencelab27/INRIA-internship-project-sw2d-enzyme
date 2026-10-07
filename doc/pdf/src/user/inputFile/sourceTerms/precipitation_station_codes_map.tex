@@ -1,0 +1,57 @@
+\subsection{Precipitation\_station\_codes\_map.txt \label{sec:precipStations}}
+\index{Source term!Precipitation}
+\subsubsection{Purpose}
+%
+\subsubsection{Input file format}
+%
+File format for a uniform station code.  \texttt{\textbf{Bold}} : keyword, must appear as such in the file. \texttt{<Tab>}: tabulation character. \\
+    \begin{tabular}{p{6cm} | p{9cm}}
+    \hline
+    Field(s) & Comment(s) \\
+    \hline  \hline
+    \texttt{\textbf{Unif} <Tab> \textbf{1}} & Flag is 1 because there is only one wind station for the entire domain (uniform station map) \\ \hline
+    \texttt{\textbf{==== Default Param}} & Section separator line, leave unchanged \\  \hline
+    \texttt{\textbf{Sta}} & Comment line, leave unchanged \\  \hline
+    \texttt{Sta} & The (uniform) precipitation station code to be used over the entire domain \\ \hline
+    \texttt{\textbf{==== Distrib}} & Section separator line, leave unchanged \\  \hline
+    \end{tabular}
+%
+\vspace{10mm} \\
+%
+File format for a spatially distributed wind station code.  \texttt{\textbf{Bold}} : keyword, must appear as such in the file. \texttt{<Tab>}: tabulation character. \\
+    \begin{tabular}{p{6cm} | p{9cm}}
+    \hline
+    Field(s) & Comment(s) \\
+    \hline  \hline
+    \texttt{\textbf{Unif} <Tab> \textbf{0}} & Flag is 0 because there is more than one wind station for the entire domain \\ \hline
+    \texttt{\textbf{==== Default Param}} & Section separator line, leave unchanged \\  \hline
+    \texttt{\textbf{Sta}} & Comment line, leave unchanged \\  \hline
+    \texttt{Sta} & This value will be ignored because \texttt{Flag} is zero \\ \hline
+    \texttt{\textbf{==== Distrib}} & Section separator line, leave unchanged \\  \hline
+    \texttt{Sta[i] }  & Precipitation station codes, provided on a cell-by-cell basis. Index i is the index of the cell in the mesh.  \\ \hline
+    \end{tabular}
+%
+\subsubsection{Sample files}
+%
+\paragraph*{Example\#1: Uniform wind station code}
+In this example, the station code is uniformly 1 over the entire domain.
+\begin{verbatim}
+Unif	1
+==== Default Param
+Xind
+1
+==== Distrib
+\end{verbatim}
+%
+\paragraph*{Example\#2: Distributed wind station code}
+In this example, there are three cells in the domain. Cells 1 and 3 have station code 1, cell 2 has station code 4.
+\begin{verbatim}
+Unif	0
+==== Default Param
+Xind
+1
+==== Distrib
+1
+4
+1
+\end{verbatim}

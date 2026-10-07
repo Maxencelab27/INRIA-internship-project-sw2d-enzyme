@@ -1,0 +1,138 @@
+### .gitignore ---
+
+*~
+*.o
+
+
+## ###################################################################
+## Project specific
+## ###################################################################
+test/**/geometry.sw2d
+test/*/**/test*.py
+test/*/**/run_solver_mrtests.py
+test/*/**/run_mr-tests.py
+
+utils/python/apps/test/**/log
+utils/python/apps/test/**/output
+utils/python/apps/test/output_converter/**/input/geometry.sw2d
+utils/python/apps/test/output_converter/**/output
+utils/python/apps/test/ns_preprocess/**/input
+utils/python/apps/test/ns_preprocess/**/primary_files/**.bc
+
+!test/merge/converter/testConverter.py
+!test/merge/solver/testSolver.py
+!test/merge/postprocess/testPostProcess.py
+!test/merge/porosity_mapper/testPorosityMapper.py
+!test/merge/zone/testZone.py
+
+test/**/log
+test/**/output
+test/merge/**/**.png
+
+test/merge/solver/**/output
+test/merge/solver/**/log
+
+!test/merge/postprocess/submersion_durations/*/output
+test/merge/postprocess/submersion_durations/*/output/SubmersionDurations.txt
+
+test/merge/ns_preprocess/**/input
+test/merge/ns_preprocess/**/primary_files/**.bc
+
+test/merge/porosity_mapper/**/input/*_cell_porosity_map.txt
+test/merge/porosity_mapper/**/input/*_edge_bnd_porosity_map.txt
+test/merge/porosity_mapper/**/input/*_edge_int_porosity_map.txt
+
+utils/python/personal_path.py
+
+sw2dOutputConverter.spec
+
+## ###################################################################
+## Insource build trees
+## ###################################################################
+
+build
+build-*
+
+## ###################################################################
+## Latex
+## ###################################################################
+doc/pdf/src/validation_doc/subfiles**/*.tex
+*.aux
+*.bbl
+*.blg
+*.dvi
+*.idx
+*.log
+*.out
+*.pdf
+*.synctex
+*.synctex.gz
+*.tcp
+*.toc
+*.tps
+
+## ###################################################################
+## Markdown
+## ###################################################################
+*.lua
+*_markdown*
+*markdown.err
+
+## ###################################################################
+## Cereg
+## ###################################################################
+!cereg/*/doc/*.pdf
+!cereg/*/meeting_minutes/*.pdf
+
+## ###################################################################
+## Doxygen
+## ###################################################################
+doc/html
+doc/doxyfile_with_version
+
+## ###################################################################
+## MacOSX specifics
+## ###################################################################
+
+**/.DS_Store
+.DS_Store
+.*.swp
+*__pycache__
+*pyc
+
+## ###################################################################
+## QtCreator specifics
+## ###################################################################
+*.txt.user
+
+## ###################################################################
+## CQuery
+## ###################################################################
+
+*.user
+.cproject
+.project
+
+.vscode
+compile_commands.json
+.cquery_cached_index
+
+test/tst_ci/resources/__result__.res
+
+
+### Visual Studio ###
+.vs
+out
+
+### Matlab ###
+*.asv
+
+### CLion ###
+# auto-import.
+.idea/*
+# CMake
+cmake-build-*/
+build_assim/
+build_off/
+.claude/
+

@@ -1,0 +1,21 @@
+\begin{enumerate}
+    \item Make sure XCode command line tools are installed:\\
+    \begin{lstlisting}[language=bash]
+        sudo xcode-select --install
+    \end{lstlisting}
+    \item Download the sources from the \href{https://gitlab.com/sw2d-workgroup/sw2d}{\textcolor{blue}official \swdd Gitlab repository}:
+        \begin{lstlisting}[language=bash]
+        git clone https://gitlab.com/sw2d-workgroup/sw2d.git
+        \end{lstlisting}
+    \item Create a build directory from the root and navigate into it before configuring and building:\\
+    \begin{lstlisting}[language=bash]
+        mkdir build
+        cd build
+        cmake .. -DCMAKE_BUILD_TYPE=Debug
+        make -j
+    \end{lstlisting}
+    \begin{remark}
+    You may want to replace 'Debug' by 'Release', depending on the type of optimization you want. The optimization flags [-DCMAKE\_CXX\_FLAGS="-g -O2"] are optional.
+    \end{remark}
+
+\end{enumerate}

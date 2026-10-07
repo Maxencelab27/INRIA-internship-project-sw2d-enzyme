@@ -1,0 +1,22 @@
+\section{Invoking \swConverter}
+NOTE: it is expected that the binary file \swConverter is in your path, so that it may be invoked from anywhere in your directories. If not, you will have to make sure that you enter the complete relative path to the \swConverter file. Do not hesitate to use SW2D shortcuts (see Chapter \ref{ch:shortcuts}).
+
+The \swConverter executable is used as follows.
+
+\begin{enumerate}
+	\item Localize your project folder. This project folder must contain a subfolder named \texttt{primary\_files} with the following files
+	\begin{itemize}
+		\item (mandatory) \texttt{input.conv}
+		\item (mandatory) a mesh file (.2dm is the only supported format at present)
+		\item (optional) a Boundary Condition (BC) code file
+	\end{itemize}
+	\item Open a shell/prompt (command line window).
+	\item Type
+	\begin{verbatim}
+	sw2dConverter.exe <path_to_project_folder>
+	\end{verbatim}
+	This results in the creation of the \texttt{input/geometry.sw2d} file.
+	
+	\remark{The path to your project folder is the relative path, starting from where the \swConverter command is called. In particular, if you are already at the root of your project folder, you may simply run the command 'sw2dConverter.exe .'}
+	
+\end{enumerate}

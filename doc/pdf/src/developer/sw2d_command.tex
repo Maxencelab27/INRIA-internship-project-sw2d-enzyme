@@ -1,0 +1,112 @@
+\section{The \textit{sw2d} command}\label{sec:sw2d-command}
+%
+%%%
+The \texttt{sw2d} command provides shortcuts to a number of operation sequences. It works on Linux/Mac\-OS/Windows operating systems. 
+The source code and a README file are located in \texttt{./utils/}:
+\begin{itemize}
+  \item for Windows: see \texttt{./utils/powershell}
+  \item for Linux/MacOS: see \texttt{./utils/bash}
+\end{itemize}
+
+The \texttt{sw2d} command should be used as follows:
+\begin{lstlisting}[basicstyle=\tiny]
+sw2d [-b [<build_options>]] [-d [<doc_options>]] [-h] [-g] [-r <run_options>] [-t <test_options>]
+\end{lstlisting}
+
+The options are described thanks to the \texttt{sw2d -h} command:
+\begin{lstlisting}[basicstyle=\tiny]
+-b | --build     optional input in {clean, Debug, Minisizerel, RelWithDebInfo, Release}. Builds SW2D targets (from anywhere). With no input, cmake files are conserved.
+-d | --doc       optional input in targets {all, html, pdf}. Runs doxygen (html) or latex (pdf) documentation. Default value is all.
+-h | --help      displays this help
+-g | --graphics  runs and displays Python graph scripts (in local project folder only)
+-r | --run       mandatory input in {converter, porosity_mapper, postprocess, solver, zone}
+-t | --test      mandatory input in {clean, converter, dip, liswes, porosity_mapper, postprocess, solver, sp, swes, zone}. Runs (part of) the mr_tests thanks to the python script. With no input, tests are executed in the current directory.
+\end{lstlisting}
+
+%\markdownInput{../../../utils/bash/README.md}
+%\markdownInput{../../../utils/powershell/README.md}
+
+\begin{comment}
+\subsection{Implementation}
+%
+\subsubsection{Linux/MacOS}
+The file \texttt{.sw2d/sw2d\_profile.sh} must be sourced in your bash terminal. This is achieved by adding the instructions hereafter in your \texttt{.bash\_profile}:
+
+\begin{lstlisting}
+export SW2D_PATH=<PATH-TO-SW2D>
+if [ -f $SW2D_PATH/.sw2d/sw2d_profile.sh ]; then
+  export PATH="/opt/homebrew/opt/gnu-getopt/bin:$PATH"
+  . $SW2D_PATH/utils/sw2d_command/sw2d_profile.sh
+fi
+\end{lstlisting}
+
+Note that gnu-getopt should be installed (with brew for MacOS users), in order to manage long option names in sw2d call. Make sure that the path is compatible in your bash profile:
+
+\begin{verbatim}export PATH="/opt/homebrew/opt/gnu-getopt/bin:$PATH"\end{verbatim}
+
+Do not forget to close and open the terminal console after saving your profile file.
+%
+\subsubsection{Windows Powershell}
+The file \begin{verbatim}.sw2d/sw2d\_profile.ps1\end{verbatim} should be sourced in your powershell environment. This can be done as follows.
+
+\begin{enumerate}
+\item Locate the Powershell profile definition file: in a Powershell terminal, type 
+\begin{lstlisting}
+echo $PROFILE
+\end{lstlisting}
+\item Go to the folder provided as a return to this command.
+\item If the file does not exist, create it:
+\begin{lstlisting}
+New-Item -Path $PROFILE -ItemType File -Force
+\end{lstlisting}
+ Otherwise, open it using a text editor.
+\item add the following lines to load the sw2d commands:
+\begin{lstlisting}
+$SW2D_PATH = "<PATH-TO-SW2D>"
+. $SW2D_PATH\utils\sw2d_command\sw2d_profile.ps1
+\end{lstlisting}
+where \texttt{<PATH-TO-SW2D>} is the location of the sw2d repository on your computer.
+\item Don't forget to close and open your powershell console after saving your profile file.
+\end{enumerate}
+%%%
+%
+\subsection{Usage}
+
+sw2d [-d $<$doc\_option$>$] [-r $<$run\_option$>$] [-t $<$test\_option$>$] [-g] [-h] [-m [$<$build\_options$>$]] [$<$directory$>$]\\
+
+\paragraph{Available options.}
+ These options should be run after the *sw2d* command only (no alias). Short and long options are available \rmk{??? Ca veut dire quoi ?}.
+ \begin{itemize}
+	\item -d or -{}-doc:       input in {examples, validation}. Displays pdf files
+	\item -r or -{}-run:       input in {all, converter, default, graphics, solver, zone}. Not so used since binaries are all in the path
+	\item -t or -{}-test:      input in {all, converter, mr, porosity, swes}. Runs (part of) the mr\_tests thanks to the python script
+	\item -h or -{}-help:      display this help
+	\item -g or -{}-graphics:  display graphics (possibly after SW2D run). Could be png (single run -r) or pdf file (multiple tests -t)
+	\item -m or -{}-make:      optional input in {debug, minisizerel, release, relWithDebInfo}. Builds SW2D targets (from anywhere). With no input, cmake files are conserved.
+	\item  -p or -{}-path:      provides path for runs (default is current directory)
+\end{itemize}
+
+\paragraph{Sample command lines.}
+
+\begin{center}
+\begin{tabular}{| l | l |} 
+ \hline
+ COMMANDS &WHAT IT DOES \\ 
+  \hline
+ sw2d --make $<$type$>$ & Builds SW2D targets from any directory (and brings you back in) \\
+ & with optional $<$type$>$ cmake built type\\
+  \hline
+ sw2d -g -p $<$dir$>$   & Runs sw2dSolver in the $<$dir$>$ directory (optional, default is ./), \\
+ & then displays png created from Python graph\_scripts files\\
+  \hline
+ sw2d -r all        & Runs converter + solver, runs and displays Python graphics from the current directory\\
+  \hline
+ sw2d -d validation & Displays the merge request validation document (from short-mr.tex files)\\
+  \hline
+ sw2d --help        & Displays this help menu\\
+  \hline
+ sw2d --test mr -g  & Runs all the mr-tests and display the validation pdf file\\
+ \hline
+\end{tabular}
+\end{center}
+\end{comment}

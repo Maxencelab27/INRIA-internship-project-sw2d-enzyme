@@ -1,0 +1,105 @@
+\chapter{1D shallow water equations}
+The 1D shallow water equations write
+\begin{equation}
+\displaystyle{\frac{\partial\mathbf{U_{1D}}}{\partial t}} + \displaystyle{\frac{\partial\mathbf{F_{1D}}}{\partial x}} = \mathbf{S_{1D}}
+\label{eq:1DSWeq}
+\end{equation}
+where 
+\begin{subequations}
+\begin{align}
+\mathbf{U_{1D}} = & \left[\begin{array}{c} h \\ q \end{array}\right] \\
+\mathbf{F_{1D}} = & \left[\begin{array}{c} q \\ \displaystyle{\frac{q^2}{h}+\frac{1}{2}gh^2} \end{array}\right] \\
+\mathbf{S_{1D}} = \sum\mathbf{S_{1D,\lbrace B,F,I,P,S\rbrace }}& 
+\end{align}
+\end{subequations}
+
+\section{Source terms}
+\subsection{Friction}
+This source term accounts for friction effect.
+\begin{align}
+\mathbf{S_{1D,S}} = & \left[\begin{array}{c} 0 \\ -gh S_f \end{array}\right]
+\end{align}
+\subsubsection{Chezy model}
+\begin{align}
+S_f = & 
+\end{align}
+
+\subsubsection{Manning model}
+\begin{align}
+S_f = & 
+\end{align}
+
+\subsubsection{Strickler model}
+\begin{align}
+S_f = & \left(\frac{u}{Kh^{4/3}}\right)^2
+\end{align}
+
+\subsection{Infiltration}
+This source term accounts for infiltration effect.
+\subsubsection{Infiltration flux}
+\begin{align}
+\mathbf{S_{1D,I}} = & \left[\begin{array}{c} -I \\ - \displaystyle{\frac{q}{h}} I \end{array}\right]
+\end{align}
+
+\subsection{Precipitation}
+This source term accounts for precipitation.
+\subsubsection{Patch}
+\begin{align}
+\mathbf{S_{1D,P}} = & \left[\begin{array}{c} P \\ 0 \end{array}\right]
+\end{align}
+
+\subsection{Slope}
+This source term accounts for bottom slope.
+\begin{align}
+\mathbf{S_{1D,S}} = & \left[\begin{array}{c} 0 \\ gh S_0 \end{array}\right]
+\end{align}
+
+\section{Extended equations}
+\subsection{1D shallow water equations with slope, friction and infiltration}
+\begin{subequations}
+\label{eq:1DSWeq_FIS}
+\begin{align}
+      \displaystyle{\frac{\partial h}{\partial t}}+\frac{\partial q}{\partial x} = & - I \label{eq:1DSWeq_mass_FIS}\\
+      \displaystyle{\frac{\partial q}{\partial t}} + \frac{\partial}{\partial x}\left(\frac{q^2}{h}+\frac{1}{2}gh^2\right)=& gh\left(S_0-S_f\right) - \displaystyle{\frac{q}{h}} I \label{eq:1DSWeq_momentum_FIS}
+   \end{align}
+\end{subequations}
+
+\section{steady state equations}
+\subsubsection{Steady 1D shallow water equations with slope, friction and infiltration}
+\paragraph{set of equations}
+\begin{subequations}
+\label{eq:1DSWeq_steady_FIS}
+\begin{align}
+\displaystyle{\frac{\mathrm{d} q}{\mathrm{d}x}} &= -I \label{eq:1DSWeq_mass_steady_FIS}\\
+\displaystyle{\frac{\mathrm{d}}{\mathrm{d} x}\left(\frac{q^2}{h}+\frac{1}{2}gh^2\right)}&=gh\left(S_0 - S_f\right) - \frac{q}{h} I \label{eq:1DSWeq_momentum_steady_FIS}
+\end{align}
+\end{subequations}
+\paragraph{solution} 
+Developping \eqref{eq:1DSWeq_momentum_steady_FIS}, using \eqref{eq:1DSWeq_mass_steady_FIS}, leads to
+\begin{align}
+\displaystyle{2\frac{q}{h}\frac{\mathrm{d}q}{\mathrm{d}x} - \frac{q^2}{h^2}\frac{\mathrm{d}h}{\mathrm{d}x}+gh\frac{\mathrm{d}h}{\mathrm{d}x}} & = gh\left(S_0 - S_f\right)  - \displaystyle{\frac{q}{h}} I \nonumber\\
+\displaystyle{-2\frac{q}{h}I + \left(gh - u^2\right)\frac{\mathrm{d}h}{\mathrm{d}x}}& = gh\left(S_0 - S_f\right)  - \displaystyle{\frac{q}{h}} I\nonumber\\
+\displaystyle{\left(gh - u^2\right)\frac{\mathrm{d}h}{\mathrm{d}x}}& = gh\left(S_0 - S_f\right) + \displaystyle{\frac{q}{h}I}\nonumber\\
+\displaystyle{c^2\left(1 - \Fr^2\right)\frac{\mathrm{d}h}{\mathrm{d}x}}& = c^2\left(S_0 - S_f\right) + \displaystyle{\frac{\Fr}{c}I}\nonumber\\
+\displaystyle{\frac{\mathrm{d}h}{\mathrm{d}x}}& = \displaystyle{\frac{1}{1 - \Fr^2}}\left(S_0 - S_f + \displaystyle{\frac{\Fr}{c}I}\right) \label{eq:1DSWeq_momentum_steady_FIS_ODE}
+\end{align}
+
+
+\subsubsection{Steady 1D shallow water equations with slope and infiltration}
+\paragraph{set of equations}
+\begin{subequations}
+\label{eq:1DSWeq_steady_IS}
+\begin{align}
+\displaystyle{\frac{\mathrm{d} q}{\mathrm{d}x}} &= -I \label{eq:1DSWeq_mass_steady_IS}\\
+\displaystyle{\frac{\mathrm{d}}{\mathrm{d} x}\left(\frac{q^2}{h}+\frac{1}{2}gh^2\right)}&=ghS_0 - \frac{q}{h} I \label{eq:1DSWeq_momentum_steady_IS}
+\end{align}
+\end{subequations}
+\paragraph{solution} 
+Developping \eqref{eq:1DSWeq_momentum_steady_IS}, using \eqref{eq:1DSWeq_mass_steady_IS}, leads to
+\begin{align}
+\displaystyle{2\frac{q}{h}\frac{\mathrm{d}q}{\mathrm{d}x} - \frac{q^2}{h^2}\frac{\mathrm{d}h}{\mathrm{d}x}+gh\frac{\mathrm{d}h}{\mathrm{d}x}} & = ghS_0  - \displaystyle{\frac{q}{h}} I \nonumber\\
+\displaystyle{-2\frac{q}{h}I + \left(gh - u^2\right)\frac{\mathrm{d}h}{\mathrm{d}x}}& = ghS_0  - \displaystyle{\frac{q}{h}} I\nonumber\\
+\displaystyle{\left(gh - u^2\right)\frac{\mathrm{d}h}{\mathrm{d}x}}& = ghS_0 + \displaystyle{\frac{q}{h}I}\nonumber\\
+\displaystyle{c^2\left(1 - \Fr^2\right)\frac{\mathrm{d}h}{\mathrm{d}x}}& = c^2S_0 + \displaystyle{\frac{\Fr}{c}I}\nonumber\\
+\displaystyle{\frac{\mathrm{d}h}{\mathrm{d}x}}& = \displaystyle{\frac{1}{1 - \Fr^2}}\left(S_0 + \displaystyle{\frac{\Fr}{c}I}\right) \label{eq:1DSWeq_momentum_steady_IS_ODE}
+\end{align}

@@ -1,0 +1,47 @@
+% Cadre décoratif avec TikZ
+\thispagestyle{empty}
+ \newgeometry{top=3cm,bottom=3cm,left=2.5cm,right=2.5cm}
+    {\centering
+    %\begin{tikzpicture}[remember picture, overlay]
+        %\draw[line width=2pt, color=black] 
+       %     ([xshift=1cm,yshift=-1cm]current page.north west) 
+       %    rectangle 
+       %    ([xshift=-1cm,yshift=1cm]current page.south east);
+    %\end{tikzpicture}
+    
+    % Logo ou image
+    \vspace*{1cm}
+    \includegraphics[width=0.5\textwidth]{\rootpath/doc/common/figures/InrUM.png} 
+    \vspace*{2cm}
+    
+    % Titre
+    {\Huge {SW2D}}\\[.3cm]
+    {\Large\bfseries \guide \\[0.5cm]}
+    \rule{\linewidth}{0.5mm}
+    % Sous-titre
+    ~\\
+    {\large Version \myversion}\\[0.5cm]
+    {\large \today}\\[2cm]
+    
+        \vspace*{1cm}
+    \includegraphics[width=0.4\textwidth]{\rootpath/doc/common/figures/logo_sw2d.png}
+    \vspace*{2cm}
+    
+    % Auteur ou société
+    \vfill
+    \textsc{Main developers:}\\[0.3cm]
+    {\Large \authors}\\[1cm]
+    
+    % Bas de page
+    \vfill
+    \rule{0.8\textwidth}{0.4pt}\\[0.3cm]
+    {\small © 2025 Inria \& Université de Montpellier}
+    \restoregeometry
+    }
+\pagebreak
+
+\tableofcontents
+
+\pagebreak
+
+\fancyfoot[R]{SW2D \guide, version \myversion}

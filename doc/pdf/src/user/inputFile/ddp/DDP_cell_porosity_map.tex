@@ -1,0 +1,95 @@
+\subsection{DDP\_cell\_porosity\_map.txt}
+\index{Model!Hyperbolic!DDP}\label{sec_Model!Hyperbolic!DDP!cellPorosityMap}
+\subsubsection{Purpose}
+The Depth-Dependent Porosity (DDP) model requires that the variations in the storage porosity $\phi_\Omega$ with the water depth be specified on a cell-by-cell basis. This is the domain-based $\phi_\Omega(z)$ law in the original publication \cite{Guinot_al_2018}.
+The code provides 5 types of pre-defined law:
+\begin{itemize}
+    \item Law type -2: the porosity law is specified as a sequence of couples $(z_i, \phi_i$), where the $z_i$ are ranked in ascending order. The $z_i$ are relative to the ground surface elevation, that is computed from the 2D mesh. The $z_i$ are the levels used in the tabulation of the law.
+    \item Law type -1: the porosity law is specified as a sequence of couples $(z_i, \phi_i$), where the $z_i$ are ranked in ascending order. The $z_i$ are relative to the ground surface elevation, that is computed from the 2D mesh. The law is later tabulated using \textbf{ntabmax} intermediate levels between $z_1$ and $z_N$.
+    \item Law type 0: the porosity law is specified by a sequence of elevations $(z_1, \ldots, z_N)$ in ascending order. The porosity is piecewise constant, equal to $i/N$ between $z_i$ and $z_i+1$ and to unity above $z_N$.  The $z_i$ are relative to the ground surface elevation as in Law type -1.
+    \item Law type 1: the porosity is zero below an elevation $z_1$ relative to the ground elevation, and equal to $\phi_1$ above. 
+    \item Law type 2: the porosity varies linearly from $\phi_1$ to $\phi_2$ between elevations $z_1$ and $z_2$ relative to the ground surface. It is zero below $z_1$ and $\phi_2$ above $z_2$.
+    \item Law type 3: the porosity varies linearly from $\phi_1$ to $\phi_2$ between elevations $z_1$ and $z_2$ relative to the ground surface. It is zero below $z_1$ and $\phi_3$ above $z_2$.
+\end{itemize}
+If the laws are spatially distributed, each cell may obey a different law type.
+%
+\subsubsection{Law type specification format}
+Five porosity law types are allowed in the current version of the software.\\
+
+\begin{tabular}{p{1.5cm} | p{5.5cm} | p{8cm}} 
+\hline
+Law type & Parameters to be provided in file (separated using \texttt{<Tab>} characters) & Comments \\
+\hline
+\hline
+-2 & -1 $N$ $\phi_1 \: z_1  \ldots \phi_N \: z_N$ &  $N$: number of $(z,\phi)$ couples. \\
+\hline
+-1 & -1 $N$ $\phi_1 \: z_1  \ldots \phi_N \: z_N$ &  $N$: number of $(z,\phi)$ couples. \\
+\hline
+0 & 0 $N$ $z_1 \ldots z_N$ & $N$ : number of points in the $\phi(z)$ law. $z_i$ : elevations relative to the ground level , by ascending order. \\
+\hline
+ 1 & 1 $z_1$ $\phi_1$ & $z_1$: altitude (relative to local bottom elevation) above which $\phi=\phi_1$; $\phi = 0$ for $z < z_1$ \\
+ \hline
+ 2 & 2 $z_1$ $z_2$ $\phi_1$ $\phi_2$ & Porosity $\phi$ is zero below $z_1$, varies linearly from $\phi_1$ to $\phi_2$ between $z_1$ and $z_2$, is equal to $\phi_2$ for $z > z_2$  \\
+ \hline
+ 3 & 3 $z_1$ $z_2$ $\phi_1$ $\phi_2$ $\phi_3$ & Porosity $\phi$ is zero below $z_1$, varies linearly from $\phi_1$ to $\phi_2$ between $z_1$ and $z_2$, is equal to $\phi_3$ for $z > z_2$ \\
+\hline
+\end{tabular}
+%
+\subsubsection{Input file format}
+%
+File format for a uniform parameter set.  \texttt{\textbf{Bold}} : keyword, must appear as such in the file. \texttt{<Tab>}: tabulation character. \\
+    \begin{tabular}{p{6cm} | p{9cm}}
+    \hline
+    Field(s) & Comment(s) \\
+    \hline  \hline
+    \texttt{\textbf{Unif} <Tab> \textbf{1}} & Flag is 1 because the parameter set is uniform \\ \hline
+    \texttt{\textbf{NtabMax} <Tab> NtabMax} & NtabMax is the number of vertical discretization levels used for the $\phi_\Omega$(z) law \\ \hline
+    \texttt{\textbf{==== Default Param}} & Section separator line, leave unchanged \\  \hline
+    \texttt{\textbf{Uniform parameter set}} & Comment line, leave unchanged \\  \hline
+    Parameter set     & The parameter set should obey the format given in the previous table \\ \hline
+    \texttt{\textbf{==== Distrib}} & Section separator line, leave unchanged \\  \hline
+    \end{tabular}
+%
+\vspace{10mm} \\
+%
+File format for a spatially distributed parameter set.  \texttt{\textbf{Bold}} : keyword, must appear as such in the file. \texttt{<Tab>}: tabulation character. \\
+    \begin{tabular}{p{6cm} | p{9cm}}
+    \hline
+    Field(s) & Comment(s) \\
+    \hline  \hline
+    \texttt{\textbf{Unif} <Tab> \textbf{0}} & Flag is 0 because the parameter set is spatially variable \\ \hline
+    \texttt{\textbf{NtabMax} <Tab> NtabMax} & NtabMax is the number of vertical discretization levels used for the $\phi_\Omega$(z) law \\ \hline
+    \texttt{\textbf{==== Default Param}} & Section separator line, leave unchanged \\  \hline
+    \texttt{\textbf{Uniform parameter set}} & Comment line, leave unchanged \\  \hline
+    Parameter set     & The parameter set should obey the format given in the previous table \\ \hline
+    \texttt{\textbf{==== Distrib}} & Section separator line, leave unchanged \\  \hline
+    Parameter set [i]     & Parameter set, provided on a cell-by-cell basis. Index i runs sequentially from 1 to the number of cells. The parameter set should obey the format given in the Law type specification format table \\ \hline
+    \end{tabular}
+%
+\subsubsection{Sample files}
+%
+\paragraph*{Example\#1: Uniform law type 2}
+The porosity varies linearly from $\phi_1=0.$ to $\phi_2=1.$ between $z_1=3$ m and $z_2=10$ m.
+\begin{verbatim}
+Unif	1
+NtabMax	50
+==== Default Param
+Type	Parameters(type)
+2	3.	10.	0.	1.
+==== Distrib
+\end{verbatim}
+%
+\paragraph*{Example\#2: Distributed law type}
+There are 3 cells in the model, the law types for cells 1, 2 and 3 are respectively 1, 0 and -1. The law type 0 in Cell 2 is given by 5 elevations. The Law type -1 in Cell 3 uses 2 $(z,\phi)$ couples.
+\begin{verbatim}
+Unif	0
+NtabMax	50
+==== Default Param
+Type	Parameters(type)
+2	3.	10.	0.	1.
+==== Distrib
+Type	Parameters(type)
+1   2.3 0.5
+0   5   0.1 0.4 0.7 1.2 2.5
+-1  2   0.1 0.3 2.7 0.95
+\end{verbatim}

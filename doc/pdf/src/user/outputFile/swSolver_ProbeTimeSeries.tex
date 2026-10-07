@@ -1,0 +1,43 @@
+\subsection{ProbeTimeSeries.txt}
+
+\subsubsection{Purpose}
+This unique text file stores the hydrodynamic time series for all probes identified in the \file{input/probes\_lacation.txt}. For every probe, 4 fields are stored: $z_b$, $h$, $q$ and $r$ (bottom elevation, water height, unit discharge in both $x-$ and $y-$directions. 
+
+\subsubsection{Format description}
+The file starts with 1 line for each probe: each lines contains the probe name, its $x-$ and $y-$ coordinates (these parameters are given by the user through the input file \file{input/probes\_lacation.txt}).\\
+Then comes the header line (indicating the name of subsequent fields).\\
+Finally, the following lines are dedicated to the output of time and for each probe, bottom elevation, water height, unit discharge in both $x-$ and $y-$directions. Each line thus contains $4n+1$ fields where $n$ is the number of probes.
+
+\begin{tabular}{p{5cm} | p{10cm}}
+\hline
+Field(s) & Format \\
+\hline
+\hline
+\hline
+\texttt{name}$_1\;$ $x_1 \; y_1$  & name, $x-$ and $y-$coordinates (in m) of the 1st probe, separated by at least one space character \\
+\hline
+$\cdots$ & \\
+\hline
+\texttt{name}$_n\;$ $x_n \; y_n$  & name, $x-$ and $y-$coordinates (in m) of the $n$th probe, separated by at least one space character \\
+\hline
+\texttt{x  y  name} & This is the header line. The string \texttt{x  y  name} must be inserted without modification \\
+\hline
+$t_0\;$ $z_{b_1 }\; h_1 \; q_1 \; r_1 $ $\cdots$ $z_{b_n }\; h_n \; q_n \; r_n $ & initial time time, then for every probe: bottom elevation, water height, unit discharge in both $x-$ and $y-$directions, separated by at least one space character \\
+\hline
+$\cdots$ & (one lime every \param{dt\_time\_series}) \\
+\hline
+$t_f\;$ $z_{b_1 }\; h_1 \; q_1 \; r_1 $ $\cdots$ $z_{b_n }\; h_n \; q_n \; r_n $ & final time, then for every probe: bottom elevation, water height, unit discharge in both $x-$ and $y-$directions, separated by at least one space character \\
+\hline
+\end{tabular}
+%
+\subsubsection{Example}
+In the file hereafter, there are 2 probes
+\begin{small}
+\begin{verbatim}
+pr_1	6.0000000000e-01	4.0000000000e-01
+other_probe	1.0000000000e+00	0.0000000000e+00
+time	pr_1_zb	pr_1_h	pr_1_q	pr_1_r 	other_probe_zb 	other_probe_h	other_probe_q	other_probe_r
+0.0000e+00	0.0000e+00	5.0000e+00	0.0000e+00	0.0000e+00	0.0000e+00	5.0000e+00	0.00000e+00	0.0000e+00
+1.0000e+00	0.0000e+00	4.9000e+00	4.9926e-02	-3.6509e-16	0.0000e+00	4.9000e+00	4.99266e-02	-3.6509e-16	
+\end{verbatim}
+\end{small}

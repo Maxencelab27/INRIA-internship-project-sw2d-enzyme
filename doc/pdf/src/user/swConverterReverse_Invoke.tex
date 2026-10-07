@@ -1,0 +1,22 @@
+\section{Invoking \swConverterReverse}
+
+NB: The \swConverterReverse was coded in Python. It can be compiled into an executable file (using pyinstaller, for example), but by default, only the Python script is available. This chapter explains how to use this utility in both cases. \\
+Note that you must have Python installed to run the Python script. \\
+
+The \swConverterReverse is used to reconstruct the \swConverter's input files from a generated \file{geometry.sw2d} file.
+
+\begin{enumerate}
+	\item Localize your project folder. Make sure that the \file{geometry.sw2d} file is present in the \file{input} folder.
+	\item Open a shell/prompt (command line window).
+	\item \begin{itemize}
+		\item If you have \swConverterReverse in the form of an executable file, type
+		\begin{small}\begin{verbatim}
+		sw2dConverterReverse <path_to_project_folder>
+		\end{verbatim}\end{small}
+		\item If you are using the python script, type
+		\begin{small}\begin{verbatim}
+		python <path_to_python_apps>/sw2dConverterReverse.py <path_to_project_folder>
+		\end{verbatim}\end{small}
+	\end{itemize}
+	This results in the creation of \swConverter input files in the \file{log} folder : \file{input.conv}, \file{\textlangle filemane\textrangle.2dm}, and possibly \file{\textlangle filemane\textrangle.bc}.
+\end{enumerate}

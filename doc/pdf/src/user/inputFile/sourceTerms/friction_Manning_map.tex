@@ -1,0 +1,58 @@
+\subsection{friction\_manning\_map.txt}
+\index{Friction!Manning}
+\subsubsection{Purpose}
+If Manning's law is selected for the friction model, the Manning coefficient must be provided on a cell-by-cell basis. The Manning may be anisotropic. Therefore, it is a tensor. It is specified in the form $(n_{M_1} , n_{M_2}, \alpha_{n_M})$, where $n_{M_1}$ and $n_{M_2}$ are the friction coefficients in the two principal directions of the horizontal plane, and $\alpha_{n_M}$ is the angle of the first principal direction with the $x-$axis.
+%
+\subsubsection{Input file format}
+%
+File format for a uniform Manning tensor.  \texttt{\textbf{Bold}} : keyword, must appear as such in the file. \texttt{<Tab>}: tabulation character. \\
+    \begin{tabular}{p{6cm} | p{9cm}}
+    \hline
+    Field(s) & Comment(s) \\
+    \hline  \hline
+    \texttt{\textbf{Unif} <Tab> \textbf{1}} & Flag is 1 because $n_M$ is uniform \\ \hline
+    \texttt{\textbf{==== Default Param}} & Section separator line, leave unchanged \\  \hline
+    \texttt{\textbf{Manning\_1 Manning\_2 alpha}} & Comment line, leave unchanged \\  \hline
+    \texttt{Manning\_1 <Tab> Manning\_2 <Tab> alpha} & The uniform values for $n_{M_1}$, $n_{M_2}$ and $\alpha_{n_M}$ ($\alpha_{n_M}$ in degrees) \\ \hline
+    \texttt{\textbf{==== Distrib}} & Section separator line, leave unchanged \\  \hline
+    \end{tabular}
+%
+\vspace{10mm} \\
+%
+File format for a spatially distributed Manning tensor.  \texttt{\textbf{Bold}} : keyword, must appear as such in the file. \texttt{<Tab>}: tabulation character. \\
+    \begin{tabular}{p{6cm} | p{9cm}}
+    \hline
+    Field(s) & Comment(s) \\
+    \hline  \hline
+    \texttt{\textbf{Unif} <Tab> \textbf{0}} & Flag is 0 because $n_M$ is spatially variable \\ \hline
+    \texttt{\textbf{==== Default Param}} & Section separator line, leave unchanged \\  \hline
+    \texttt{\textbf{Manning\_1 Manning\_2 alpha}} & Comment line, leave unchanged \\  \hline
+    \texttt{Manning\_1 Manning\_2 alpha}     & This value will be ignored because \texttt{Flag} = 1 \\ \hline
+    \texttt{\textbf{==== Distrib}} & Section separator line, leave unchanged \\  \hline
+    \texttt{Manning\_1[i] <Tab> Manning\_2[i] <Tab> alpha[i]}      & Values for $n_{M_1}$, $n_{M_2}$ and $\alpha_{n_M}$ ($\alpha_{n_M}$ in degrees), provided on a cell-by-cell basis. Index i is the index of the cell in the mesh.  \\ \hline
+    \end{tabular}
+%
+\subsubsection{Sample files}
+%
+\paragraph*{Example\#1: Uniform Manning tensor}
+The Manning tensor is uniform for all cells. It is respectively 0.025 and 0.02 in the 1st and 2nd principal directions. The 1st principal direction makes a 45 degree angle with the $x-$axis.
+\begin{verbatim}
+Unif	1
+==== Default Param
+Manning_1	Manning_2	alpha
+0.025    0.02	45.
+==== Distrib
+\end{verbatim}
+%
+\paragraph*{Example\#2: Distributed Manning tensor}
+There are 3 cells in the model. The Manning is respectively 0.025 and 0.2 in the 1st and 2nd principal directions. Its angle with the $x-$axis is respectively 0, 10 and 30 degrees in Cells 1, 2 and 3.
+\begin{verbatim}
+Unif	0
+==== Default Param
+Manning_1	Manning_2	alpha
+0.025    0.02	45.
+==== Distrib
+0.025    0.02	0.
+0.025    0.02	10.
+0.025    0.02	30.
+\end{verbatim}

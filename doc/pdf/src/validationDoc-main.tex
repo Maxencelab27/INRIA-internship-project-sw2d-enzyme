@@ -1,0 +1,39 @@
+\newcommand{\rootpath}{../../..}
+\newcommand{\solvertestpath}{\rootpath/test/merge/solver}
+\newcommand{\docpath}{\rootpath/doc}
+\input{validation_doc/header}
+\input{\docpath/common/packages}
+\input{\docpath/common/macros}
+
+\newcommand\guide{Validation Document}
+\newcommand\authors{Lilas Bugeau, Pascal Finaud-Guyot, Vincent Guinot, Antoine Rousseau}
+\pagestyle{fancy}
+
+
+%%% 
+\begin{document}
+\fancyfoot{}
+	\input{\docpath/common/firstpages}
+	\input{\docpath/pdf/src/validation_doc/disclaimer}
+	
+	%% converter
+  \input{\docpath/pdf/src/validation_doc/subfiles_fulldoc/converterFullDoc}
+	
+	%% porosity_mapper
+  \input{\docpath/pdf/src/validation_doc/subfiles_fulldoc/porosityMapperFullDoc}
+	
+	%% postprocess
+  \input{\docpath/pdf/src/validation_doc/subfiles_fulldoc/postProcessFullDoc}
+	
+	%% solver
+  \input{\docpath/pdf/src/validation_doc/subfiles_fulldoc/solverFullDoc}
+	\input{\docpath/pdf/src/validation_doc/subfiles_fulldoc/solverSummaryTable}
+	\input{\docpath/pdf/src/validation_doc/subfiles_fulldoc/solverTests}
+	
+	%% zone
+  \input{\docpath/pdf/src/validation_doc/subfiles_fulldoc/zoneFullDoc}
+	
+	
+	\appendix
+	\input{\docpath/pdf/src/validation_doc/appendix}
+\end{document}

@@ -1,0 +1,14 @@
+\section{Opening results in SMS}
+
+The result maps in text format (\file{ResultHydro***.txt}) can be opened and displayed in the SMS software. A single file (i.e. results at a given time or a map of maximum values) corresponds to one layer in SMS.\\
+
+The file is imported doing the following steps:
+\begin{itemize}
+  \item Drag the desired file into the SMS window.
+  \item In \textbf{file import options}, select \textbf{delimited}, \textbf{Space}, \textbf{Tab}, and \textbf{Treat consecutive delimiters as one}. Below, select \textbf{heading row}. Click \textbf{Next}.
+  \item In the second step, you can choose a name for the layer and the variable to display. For the x and y columns, make sure that the type is \textbf{X} and \textbf{Y} respectively. Then, for the column whose values you want to display, select \textbf{Scalar Data} as the type. For all the others, select \textbf{Not Mapped}. Click \textbf{Finish}.
+\end{itemize}
+
+In the left side panel, you can double-click on \textbf{Scatter Data} to choose the elements to display. In particular, the \textbf{Countours} option allows to visualise the values of the selected column with a color map.
+
+It should be noted that these files do not contain the mesh data, but only the coordinates of the cell centers. So if you choose to display \textbf{Points}, these will not be the nodes of the original mesh, but the centers of the cells.

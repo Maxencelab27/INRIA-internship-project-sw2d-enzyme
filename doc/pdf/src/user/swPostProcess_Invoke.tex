@@ -1,0 +1,20 @@
+\section{Invoking \swPostProcess}
+The \swPostProcess executable is used as follows.
+
+\begin{enumerate}
+	\item Navigate to the parent folder that contains the simulation folder. The simulation folder must contain two subfolders named \texttt{input} and \texttt{output} with the following files
+	\begin{itemize}
+		\item (mandatory) \texttt{input.postproc} in the \texttt{input} folder.
+		\item (mandatory) simulation results stored in various \texttt{ResultHydro\_*****************.txt} and/or \texttt{ResultTime\_*****************.txt} files or in one binary \texttt{ResultHydro.bin} file in the \texttt{output} folder.
+	\end{itemize}
+	\item Open a shell/prompt (command line window).
+	\item Type
+	\begin{verbatim}
+	sw2dPostProcess.exe <path_to_project_folder>
+	\end{verbatim}
+	This results in the creation of one or many of these files depending on the options you have set :
+	\begin{itemize}
+		\item \texttt{output/ResultHydro\_Max.txt} and \texttt{output/ResultHydro\_DateOfMax.txt}
+		\item \texttt{output/SubmersionDurations.txt}
+	\end{itemize}
+\end{enumerate}

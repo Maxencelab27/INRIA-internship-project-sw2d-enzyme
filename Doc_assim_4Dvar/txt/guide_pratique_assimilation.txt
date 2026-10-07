@@ -1,0 +1,244 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage[margin=2.3cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{listings}
+\usepackage[colorlinks=true,linkcolor=blue!55!black,urlcolor=blue!55!black]{hyperref}
+\definecolor{codebg}{rgb}{0.96,0.96,0.96}
+\lstset{basicstyle=\ttfamily\footnotesize,backgroundcolor=\color{codebg},
+        frame=single,framerule=0.3pt,rulecolor=\color{gray!45},breaklines=true,
+        columns=fullflexible,keepspaces=true,showstringspaces=false}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\file}[1]{\texttt{#1}}
+\setlist{nosep,leftmargin=1.4em}
+
+\title{\textbf{SW2D-Assim — guide pratique d'utilisation}\\[2pt]
+\large assimilation variationnelle de la porosité (Enzyme)}
+\author{}
+\date{\today}
+
+\begin{document}
+\maketitle
+\vspace{-1.2cm}
+\begin{center}\small
+\begin{tcolorbox}[colback=gray!5,colframe=gray!50,width=0.9\textwidth]
+Ce guide décrit \emph{en pratique} comment compiler et utiliser le code d'assimilation de donnée variationel ( 4D-var ) (dossier \file{assim/}, exécutable \code{sw2d\_enzyme}) ajoutée au solveur SW2D. 
+Il couvre~: la compilation avec Enzyme, l'enchaînement des exécutables, les
+paramètres \file{input.solv} et comment les régler. Le solveur natif SW2D n'est pas
+modifié~; tout le code AD est dans \file{assim/}, il faut avoir SW2D dans le meme dossier pour le faire tourné.
+\end{tcolorbox}
+\end{center}
+
+% =====================================================================
+\section{Compilation avec Enzyme}
+% =====================================================================
+
+\paragraph{Prérequis.}
+\begin{itemize}
+  \item SW2D 
+  \item \textbf{clang-18} et \textbf{lld-18} (\code{bash sudo apt install clang-18 lld-18}) ;
+  \item le plugin \textbf{Enzyme} pour LLVM~18 (fichiers \file{ClangEnzyme-18.so} et
+        \file{LLDEnzyme-18.so}) ;
+  \item \textbf{Eigen~3} (\code{sudo apt install libeigen3-dev}) ;
+  \item les bibliothèques d'optimisation \file{LBFGSpp} et \file{psqn} (header-only,
+        fournies dans \file{assim/external/}).
+\end{itemize}
+
+\paragraph{Commandes.} Depuis la racine du dépôt (le dossier \file{assim/} est à côté de
+\file{src/})~:
+\begin{lstlisting}[language=bash]
+# dossier contenant ClangEnzyme-18.so et LLDEnzyme-18.so :
+export ENZYME_PLUGIN_DIR=$HOME/Enzyme/build/Enzyme
+
+cmake -S assim -B build_assim -DENABLE_ENZYME=ON -DCMAKE_CXX_COMPILER=clang++-18
+cmake --build build_assim -j
+\end{lstlisting}
+\noindent Sans \code{-DENABLE\_ENZYME=ON}, la cible n'est \emph{pas} construite (Enzyme
+est requis pour le lien de \code{\_\_enzyme\_autodiff}). L'exécutable produit est
+\file{build\_assim/sw2d\_enzyme}.
+
+\begin{tcolorbox}[colback=orange!5,colframe=orange!55,title=\small Pourquoi clang+lld+LTO~?]
+\small Enzyme différencie l'\emph{IR LLVM fusionné}~: la compilation se fait en \code{-flto}
+(bitcode, sans vectorisation ni déroulage), et c'est \code{lld-18} qui charge le plugin
+Enzyme au moment du lien pour générer le code adjoint. C'est pour cela que \code{gcc}
+ne convient pas pour cette cible.
+\end{tcolorbox}
+
+% =====================================================================
+\section{Structure d'un cas}
+% =====================================================================
+
+Un cas est un dossier de configuration SW2D classique, complété de fichiers propres à
+l'assimilation, dans son sous-dossier \file{input/}~:
+\begin{center}\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Fichier} & \textbf{Rôle} \\
+\midrule
+\file{input.solv}                    & point d'entré de tous les paramètres (simulation + assimilation) \\
+\file{geometry.sw2d}, maillage       & géométrie du cas (obtenue via sw2dConverter, comme pour SW2D ) \\
+\file{SP\_cell\_porosity\_map.txt}   & carte de porosité \emph{vérité} ( référence de l'expérience jumelle) \\
+\file{phi\_init\_ones.txt}           & carte de porosité \emph{ébauche} (point de départ, ex.\ $\varphi\equiv1$) \\
+\file{reference/}                    & observations de référence (générées par \code{gen-ref-e}) \\
+\file{descent/}                      & (créé au run) suivi de la minimisation \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% =====================================================================
+\section{Les exécutables (modes) et l'ordre à suivre}
+% =====================================================================
+
+Tout passe par un seul exécutable~: \code{sw2d\_enzyme <dossier\_cas> <mode>}. Le premier
+argument est le dossier du cas, le second le \emph{mode}. \textbf{Ordre recommandé pour
+une nouvelle configuration}~:
+
+\begin{enumerate}
+  \item \textbf{\code{gen-ref-e}} — génère les \emph{observations de référence} avec le
+  forward différentiable (\file{\_E}). En expérience jumelle, cela garantit
+  $J(\varphi_{\text{vrai}})\approx 0$. \emph{À refaire dès que la vérité ou le maillage
+  change.}
+\begin{lstlisting}[language=bash]
+sw2d_enzyme mon_cas gen-ref-e
+\end{lstlisting}
+
+  \item \textbf{\code{taylor}} — \emph{valide le gradient} par un test de Taylor (le
+  gradient Enzyme doit coïncider avec des différences finies, rapport $\to 1$).
+  \textbf{À lancer pour toute nouvelle configuration} avant d'assimiler~: si le test
+  échoue, la minimisation n'a pas de sens.
+\begin{lstlisting}[language=bash]
+sw2d_enzyme mon_cas taylor
+\end{lstlisting}
+
+  \item \textbf{\code{minimize}} — lance l'\emph{assimilation} proprement dite~:
+  minimise la fonction coût et écrit la carte reconstruite dans
+  \file{optimized\_porosity.txt} (+ suivi dans \file{descent/}).
+\begin{lstlisting}[language=bash]
+sw2d_enzyme mon_cas minimize
+\end{lstlisting}
+\end{enumerate}
+
+\noindent \emph{Autres modes} (secondaires)~: \code{forward} (une simulation directe
+\file{\_E} seule) et \code{gen-ref} (références via le moteur natif classique).
+
+% =====================================================================
+\section{Paramètres \file{input.solv} d'assimilation}
+% =====================================================================
+
+Aux paramètres SW2D usuels s'ajoutent les clés suivantes (valeurs par défaut entre
+parenthèses).
+
+\paragraph{Cartes et fonction coût.}
+\begin{center}\small
+\begin{tabular}{@{}lp{10.3cm}@{}}
+\toprule
+\code{porosity\_ref\_map}     & carte de porosité \emph{vérité} (cible de \code{gen-ref-e} et du suivi). \\
+\code{porosity\_ebauche\_map} & carte \emph{ébauche} = point de départ de la reconstruction. \\
+\code{h\_weight}, \code{q\_weight} (1) & poids des termes hauteur $h$ / débit $\mathbf q$ dans $J$ (scalaire ou carte). \\
+\code{cost\_normalize} (false) & divise $J$ par le nombre d'observations (invariant à la fenêtre). \\
+\code{alpha\_reg} (0) & régularisation de Tikhonov vers l'ébauche. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Optimiseur.}
+\begin{center}\small
+\begin{tabular}{@{}lp{10.3cm}@{}}
+\toprule
+\code{minimize\_algo} (\code{bfgs}) & \code{lbfgsb} (recommandé, à bornes) / \code{adam} / \code{bfgs}. \\
+\code{max\_it} & nombre d'itérations de l'optimiseur (\emph{par fenêtre} si QSVA). \\
+\code{phi\_transform} (\code{none}) & changement de variable $\varphi\!\leftrightarrow\!m$ (\code{none} recommandé avec \code{lbfgsb}). \\
+\code{phi\_lower\_bound}, \code{phi\_upper\_bound} (0, 1) & bornes de la boîte L-BFGS-B. \\
+\code{adam\_step\_size} (0.05) & pas d'Adam (si \code{minimize\_algo=adam}). \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Fenêtre d'assimilation, pavage et checkpoints.}
+\begin{center}\small
+\begin{tabular}{@{}lp{10.3cm}@{}}
+\toprule
+\code{t\_state\_assimilation} & début de la fenêtre d'observation (les obs de $[t_{\text{state}}, t_{\max}]$ sont utilisées). \\
+\code{t\_max} & fin de la fenêtre (fin de simulation). \\
+\code{windowed\_assimilation} (false) & active la fenêtre + le pavage de l'adjoint. \\
+\code{n\_assimilation\_windows} (1) & nombre de \emph{pavés} (adjoint borné pavé par pavé). \\
+\code{checkpoint\_stride} (30) & nombre de pas de temps par segment de checkpoint. \\
+\code{dt\_map\_ad} & cadence des observations dans la fenêtre. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{QSVA (fenêtre croissante).}
+\begin{center}\small
+\begin{tabular}{@{}lp{10.3cm}@{}}
+\toprule
+\code{qsva\_enabled} (false) & active la minimisation quasi-statique à fenêtre croissante. \\
+\code{qsva\_delta\_tau} & incrément $\delta\tau$ (s) d'allongement de la fenêtre à chaque étape. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% =====================================================================
+\section{Comment choisir les paramètres (aspects pratiques)}
+% =====================================================================
+
+\begin{description}
+  \item[\code{n\_assimilation\_windows} (pavés).] \textbf{Plus} de pavés $\Rightarrow$
+  adjoint \emph{plus stable} (croissance arrière bornée), au prix d'un léger surcoût.
+  \textbf{Trop peu} $\Rightarrow$ l'adjoint \emph{explose} sur les fenêtres longues, le
+  gradient est tronqué et la reconstruction échoue. \emph{En pratique}~: augmenter jusqu'à
+  ce que l'adjoint ne signale plus d'explosion (p.\ ex.\ 48 sur le cas Toce). $1$ = pas de
+  pavage.
+
+  \item[\code{checkpoint\_stride}.] \textbf{Plus petit} $\Rightarrow$ moins de RAM par
+  appel Enzyme (tape plus courte) et pavage plus fin, mais plus de checkpoints stockés et
+  un peu plus lent. \textbf{Plus grand} $\Rightarrow$ plus rapide si ça tient en mémoire,
+  mais risque de saturation (OOM). \emph{En pratique}~: laisser $\sim\!30$~; \emph{réduire}
+  en cas de manque de mémoire.
+
+  \item[Fenêtre {\normalfont(\code{t\_state\_assimilation}, \code{t\_max})}.] La couvrir
+  sur la \emph{période informative} (l'interaction onde\,--\,structure). Commencer trop tôt
+  (avant l'arrivée de l'onde) ou prolonger une queue non informative n'apporte pas de
+  signal et \emph{fragilise} l'adjoint. \emph{En pratique}~: une fenêtre \emph{courte et
+  centrée} sur l'événement bat souvent la fenêtre pleine.
+
+  \item[\code{qsva\_delta\_tau} (QSVA).] \textbf{Plus petit} $\Rightarrow$ plus de fenêtres,
+  meilleure \emph{continuité} (on suit le minimum absolu, on évite les minima locaux), mais
+  plus de calcul. \textbf{Trop grand} $\Rightarrow$ on « saute » et QSVA peut retomber dans
+  un minimum local (perte de l'intérêt). \emph{En pratique}~: prendre le \emph{plus grand}
+  $\delta\tau$ qui préserve la qualité (2\,--\,4~s sur le Toce).
+
+  \item[\code{minimize\_algo}.] \code{lbfgsb} = robuste et déterministe (recommandé par
+  défaut, bornes $\varphi\in[0,1]$)~; \code{adam} = premier ordre, atteint $\varphi=0$
+  exactement (utile si le paramètre doit s'annuler)~; \code{bfgs} = quasi-Newton dense.
+
+  \item[\code{h\_weight} / \code{q\_weight}.] Garder $h$ \emph{et} $\mathbf q$ (le débit
+  porte l'information de déviation par la structure)~; un poids uniforme est un bon point
+  de départ.
+\end{description}
+
+% =====================================================================
+\section*{Recette minimale (résumé)}
+% =====================================================================
+\begin{lstlisting}[language=bash]
+# 0. compiler une fois
+export ENZYME_PLUGIN_DIR=$HOME/Enzyme/build/Enzyme
+cmake -S assim -B build_assim -DENABLE_ENZYME=ON -DCMAKE_CXX_COMPILER=clang++-18
+cmake --build build_assim -j
+
+# 1. references (experience jumelle)   2. valider le gradient   3. assimiler
+build_assim/sw2d_enzyme mon_cas gen-ref-e
+build_assim/sw2d_enzyme mon_cas taylor
+build_assim/sw2d_enzyme mon_cas minimize
+# -> resultat : mon_cas/optimized_porosity.txt
+\end{lstlisting}
+
+\end{document}

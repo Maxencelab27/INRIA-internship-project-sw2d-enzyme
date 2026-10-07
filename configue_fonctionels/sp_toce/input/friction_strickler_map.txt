@@ -1,0 +1,5 @@
+Unif	1
+==== Default Param
+Kx	Ky	alphaK
+60.	60.	0
+==== Distrib

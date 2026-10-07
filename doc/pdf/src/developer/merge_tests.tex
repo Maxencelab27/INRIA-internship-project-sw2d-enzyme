@@ -1,0 +1,168 @@
+%%%
+%%%
+%%%
+\section{Overview}
+%%%
+\begin{itemize}
+\item A number of verification test cases, known as merge tests, are available in \textbf{test/merge} to check the behaviour of the code.
+\item The tests compare the numerical solution given by the code to a reference solution (obtained either from an analytical or from a reference numerical solution).
+\item No merge request will be accepted until the branch under consideration passes all the tests successfully.
+\item Two validation documents can be generated:
+\begin{itemize}
+    \item a detailed version \texttt{sw2d\_validationDoc.pdf}: this file is automatically produced in the directory \textbf{doc/pdf} 
+every time the script \textbf{test/merge/buildValidationDoc.py} is run. This document describes a selection of test cases in details 
+(including the details of the geometry, initial and boundary conditions, as well as the analytical solution when available). 
+In the current release of \swdd, this document only concerns the solver program.
+    \item a raw version \texttt{sw2d\_mergeRequestDoc.pdf}: this file is automatically produced in the directory \textbf{doc/pdf} 
+every time the script \textbf{test/merge/buildMergeRequestDoc.py} is run. This document allows for quick visual comparison between the code 
+and reference solution, with a few sentences describing the expected behaviour of numerical solutions. The document is made of 5 parts: 
+one for each of the binary files (converter, porosity mapper, post-process, solver and zone).
+
+\end{itemize}
+\end{itemize}
+
+\paragraph{Important:} Both scripts \textbf{buildValidationDoc.py} and \textbf{buildMergeRequestDoc.py} must produce satisfactory 
+results for a merge request to be validated. However, to save time during development and only run tests on certain executables or 
+certain features of these executables, the short document can be generated partially: this is the subject of sections 
+\ref{sec:merge-solver} and \ref{sec:merge-others} below.
+
+%%%
+%%%
+%%%
+\section{Solver verification: validation document generation}\label{sec:merge-solver}
+%%
+%%
+\subsection{Setting up your own environment}
+The instructions in the present subsection are to be followed only once. The purpose is to initialize the global variables needed by the standard testing procedure.
+\begin{enumerate}
+\item Go to \textbf{utils/python}
+\item Open File \textbf{personal\_path\_template.py}
+\item Save it under \textbf{personal\_path.py} 
+\item A number of environment variables (between the \texttt{< >} signs) must be customized in the following Python code
+\begin{lstlisting}[basicstyle=\footnotesize]
+# Define path to main folder
+folder_name = '<NAME_OF_YOUR_MAIN_SW2D_FOLDER>' 
+# define executable path
+sw2dConverter = sw2dFolder + '<LOCAL_PATH_TO_CONVERTER>'
+sw2dSolver = sw2dFolder + '<LOCAL_PATH_TO_SOLVER>'
+sw2dPorosityMapper = sw2dFolder + '<LOCAL_PATH_TO_POROSITYMAPPER>'
+sw2dPostproc = sw2dFolder + '<LOCAL_PATH_TO_POSTPROCESS>'
+sw2dZone = sw2dFolder + '<LOCAL_PATH_TO_ZONE>'
+\end{lstlisting}
+
+The variable \texttt{sw2dFolder} is already known by the Python script from your operating system. It is the main folder of the Git repository of SW2D. The variables \texttt{<LOCAL\_PATH\_TO\_CONVERTER>}, etc. must therefore be supplied relative to this main folder path.
+%%
+\item Possible example of your modified code:
+\begin{lstlisting}[basicstyle=\footnotesize]
+folder_name = 'sw2d'
+sw2dConverter = sw2dFolder + 'build/bin/sw2dConverter.exe'
+sw2dSolver = sw2dFolder + 'build/bin/sw2dSolver.exe'
+sw2dPorosityMapper = sw2dFolder + 'build/bin/sw2dPorosityMapper.exe'
+sw2dPostproc = sw2dFolder + 'build/bin/sw2dPostProcess.exe'
+sw2dZone = sw2dFolder + 'build/bin/sw2dZone.exe'
+\end{lstlisting}
+\end{enumerate}
+%%%
+%%
+\subsection{Procedure for the solver}
+The solver (binary file \textbf{build/bin/sw2dSolver.exe}) is probably the one that requires the most testing (and will often be modified by new developments). The verification process consists of the following steps:
+\begin{enumerate}
+\item Open a console ("command prompt") in the folder \texttt{test/merge/solver}
+\item Launch the Python script:
+\begin{lstlisting}
+python testSolver.py
+\end{lstlisting}
+\item The sequence \swConverter - \swSolver - script generation is launched for each of the models in the subfloders
+\item At the end of the sequence, check the console summary. It provides a quick insight into the various test cases:
+\begin{lstlisting}[basicstyle=\tiny]
+
+                           TEST      Conv.   |   SW2D   |   TIME   |   PLOT   |   INFO
+boussinesq\dip\bvp_prescribed_h     SUCCESS  |  SUCCESS |  3.1940  |  SUCCESS |
+correction\supercritical_inlet      SUCCESS  |  SUCCESS |  3.5177  |  SUCCESS |
+feature\extraction_time             SUCCESS  |  SUCCESS |  1.8451  |  SUCCESS |
+
+(additiona lines)
+
+transport\logjam\lake_at_rest       SUCCESS  |  SUCCESS |  2.4411  |  SUCCESS |
+transport\logjam\stuck_in_square    SUCCESS  |  SUCCESS |  5.5904  |  SUCCESS |
+*************************
+\end{lstlisting}
+\item Open File \texttt{doc/pdf/sw2d\_mergeRequestDoc.pdf}.
+\item Check visually that the code solutions comply with the reference solutions. In 1D graphs, the reference solutions are most often presented in the form of solid lines, while the numerical solution is shown using dot or "+" markers. 
+\end{enumerate}
+
+{\remark The Python script \texttt{testSolver.py} can be run from any subdirectory of \texttt{test/merge/solver}. 
+For example, if you only want to test your code on the \texttt{DIP} model, you can go to the \texttt{test/merge/solver/dip} directory, 
+copy \texttt{testSolver.py} from \texttt{test/merge/solver} and run it locally. In that case, 
+the produced short validation pdf file will only contain test cases related to the \texttt{DIP} model.}
+%%
+%%
+\subsection{Structure of a test project folder}
+A test project folder must comprise at least the following folders:
+%
+%
+\begin{enumerate}
+%
+\item \texttt{/doc}: contains the documentation for the test case under concern. This comprises
+\begin{itemize} 
+\item \texttt{full-doc.tex}: a detailed description of the mesh, initial and boundary conditions, how the reference solution has been obtained (e.g. if it is an analytical solution, how can it be computed, what are the equations for it, etc.)
+\item \texttt{short-mr.tex}: a brief description of the expected behavior of the numerical solution wrt the reference solution. 
+Example: "The numerical solution (markers) must follow the analytical solution (solid line)". 
+This text helps the reader of the pdf document in determining whether the quality of the numerical solution is acceptable. 
+It allows bugs or development side effects to be identified.
+\end{itemize}
+%
+\item \texttt{/graph\_scripts}: contains the \texttt{graph\_script.py} Python file that generates the graphs in both detailed and raw validation documents. 
+%
+\item \texttt{/input}: this is the classical input folder required for a simulation 
+%
+\item \texttt{/primary\_files}: the folder containing the mesh and all necessary files to generate the \texttt{geometry.sw2d} file.
+%
+\item \texttt{/reference}: the folder containing the reference solution used by the \texttt{graph\_script.py} Python script.
+\end{enumerate}
+
+
+\section{Validation document generation for other executables}\label{sec:merge-others}
+
+For each of the 4 "non-solver" \swdd binary files (sw2dConverter, sw2dPorosityMapper, sw2dPostProcess, sw2dZone), 
+you will find a dedicated Python script to test its own behaviour.
+
+\begin{enumerate}
+\item Open a console ("command prompt") in the folder \texttt{test/merge/<EXEC>} (where EXEC belongs to (converter, porosity\_mapper, postprocess, zone))
+\item Launch the Python script:
+\begin{lstlisting}
+python test<EXEC>.py
+\end{lstlisting}
+\item At the end of the script run, check the console summary. It provides a quick insight of dedicated test cases. 
+Here is an example for the \texttt{ZONE} executable:
+\begin{lstlisting}[basicstyle=\tiny]
+        TEST        	CONV.	    ZONE	OUPUT	TIME	INFO
+boussinesq          	SUCCESS	SUCCESS	SUCCESS	0.0247	
+chezy               	SUCCESS	SUCCESS	SUCCESS	0.0112	
+ic_hqv              	SUCCESS	SUCCESS	SUCCESS	0.0117	
+ic_zur              	SUCCESS	SUCCESS	SUCCESS	0.0111	
+manning             	SUCCESS	SUCCESS	SUCCESS	0.0109	
+mu                  	SUCCESS	SUCCESS	SUCCESS	0.0116	
+porosity            	SUCCESS	SUCCESS	SUCCESS	0.0114	
+reader/PolygonNodes 	SUCCESS	SUCCESS	SUCCESS	0.0296	
+reader/PolygonXY    	SUCCESS	SUCCESS	SUCCESS	0.0287	
+strickler           	SUCCESS	SUCCESS	SUCCESS	0.0121	
+*************************
+
+The zone tests run with 0 errors.
+\end{lstlisting}
+\item This table is reproduced in the file \texttt{doc/pdf/sw2d\_mergeRequestDoc.pdf}.
+\item Check every test case has the expected behavior. In particular, the final message should state that there is no error.
+\end{enumerate}
+
+\section{Documenting your own test cases before merging}
+Documenting new test cases involves the following steps:
+\begin{itemize}
+    \item create a \texttt{doc} subdirectory 
+    \item create the short description tex file \texttt{short-mr.tex} 
+    \item create the full description tex file \texttt{full-doc.tex}, including any required additional figures, sketches, etc. 
+    In particular, this file must contain a full description of the test case and the 
+    behaviour expected from the numerical solutions.
+\end{itemize}
+
+These files will be read by scripts when the documentation is processed. 

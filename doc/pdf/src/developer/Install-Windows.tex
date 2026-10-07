@@ -1,0 +1,40 @@
+\subsection{Compile}
+
+Before compiling, make sure you have installed all 3 compiling tools (see Section \ref{sec:C++} above).
+\begin{enumerate}
+    \item From the \texttt{sw2d/} folder, open your favorite terminal (such as Windows Powershell) and type 
+    \begin{itemize}
+    	\item gcc compiler :
+    	\begin{lstlisting}
+    	cmd /c .\recipes\bld_gcc.bat <Config>
+    	\end{lstlisting}
+    	where \texttt{<Config>} is the string containing the build type. Allowed values:
+    	\begin{itemize}
+    	\item \texttt{Debug}
+    	\item \texttt{Release}
+    	\item \texttt{RelDebInfo}
+    	\item \texttt{RelMinSize}
+    	\end{itemize}
+    	\item Intel compiler (assuming that OneAPI has been installed) :
+    	\begin{lstlisting}
+    	cmd /c .\recipes\bld_intel.bat  <Config>
+    	\end{lstlisting}
+    	\item Miscrosoft Visual Core compiler :
+    	\begin{lstlisting}
+    	cmd /c .\recipes\bld_msvc.bat <Config>
+    	\end{lstlisting}
+   	\end{itemize}
+    	
+    \end{enumerate}
+
+\subsection{Set up environment variables}\label{sec:setup-env}
+
+    \begin{enumerate}
+        \item In the Search bar, type \texttt{Modify user envir. variables (your user account)}
+        \item in PATH of User variables (not environment variables), add new path:
+        \begin{itemize}
+            \item \lstinline{C:\[Path2]\sw2d\build\bin} where \texttt{[Path2]} is the folder containing the \texttt{\swdd} main directory
+        \end{itemize}
+    \end{enumerate}
+    Don't forget that you will need to close and open your Windows Powershell in order for your new path to be taken into account.
+

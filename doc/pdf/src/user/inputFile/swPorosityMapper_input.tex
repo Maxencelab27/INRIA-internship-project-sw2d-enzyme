@@ -1,0 +1,46 @@
+\section{File \texttt{input.pmap}}
+\subsection{Purpose}
+The text file \texttt{input.pmap} specifies how the \swPorosityMapper executable is to be run for generating the porosity maps. 
+
+\subsection{Format description}
+\texttt{input.pmap} is a text file. It contains one keyword per line, with format
+\begin{lstlisting}
+<KEYWORD> <VALUE>
+\end{lstlisting}
+The order of the keywords does not matter. Empty lines or lines starting with hash '\#' or equal '=' signs are considered as comment lines.\\
+Note that
+\begin{itemize}
+\item The keywords and its value must be separated by at least one space or tabulation characters.
+\item The spelling of the keywords is not case sensitive.\\
+\item If a given keyword occurs several times in the file, the last read value overwrites the previously specified ones.
+\item All physical parameters (e.g. gravitational acceleration, etc.) are in S.I. units.
+\end{itemize}
+
+\subsection{List of allowed keywords}
+
+\begin{description}
+
+\item[model] \defaultvalue{none} Set the porosity model used to generate the maps. Allowed values:
+\begin{description}
+\item[sp] Single Porosity model
+\item[dip] Dual-Integral Porosity model
+\item[ddp] Depth Dependant Porosity model
+\end{description}
+
+\item[input] \defaultvalue{footprint} Set the format expected from the input file \texttt{buildings.txt}. Allowed values:
+\begin{description}
+\item[footprint] The file specifies the building spatial footprints coordinates
+\item[raster] The file consists in a Cartesian grid
+\end{description}
+
+\end{description}
+
+\subsection{Example}
+\begin{verbatim}
+= ligne de commentaire
+# symbole pour commentaire : (# =)
+=== Porosity Mapper
+model	dip
+input	footprint
+========
+\end{verbatim}

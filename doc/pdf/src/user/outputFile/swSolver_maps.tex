@@ -1,0 +1,50 @@
+\section{Output files}
+
+\subsection{output/ResultHydro\_pDDDDdHHhMMmSSsXXX.txt}\label{resulsubt_hydro_txt}
+
+\subsubsection{Purpose}
+This file stores the hydrodynamic results every \param{dt\_map}. To avoid any computational timestep reduction to store the results precisely every \param{dt\_map}, the results are stored when \pfg{explain algorithm}. The stored variables depend upon the chosen hyperbolic model (defined by the parameter \param{model\_hyperb}) and the \param{storeflag} parameter:
+\begin{center}
+\begin{tabular}{c|c|c}
+\multirow{2}{*}{\param{model\_hyperb}} & \multicolumn{2}{c}{\param{storeflag} value} \\
+& default & all \\
+\hline
+%ddp  &  &  \\
+dip  &  &  \\
+sp   &  &  \\
+swes & $h, \overrightarrow{q}$ & $h, \overrightarrow{q}, z, \overrightarrow{u}, \mathrm{Fr}, H_s, H_t, CFL$
+\end{tabular}
+\pfg{complete}
+\end{center}
+
+For vectorial fields, three values are stored in each cell: the two horizontal component of the vector and the vector norm.
+
+\begin{center}
+\begin{tabular}{c|l|c}
+Symbol & Variable & Type of field \\
+\hline
+$CFL$ & cfl & scalar \\
+$\mathrm{Fr}$ & froude & scalar \\
+$h$ & water\_depth & scalar \\
+$H_s$ & specific\_head & scalar \\
+$H_t$ & total\_head & scalar \\
+$\overrightarrow{q}$ & unit\_discharge\_x, unit\_discharge\_y and	unit\_discharge\_norm & vectorial \\
+$\overrightarrow{u}$ & velocity\_x,	velocity\_y	and velocity\_norm & vectorial \\
+$z$ & surface\_elevation & scalar
+\end{tabular}
+\end{center}
+
+\subsubsection{Format description}
+The precise simulation time for storing the variables is indicated in the file name using the ISO 8601 format. The file name is \file{ResultHydro\_pDDDDdHHhMMmSSsXXX.txt} where \emph{pDDDDdHHhMMmSSsXXX} is the elapsed time from the beginning of the simulation:
+\begin{itemize}
+    \item DDDD is the number of days (always on 4 digits)
+    \item HH is the number of hours (always on 2 digits)
+    \item MM is the number of minutes (always on 2 digits)
+    \item SS is the number of seconds (always on 2 digits)
+    \item XXX is the number of milliseconds (always on 3 digits)
+\end{itemize}
+
+% \subsection{Example}
+% \begin{verbatim}
+    
+% \end{verbatim}
